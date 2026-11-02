@@ -9,9 +9,55 @@ export type Database = {
             [_ in never]: never
           }
           Views: {
-            "branches": {
+            "account_groups": {
+                  Row: {
+                    "account_count": number | null,"company_id": string,"id": string,"is_party_group": string | null,"name": string,"nature": string,"parent_id": string | null,"tally_groups": (string)[] | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "account_count"?: never,"company_id"?: string | null,"id"?: string | null,"is_party_group"?: string | null,"name"?: string | null,"nature"?: string | null,"parent_id"?: string | null,"tally_groups"?: never
+                         }
+                        Update: {
+                           "account_count"?: never,"company_id"?: string | null,"id"?: string | null,"is_party_group"?: string | null,"name"?: string | null,"nature"?: string | null,"parent_id"?: string | null,"tally_groups"?: never
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"accounts": {
+                  Row: {
+                    "company_id": string,"group_id": string,"group_name": string,"id": string,"name": string,"nature": string,"opening_as_of": string | null,"opening_balance": number,"opening_dc": string,"party_id": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"backup_runs": {
+                  Row: {
+                    "checksum": string | null,"finished_at": string | null,"id": string,"kind": string,"location": string,"note": string | null,"recorded_by_name": string | null,"size_bytes": number | null,"started_at": string,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"bank_change_requests": {
+                  Row: {
+                    "bank_name": string | null,"callback_at": string | null,"callback_by": string | null,"callback_note": string | null,"decided_at": string | null,"decided_by": string | null,"id": string,"ifsc": string,"party_id": string,"party_name": string,"reason": string,"requested_at": string,"requested_by": string,"requested_by_name": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"branches": {
                   Row: {
                     "address": string | null,"code": string,"company_id": string,"company_name": string,"gstin": string | null,"gstin_id": string | null,"id": string,"kind": string,"name": string,"place_count": number | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"bug_items": {
+                  Row: {
+                    "amount": number | null,"area": string,"batch_code": string | null,"batch_id": string | null,"code": string,"company_id": string | null,"company_name": string | null,"created_at": string,"evidence": NonNullable<Json>,"fixed_at": string | null,"fixed_by": string | null,"fixed_by_name": string | null,"id": string,"kind": string,"other_id": string | null,"ref_id": string | null,"ref_table": string | null,"resolution": string | null,"severity": string,"status": string,"suggested_fix": string | null,"title": string,"who_fixes": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -29,6 +75,28 @@ export type Database = {
                            "branch_count"?: never,"cin"?: string | null,"code"?: string | null,"created_at"?: string | null,"gstin_count"?: never,"id"?: string | null,"logo_key"?: string | null,"name"?: string | null,"pan"?: string | null,"registered_address"?: string | null,"short_name"?: string | null,"status"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"credit_terms": {
+                  Row: {
+                    "active": boolean,"basis": string,"code": string,"company_id": string | null,"days": number,"id": string,"label": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "active"?: boolean | null,"basis"?: string | null,"code"?: string | null,"company_id"?: string | null,"days"?: number | null,"id"?: string | null,"label"?: string | null
+                         }
+                        Update: {
+                           "active"?: boolean | null,"basis"?: string | null,"code"?: string | null,"company_id"?: string | null,"days"?: number | null,"id"?: string | null,"label"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"customers": {
+                  Row: {
+                    "company_id": string,"customer_type": string | null,"gstin": string | null,"how_paid": string | null,"id": string,"kyc_status": string,"last_paid_on": string | null,"name": string,"payments_count": number | null,"received_fy": number | null,"status": string | null,"status_note": string | null,"trade_name": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"departments": {
@@ -131,6 +199,56 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"hsn_codes": {
+                  Row: {
+                    "code": string,"current_ca_confirmed": boolean | null,"current_rate": number | null,"current_tax_class": string | null,"description": string,"kind": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "code"?: string | null,"current_ca_confirmed"?: never,"current_rate"?: never,"current_tax_class"?: never,"description"?: string | null,"kind"?: string | null
+                         }
+                        Update: {
+                           "code"?: string | null,"current_ca_confirmed"?: never,"current_rate"?: never,"current_tax_class"?: never,"description"?: string | null,"kind"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"hsn_rates": {
+                  Row: {
+                    "ca_confirmed": boolean,"cess_rate": number,"effective_from": string,"effective_to": string | null,"hsn_code": string,"id": string,"note": string | null,"rate": number,"set_at": string,"tax_class": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "ca_confirmed"?: boolean | null,"cess_rate"?: number | null,"effective_from"?: string | null,"effective_to"?: string | null,"hsn_code"?: string | null,"id"?: string | null,"note"?: string | null,"rate"?: number | null,"set_at"?: string | null,"tax_class"?: string | null
+                         }
+                        Update: {
+                           "ca_confirmed"?: boolean | null,"cess_rate"?: number | null,"effective_from"?: string | null,"effective_to"?: string | null,"hsn_code"?: string | null,"id"?: string | null,"note"?: string | null,"rate"?: number | null,"set_at"?: string | null,"tax_class"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"import_batches": {
+                  Row: {
+                    "approved_at": string | null,"as_of": string | null,"code": string,"company_id": string,"company_name": string,"counts": NonNullable<Json>,"created_at": string,"created_by": string | null,"created_by_name": string | null,"file_name": string | null,"id": string,"kind": string,"open_bugs": number | null,"processed_at": string | null,"row_count": number | null,"source": string,"status": string,"storage_path": string | null,"totals": NonNullable<Json>,"undone_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"import_rows": {
+                  Row: {
+                    "alter_id": number | null,"batch_id": string,"bug_id": string | null,"erp_id": string | null,"erp_table": string | null,"guid": string | null,"id": number,"message": string | null,"name": string | null,"object_type": string,"result": string | null,"seq": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "alter_id"?: number | null,"batch_id"?: string | null,"bug_id"?: string | null,"erp_id"?: string | null,"erp_table"?: string | null,"guid"?: string | null,"id"?: number | null,"message"?: string | null,"name"?: string | null,"object_type"?: string | null,"result"?: string | null,"seq"?: number | null
+                         }
+                        Update: {
+                           "alter_id"?: number | null,"batch_id"?: string | null,"bug_id"?: string | null,"erp_id"?: string | null,"erp_table"?: string | null,"guid"?: string | null,"id"?: number | null,"message"?: string | null,"name"?: string | null,"object_type"?: string | null,"result"?: string | null,"seq"?: number | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"law_rules": {
                   Row: {
                     "area": string,"code": string,"enforced_in": string,"phase": number,"rule": string,"sort": number,"status": string,"test_ref": string | null,"what_erp_does": string
@@ -145,9 +263,189 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"merge_log": {
+                  Row: {
+                    "id": string,"kept_id": string,"kind": string,"merged_at": string,"merged_by": string,"merged_by_name": string | null,"merged_id": string,"preview": NonNullable<Json>,"reason": string,"undone_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"open_bills": {
+                  Row: {
+                    "account_id": string,"account_name": string,"ageing_bucket": string | null,"amount": number,"as_of": string,"bill_date": string | null,"bill_ref": string,"company_id": string,"dc": string,"due_date": string | null,"id": string,"party_id": string | null,"tax_class": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"parties": {
+                  Row: {
+                    "alias_count": number | null,"bank_last4": string | null,"companies": Json | null,"created_at": string,"customer_type": string | null,"document_count": number | null,"gst_status": string,"gstin": string | null,"gstin_check_result": string | null,"gstin_checked_at": string | null,"id": string,"is_customer": boolean,"is_supplier": boolean,"kyc_refresh_due": string | null,"kyc_status": string,"kyc_verified_at": string | null,"legal_name": string,"merged_into": string | null,"msme_category": string | null,"pan": string | null,"primary_whatsapp": string | null,"state_code": string | null,"status": string,"supplies": string | null,"trade_name": string | null,"udyam_no": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "alias_count"?: never,"bank_last4"?: never,"companies"?: never,"created_at"?: string | null,"customer_type"?: string | null,"document_count"?: never,"gst_status"?: string | null,"gstin"?: string | null,"gstin_check_result"?: string | null,"gstin_checked_at"?: string | null,"id"?: string | null,"is_customer"?: boolean | null,"is_supplier"?: boolean | null,"kyc_refresh_due"?: string | null,"kyc_status"?: string | null,"kyc_verified_at"?: string | null,"legal_name"?: string | null,"merged_into"?: string | null,"msme_category"?: string | null,"pan"?: string | null,"primary_whatsapp"?: never,"state_code"?: string | null,"status"?: string | null,"supplies"?: string | null,"trade_name"?: string | null,"udyam_no"?: string | null
+                         }
+                        Update: {
+                           "alias_count"?: never,"bank_last4"?: never,"companies"?: never,"created_at"?: string | null,"customer_type"?: string | null,"document_count"?: never,"gst_status"?: string | null,"gstin"?: string | null,"gstin_check_result"?: string | null,"gstin_checked_at"?: string | null,"id"?: string | null,"is_customer"?: boolean | null,"is_supplier"?: boolean | null,"kyc_refresh_due"?: string | null,"kyc_status"?: string | null,"kyc_verified_at"?: string | null,"legal_name"?: string | null,"merged_into"?: string | null,"msme_category"?: string | null,"pan"?: string | null,"primary_whatsapp"?: never,"state_code"?: string | null,"status"?: string | null,"supplies"?: string | null,"trade_name"?: string | null,"udyam_no"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"party_addresses": {
+                  Row: {
+                    "city": string | null,"id": string,"kind": string,"lat": number | null,"line1": string,"line2": string | null,"lng": number | null,"party_id": string,"pincode": string | null,"state_code": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "city"?: string | null,"id"?: string | null,"kind"?: string | null,"lat"?: number | null,"line1"?: string | null,"line2"?: string | null,"lng"?: number | null,"party_id"?: string | null,"pincode"?: string | null,"state_code"?: string | null
+                         }
+                        Update: {
+                           "city"?: string | null,"id"?: string | null,"kind"?: string | null,"lat"?: number | null,"line1"?: string | null,"line2"?: string | null,"lng"?: number | null,"party_id"?: string | null,"pincode"?: string | null,"state_code"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"party_aliases": {
+                  Row: {
+                    "alias": string,"id": string,"party_id": string,"source": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "alias"?: string | null,"id"?: string | null,"party_id"?: string | null,"source"?: string | null
+                         }
+                        Update: {
+                           "alias"?: string | null,"id"?: string | null,"party_id"?: string | null,"source"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"party_bank_accounts": {
+                  Row: {
+                    "account_masked": string | null,"active": boolean,"bank_name": string | null,"created_at": string,"id": string,"ifsc": string,"party_id": string,"verified_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "account_masked"?: never,"active"?: boolean | null,"bank_name"?: string | null,"created_at"?: string | null,"id"?: string | null,"ifsc"?: string | null,"party_id"?: string | null,"verified_by"?: string | null
+                         }
+                        Update: {
+                           "account_masked"?: never,"active"?: boolean | null,"bank_name"?: string | null,"created_at"?: string | null,"id"?: string | null,"ifsc"?: string | null,"party_id"?: string | null,"verified_by"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"party_contacts": {
+                  Row: {
+                    "consent_at": string | null,"email": string | null,"id": string,"is_primary": boolean,"language": string,"name": string,"party_id": string,"phone": string | null,"role": string | null,"whatsapp": string | null,"whatsapp_consent": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "consent_at"?: string | null,"email"?: string | null,"id"?: string | null,"is_primary"?: boolean | null,"language"?: string | null,"name"?: string | null,"party_id"?: string | null,"phone"?: string | null,"role"?: string | null,"whatsapp"?: string | null,"whatsapp_consent"?: boolean | null
+                         }
+                        Update: {
+                           "consent_at"?: string | null,"email"?: string | null,"id"?: string | null,"is_primary"?: boolean | null,"language"?: string | null,"name"?: string | null,"party_id"?: string | null,"phone"?: string | null,"role"?: string | null,"whatsapp"?: string | null,"whatsapp_consent"?: boolean | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"party_documents": {
+                  Row: {
+                    "expires_on": string | null,"id": string,"kind": string,"party_id": string,"storage_path": string,"uploaded_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "expires_on"?: string | null,"id"?: string | null,"kind"?: string | null,"party_id"?: string | null,"storage_path"?: string | null,"uploaded_at"?: string | null
+                         }
+                        Update: {
+                           "expires_on"?: string | null,"id"?: string | null,"kind"?: string | null,"party_id"?: string | null,"storage_path"?: string | null,"uploaded_at"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"people": {
+                  Row: {
+                    "aadhaar_masked": string | null,"companies": Json | null,"dob": string | null,"id": string,"name": string,"pan": string | null,"person_code": string | null,"phone_masked": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "aadhaar_masked"?: never,"companies"?: never,"dob"?: string | null,"id"?: string | null,"name"?: string | null,"pan"?: string | null,"person_code"?: string | null,"phone_masked"?: never,"status"?: string | null
+                         }
+                        Update: {
+                           "aadhaar_masked"?: never,"companies"?: never,"dob"?: string | null,"id"?: string | null,"name"?: string | null,"pan"?: string | null,"person_code"?: string | null,"phone_masked"?: never,"status"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"places": {
                   Row: {
                     "branch_id": string,"branch_name": string,"code": string,"company_id": string,"company_name": string,"id": string,"kind": string,"name": string,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"posting_rules": {
+                  Row: {
+                    "account_id": string,"account_name": string,"company_id": string,"event": string,"id": string,"note": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"price_list_items": {
+                  Row: {
+                    "effective_from": string,"id": string,"min_qty": number,"price": number,"price_list_id": string,"product_code": string,"product_id": string,"product_name": string,"set_at": string,"uom": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"price_lists": {
+                  Row: {
+                    "active": boolean,"company_id": string,"id": string,"item_count": number | null,"kind": string,"name": string,"tax_inclusive": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "active"?: boolean | null,"company_id"?: string | null,"id"?: string | null,"item_count"?: never,"kind"?: string | null,"name"?: string | null,"tax_inclusive"?: boolean | null
+                         }
+                        Update: {
+                           "active"?: boolean | null,"company_id"?: string | null,"id"?: string | null,"item_count"?: never,"kind"?: string | null,"name"?: string | null,"tax_inclusive"?: boolean | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"product_groups": {
+                  Row: {
+                    "company_id": string | null,"id": string,"kind": string,"name": string,"parent_id": string | null,"product_count": number | null,"tally_name": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"id"?: string | null,"kind"?: string | null,"name"?: string | null,"parent_id"?: string | null,"product_count"?: never,"tally_name"?: string | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"id"?: string | null,"kind"?: string | null,"name"?: string | null,"parent_id"?: string | null,"product_count"?: never,"tally_name"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"product_mrp_history": {
+                  Row: {
+                    "effective_from": string,"id": string,"mrp": number,"product_id": string,"set_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "effective_from"?: string | null,"id"?: string | null,"mrp"?: number | null,"product_id"?: string | null,"set_at"?: string | null
+                         }
+                        Update: {
+                           "effective_from"?: string | null,"id"?: string | null,"mrp"?: number | null,"product_id"?: string | null,"set_at"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"products": {
+                  Row: {
+                    "alias_count": number | null,"barcode": string | null,"code": string,"company_ids": (string)[] | null,"created_at": string,"family": string | null,"group_id": string | null,"group_name": string | null,"gst_rate": number | null,"hsn_code": string | null,"id": string,"kind": string,"label": NonNullable<Json>,"licence_no": string | null,"mrp": number | null,"name": string,"net_qty": number | null,"net_qty_uom": string | null,"pack_size": string | null,"status": string,"uom": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -197,6 +495,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"source_key_counts": {
+                  Row: {
+                    "company_id": string,"max_alter_id": number | null,"n": number | null,"object_type": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"special_grant_requests": {
                   Row: {
                     "company_id": string | null,"created_at": string,"decided_at": string | null,"decided_by": string | null,"grant_id": string | null,"id": string,"params": NonNullable<Json>,"reason": string,"requested_by": string,"requested_by_name": string | null,"right_key": string,"right_label": string,"status": string,"wanted_from": string,"wanted_to": string
@@ -213,12 +519,56 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"suppliers": {
+                  Row: {
+                    "bank_change_pending": boolean | null,"bank_last4": string | null,"company_id": string,"gstin": string | null,"id": string,"kyc_status": string,"msme_category": string | null,"name": string,"pan": string | null,"status": string,"supplies": string | null,"term_days": number | null,"terms": string | null,"trade_name": string | null,"udyam_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_group_map": {
+                  Row: {
+                    "account_group_id": string,"account_group_name": string,"company_id": string,"mapped_at": string,"tally_group": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_vouchers": {
+                  Row: {
+                    "alter_id": number | null,"amount": number,"batch_id": string | null,"company_id": string,"guid": string | null,"id": string,"is_cancelled": boolean,"is_optional": boolean,"party_id": string | null,"party_name": string | null,"state": string,"voucher_date": string,"voucher_no": string | null,"voucher_type": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
+                         }
+                        Update: {
+                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"transaction_log": {
                   Row: {
                     "actor": string | null,"actor_name": string | null,"after": Json | null,"at": string,"before": Json | null,"grant_code": string | null,"grant_id": string | null,"id": number,"op": string,"request_id": string | null,"row_pk": string,"table_name": string
                   }
                   ComputedFields: never
                   Relationships: [
+                    
+                  ]
+                },"uoms": {
+                  Row: {
+                    "code": string,"decimals": number,"label": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "code"?: string | null,"decimals"?: number | null,"label"?: string | null
+                         }
+                        Update: {
+                           "code"?: string | null,"decimals"?: number | null,"label"?: string | null
+                         }
+                        Relationships: [
                     
                   ]
                 },"user_log": {
@@ -232,14 +582,53 @@ export type Database = {
                 }
           }
           Functions: {
-            "assign_role":
+            "add_hsn_rate":
+{ Args: { "p_ca_confirmed": boolean,"p_cess": number,"p_client_request_id": string,"p_effective_from": string,"p_hsn": string,"p_note": string,"p_rate": number,"p_tax_class": string }; Returns: Json
+                           },
+"add_party_bank_account":
+{ Args: { "p_account_no": string,"p_bank_name": string,"p_client_request_id": string,"p_ifsc": string,"p_party_id": string,"p_verified_by": string }; Returns: Json
+                           },
+"add_party_document":
+{ Args: { "p_client_request_id": string,"p_expires_on": string,"p_kind": string,"p_party_id": string,"p_storage_path": string }; Returns: Json
+                           },
+"assign_role":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_reason": string,"p_role": string,"p_user_id": string,"p_valid_to": string }; Returns: Json
+                           },
+"bug_fixer_open_count":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"bug_resolve":
+{ Args: { "p_action": string,"p_bug_id": string,"p_client_request_id": string,"p_note": string }; Returns: Json
+                           },
+"check_gstin":
+{ Args: { "p_gstin": string }; Returns: Json
+                           },
+"classify_open_bills":
+{ Args: { "p_bill_ids": (string)[],"p_client_request_id": string,"p_tax_class": string }; Returns: Json
+                           },
+"decide_bank_change":
+{ Args: { "p_approve": boolean,"p_client_request_id": string,"p_request_id": string }; Returns: Json
                            },
 "decide_special_permission":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_max_uses": number,"p_request_id": string }; Returns: Json
                            },
 "grant_special_permission":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_ends_at": string,"p_max_uses": number,"p_params": Json,"p_reason": string,"p_right": string,"p_starts_at": string,"p_user_id": string }; Returns: Json
+                           },
+"import_approve":
+{ Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"import_create_batch":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"import_process":
+{ Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"import_stage_rows":
+{ Args: { "p_batch_id": string,"p_rows": Json }; Returns: Json
+                           },
+"import_undo":
+{ Args: { "p_batch_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
                            },
 "list_users":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -258,11 +647,29 @@ export type Database = {
 "me":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
+"merge_parties":
+{ Args: { "p_client_request_id": string,"p_kept": string,"p_merged": string,"p_reason": string }; Returns: Json
+                           },
+"merge_preview":
+{ Args: { "p_kept": string,"p_kind": string,"p_merged": string }; Returns: Json
+                           },
 "open_financial_year":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_start_year": number }; Returns: Json
                            },
+"party_duplicates":
+{ Args: { "p_exclude": string,"p_gstin": string,"p_name": string,"p_pan": string,"p_phone": string }; Returns: Json
+                           },
+"record_backup_run":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"record_bank_callback":
+{ Args: { "p_client_request_id": string,"p_note": string,"p_number_called": string,"p_request_id": string }; Returns: Json
+                           },
 "remove_role":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_user_role_id": string }; Returns: Json
+                           },
+"request_bank_change":
+{ Args: { "p_account_no": string,"p_bank_name": string,"p_client_request_id": string,"p_ifsc": string,"p_party_id": string,"p_reason": string }; Returns: Json
                            },
 "request_special_permission":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_from": string,"p_params": Json,"p_reason": string,"p_right": string,"p_to": string }; Returns: Json
@@ -270,19 +677,43 @@ export type Database = {
 "revoke_special_permission":
 { Args: { "p_client_request_id": string,"p_grant_id": string,"p_reason": string }; Returns: Json
                            },
+"run_checks":
+{ Args: { "p_client_request_id": string,"p_company_id": string }; Returns: Json
+                           },
+"set_party_kyc":
+{ Args: { "p_client_request_id": string,"p_note": string,"p_party_id": string,"p_status": string }; Returns: Json
+                           },
+"set_price":
+{ Args: { "p_client_request_id": string,"p_effective_from": string,"p_min_qty": number,"p_price": number,"p_price_list_id": string,"p_product_id": string }; Returns: Json
+                           },
+"set_product_mrp":
+{ Args: { "p_client_request_id": string,"p_effective_from": string,"p_mrp": number,"p_product_id": string }; Returns: Json
+                           },
 "set_role_rights":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_rights": (string)[],"p_role": string }; Returns: Json
                            },
 "set_setting":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_effective_from": string,"p_key": string,"p_note": string,"p_value": Json }; Returns: Json
                            },
+"set_tally_group_map":
+{ Args: { "p_account_group_id": string,"p_client_request_id": string,"p_company_id": string,"p_tally_group": string }; Returns: Json
+                           },
 "update_user_profile":
 { Args: { "p": Json,"p_client_request_id": string,"p_user_id": string }; Returns: Json
+                           },
+"upsert_account":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_account_group":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_branch":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_company":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_credit_term":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_department":
@@ -297,8 +728,32 @@ export type Database = {
 "upsert_gstin":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"upsert_hsn":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_party":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_party_address":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_party_contact":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "upsert_place":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_price_list":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_product":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_product_group":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"view_bank_account":
+{ Args: { "p_account_id": string }; Returns: string
                            }
           }
           Enums: {

@@ -5,7 +5,7 @@ import { readFileSync, readdirSync } from 'node:fs'
 const pw = process.env.DB_PASSWORD
 if (!pw) { console.error('Set DB_PASSWORD'); process.exit(2) }
 const ref = process.env.SUPABASE_REF ?? 'fxwoabbwzcifxzqsmrie'
-const dir = 'supabase/tests'
+const dir = process.env.TEST_DIR ?? 'supabase/tests'
 const setup = readFileSync(`${dir}/_setup.sql`, 'utf8')
 const files = readdirSync(dir).filter((f) => /^\d.*\.sql$/.test(f)).sort()
 let failed = 0, passed = 0

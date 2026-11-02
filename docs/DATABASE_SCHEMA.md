@@ -95,7 +95,29 @@ None in Phase 1. WhatsApp to Admin when a grant starts, is used or ends is plann
 
 `supabase/tests/01_audit.sql`, `02_rights.sql`, `03_grants.sql`, `04_numbering.sql` (43 assertions). Run them with `DB_PASSWORD=… pnpm db:test`. Each file runs inside one transaction that is always rolled back.
 
-## Phase 2 onwards
+## Phase 2: masters and data load (built)
+
+Migrations: `20261103001000_masters.sql`, `…001100_import_bugfixer.sql`, `…001200_api_phase2.sql`, `…001300_import_engine.sql`. New schemas `master` and `acct`; extension `pg_trgm`.
+
+| Area | Tables | Notes |
+|---|---|---|
+| Units and tax | `master.uoms` (GST UQC codes seeded), `master.hsn_codes`, `master.hsn_rates` | Rates are effective-dated (`effective_from/to`), `ca_confirmed`, never deleted; **no rates seeded** (the CA confirms) |
+| Products | `master.product_groups`, `master.products` (code, HSN, unit, net quantity, pack, barcode, licence no., label jsonb, status to_review/active/inactive), `master.product_companies`, `master.product_mrp_history` (append-only), `master.product_aliases` | Duplicate names blocked unless forced |
+| Parties | `master.parties` (group-level; GSTIN unique with check digit and PAN-inside check; KYC draft → review → verified/rejected; MSME + Udyam), `master.party_companies` (customer/supplier per company, terms, beat, tier, TDS section), `master.party_aliases`, `master.party_contacts` (WhatsApp +91, consent with time, language), `master.party_addresses` (pin code, lat/lng), `master.party_documents` (private `kyc` bucket) | Proposer can't verify KYC; GST view sees parties of its companies |
+| Bank | `master.party_bank_accounts` (full number **not selectable** by clients; lists show ••last 4), `master.bank_change_requests` | Change = request → call-back by another person → approval by another person |
+| Terms and prices | `master.credit_terms` (CASH, 7–60 days seeded as labels), `master.price_lists`, `master.price_list_items` (effective-dated) | Tax-inclusive price above MRP refused |
+| People | `master.people` (one group-level staff list; Aadhaar last 4 only), `master.person_companies` | HR details in Phase 3 |
+| Accounts | `acct.account_groups` (nature, debtors/creditors flag), `acct.accounts` (opening balance Dr/Cr), `acct.open_bills` (bill-wise opening outstanding with `tax_class`, default `unclassified`), `acct.posting_rules` | Unclassified/without-GST bills visible only to Admin/CA |
+| Import | `ops.import_batches`, `ops.import_rows`, `ops.source_keys` (GUID/MASTERID/ALTERID), `ops.tally_group_map`, `ops.bridge_devices`, `ops.tally_vouchers` (never deleted) | See DATA_MIGRATION.md |
+| Bug fixer | `ops.bug_items` (`F-0001`, area, kind, severity, evidence, suggested fix, who fixes, dedupe key), `ops.merge_log` | Items about bills without GST follow the view rule |
+| Backups | `ops.backup_runs` | Location must be in India |
+| Storage | buckets `imports` (data.import), `kyc` (kyc.view to read) — private | |
+
+Helpers: `app.norm_name()`, `app.gstin_valid()`, `app.party_candidates()`, `app.can_see_party()`, `app.can_see_bill_class()`, `app.open_bug()`, and the import engine `app.imp_*`.
+
+Tests: `05_masters.sql` (16), `06_import.sql` (15). **73/73 pass in total.**
+
+## Phase 3 onwards
 
 Contracts are written at the start of each phase. The plan is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 

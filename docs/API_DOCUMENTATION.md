@@ -51,13 +51,37 @@ The browser talks only to the `api` schema through Supabase (PostgREST), using t
 | `log_user_event` | p_event (sign_in/sign_out/export/print/view_sensitive), p_detail | signed in | |
 | `log_sign_in_failure` | p_identifier | anon | stored masked; ≤ 20/hour per identifier |
 
+## Phase 2 RPCs
+
+| RPC | Right | Notes |
+|---|---|---|
+| `upsert_hsn`, `add_hsn_rate` | hsn.manage (Admin) | rate versions by date; previous version closed the day before |
+| `upsert_product_group`, `upsert_product`, `set_product_mrp` | products.manage (Admin) | duplicate names → `masters.possible_duplicate` (DETAIL lists candidates) unless `force` |
+| `upsert_party` | sales.create/edit or purchase.create/edit for the company | GSTIN check digit, PAN inside GSTIN, duplicates (GSTIN/PAN/phone/name), MSME 45-day selling rule when `msme.selling_rule` is set |
+| `party_duplicates`, `check_gstin` | read | live checks for the KYC form |
+| `upsert_party_contact`, `upsert_party_address`, `add_party_document` | sales/purchase edit | |
+| `set_party_kyc` | review: editors · verify/reject: Admin or kyc.view, never the proposer | refresh due in a year |
+| `add_party_bank_account` | edit | first account only |
+| `request_bank_change` → `record_bank_callback` → `decide_bank_change` | edit → bank_change.approve (another person) → bank_change.approve (another person) | |
+| `view_bank_account` | bank.view_full | logged as a sensitive view |
+| `upsert_credit_term` | settings.manage | |
+| `upsert_price_list`, `set_price` | products.manage | tax-inclusive price above MRP refused |
+| `upsert_account_group`, `upsert_account`, `set_tally_group_map` | settings.manage | mapping closes the matching "Map this head" items |
+| `classify_open_bills` | Admin | |
+| `merge_preview`, `merge_parties` | Admin | alias kept, merge logged |
+| `import_create_batch`, `import_stage_rows`, `import_process`, `import_approve` (Admin), `import_undo` (Admin, reason) | data.import | |
+| `bug_resolve` (keep_separate, link_existing, accept_change, dismiss, fixed), `run_checks` | bugfix.fix | note required |
+| `record_backup_run` | Admin | location must be in India |
+| `bug_fixer_open_count()` | read (security invoker) | workflow strip |
+
 ## Rule codes
 
-`auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`.
+`auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.
 
 ## Edge Functions
 
 | Function | Purpose | Status |
 |---|---|---|
+| `tally-bridge` | Device-key endpoint for the Tally bridge on the import computer (next batch + signed TBK URL, staged rows, done) | Code in `supabase/functions/tally-bridge`. **Not deployed** (owner's `supabase login`; import PC not chosen) |
 | `admin-users` | Create a sign-in account (phone or email + password) and assign its role as the calling Admin; disable an account | Code in `supabase/functions/admin-users`. **Not deployed yet**: needs `supabase login` by the owner. See DEPLOYMENT_GUIDE. |
 

@@ -55,3 +55,30 @@ begin
   return jsonb_build_object('admin', v_admin, 'admin2', v_admin2, 'acct', v_acct, 'ca', v_ca, 'plastics_user', v_pl,
                             'company_a', v_a, 'company_b', v_b, 'gstin_a', v_ga, 'branch_a', v_ba, 'fy_a', v_fy);
 end $$;
+
+-- A synthetic GSTIN with a correct check digit for the given state + PAN (tests only).
+create or replace function tests.gstin(p_state text, p_pan text) returns text
+language plpgsql as $$
+declare c text;
+begin
+  foreach c in array string_to_array('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ', null) loop
+    if app.gstin_valid(p_state || p_pan || '1Z' || c) then return p_state || p_pan || '1Z' || c; end if;
+  end loop;
+  return null;
+end $$;
+
+-- Phase 2 seed on top of tests.seed(): chart of accounts groups mapped to Tally groups for company A.
+create or replace function tests.seed2(s jsonb) returns jsonb
+language plpgsql as $$
+declare v_debtors uuid; v_creditors uuid; v_bank uuid;
+begin
+  insert into acct.account_groups (company_id, name, nature, is_party_group) values ((s ->> 'company_a')::uuid, 'Trade receivables', 'asset', 'debtors') returning id into v_debtors;
+  insert into acct.account_groups (company_id, name, nature, is_party_group) values ((s ->> 'company_a')::uuid, 'Trade payables', 'liability', 'creditors') returning id into v_creditors;
+  insert into acct.account_groups (company_id, name, nature) values ((s ->> 'company_a')::uuid, 'Bank accounts', 'asset') returning id into v_bank;
+  insert into ops.tally_group_map (company_id, tally_group, account_group_id) values
+    ((s ->> 'company_a')::uuid, 'Sundry Debtors', v_debtors), ((s ->> 'company_a')::uuid, 'Sundry Creditors', v_creditors), ((s ->> 'company_a')::uuid, 'Bank Accounts', v_bank);
+  -- For these tests the accountant may also propose customers (Admin can give this on Users & rights).
+  insert into core.role_rights (role_key, right_key) values ('accountant', 'sales.create'), ('accountant', 'sales.edit') on conflict do nothing;
+  -- Company B needs its own map for the "same employee in both companies" test (employees need no map).
+  return s || jsonb_build_object('debtors', v_debtors, 'creditors', v_creditors);
+end $$;

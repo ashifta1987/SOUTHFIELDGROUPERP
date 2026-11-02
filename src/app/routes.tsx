@@ -25,6 +25,15 @@ import { SettingsPage } from '@/features/admin/settings/SettingsPage'
 import { UXOverviewPage } from '@/features/admin/ux-overview/UXOverviewPage'
 import { LawRulesPage } from '@/features/admin/law-rules/LawRulesPage'
 import { ERPFlowPage } from '@/features/admin/erp-flow/ERPFlowPage'
+import { DataImportPage } from '@/features/admin/import-data/DataImportPage'
+import { TallyBooksPage } from '@/features/admin/tally-books/TallyBooksPage'
+import { BugFixerPage } from '@/features/admin/bug-fixer/BugFixerPage'
+import { BackupPage } from '@/features/admin/backup/BackupPage'
+import { ProductMasterPage } from '@/features/inventory/product-master/ProductMasterPage'
+import { BiochemProductsPage } from '@/features/sales/biochem-products/BiochemProductsPage'
+import { PriceListPage } from '@/features/sales/price-lists/PriceListPage'
+import { CustomerKycPage } from '@/features/sales/customer-kyc/CustomerKycPage'
+import { SuppliersPage } from '@/features/purchase/suppliers/SuppliersPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -44,6 +53,17 @@ const BUILT: Record<string, React.ReactNode> = {
   UXOverview: <UXOverviewPage />,
   LawRules: <LawRulesPage />,
   ERPFlow: <ERPFlowPage />,
+  // Phase 2
+  DataImport: <DataImportPage />,
+  TallyBiochem: <TallyBooksPage logoKey="biochem" />,
+  TallyPlastics: <TallyBooksPage logoKey="plastics" />,
+  BookFixes: <BugFixerPage />,
+  Backup: <BackupPage />,
+  ProductMaster: <ProductMasterPage />,
+  BiochemProducts: <BiochemProductsPage />,
+  PriceList: <PriceListPage />,
+  CustomerKYC: <CustomerKycPage />,
+  SupplierKYC: <SuppliersPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */
