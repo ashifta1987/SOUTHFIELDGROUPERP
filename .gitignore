@@ -41,3 +41,4 @@ _pack/
 /SOUTHFIELD_ERP_PROMPT.md
 dev-dist/
 .env.test.local
+.vercel
