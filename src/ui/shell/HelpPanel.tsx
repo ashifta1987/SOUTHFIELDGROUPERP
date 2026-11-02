@@ -39,3 +39,4 @@ export function HelpPanel({ open, onClose }: { open: boolean; onClose: () => voi
     </aside>
   )
 }
+

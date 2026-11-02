@@ -18,3 +18,16 @@
 - No Playwright test yet asserts **database state**, because Phase 0 writes nothing to the database. These tests start in Phase 1 with the first RPCs.
 - Phone + password sign-in can't be tested end to end until the Supabase phone provider is switched on (open question Q-07).
 - The low-end Android font check for Malayalam and Devanagari (§UX-9) is not yet automated.
+
+
+## Phase 1 — 03-11-2026
+
+| Check | Command | Result |
+|---|---|---|
+| Lint / types | `pnpm lint`, `pnpm typecheck` | Pass |
+| Unit tests | `pnpm test` | 30 passed |
+| pgTAP (DEV DB, each file rolled back) | `DB_PASSWORD=… pnpm db:test` | **43 passed, 0 failed** — `01_audit` (9), `02_rights` (14), `03_grants` (13), `04_numbering` (7) |
+| End to end + axe (DEV DB round-trip) | `npx playwright test --workers=1` | **28 passed**, 4 skipped (screenshot specs) |
+| Build | `pnpm build` | Pass |
+
+Notes: pgTAP runs through `scripts/pgtap.mjs` against the DEV project because Docker (needed for `supabase start` / `supabase test db`) is not installed on this computer. Playwright tests create synthetic `E2E…` rows in DEV; `scripts/e2e-cleanup.mjs` removes them (history rows stay, by design).

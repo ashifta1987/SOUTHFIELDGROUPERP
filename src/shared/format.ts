@@ -89,3 +89,4 @@ export function maskTail(value: string, keep = 4): string {
   const digits = value.replace(/\D/g, '')
   return '••' + digits.slice(-keep)
 }
+

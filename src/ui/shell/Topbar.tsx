@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/auth/AuthProvider'
 import { useCompanies } from '@/data/queries'
 import { financialYear, initials } from '@/shared/format'
+import { api } from '@/shared/supabase'
 import { Icon } from '@/ui'
 
 function useOutsideClose(open: boolean, close: () => void) {
@@ -177,6 +178,7 @@ export function Topbar({ onMenu, onHelp, drawerId, drawerOpen }: { onMenu: () =>
               <button
                 type="button"
                 onClick={async () => {
+                  await api().rpc('log_user_event', { p_event: 'sign_out', p_detail: {} })
                   await signOut()
                   navigate('/sign-in', { replace: true })
                 }}
@@ -190,3 +192,4 @@ export function Topbar({ onMenu, onHelp, drawerId, drawerOpen }: { onMenu: () =>
     </header>
   )
 }
+

@@ -1,0 +1,46 @@
+{
+  "userLog": {
+    "title": "User log",
+    "subtitle": "Append-only · nobody, including Admin, can edit, delete or switch it off · kept 8 years · changes to bills and entries are in the",
+    "toTransactionLog": "Transaction log",
+    "filters": "Filter the user log",
+    "user": "User",
+    "allUsers": "All users",
+    "action": "Action",
+    "allActions": "All actions",
+    "entries_one": "{{count}} entry",
+    "entries_other": "{{count}} entries",
+    "latestNote": "Newest first · the latest {{limit}}",
+    "caption": "User log entries",
+    "col": { "time": "Time", "user": "User", "action": "Action", "detail": "What changed", "grant": "Permission used" },
+    "underGrant": "under {{code}}",
+    "noUser": "Not signed in",
+    "noDetail": "—",
+    "emptyTitle": "No entries for this filter",
+    "emptyBody": "Sign-ins, rights changes, special permissions and setting changes appear here as they happen. Clear the filters to see everything.",
+    "ownOnly": "You see only your own entries. Admin, the CA and the auditor read the whole log.",
+    "event": {
+      "sign_in": "Sign-in",
+      "sign_in_failed": "Failed sign-in",
+      "sign_out": "Sign-out",
+      "export": "Export",
+      "print": "Print",
+      "view_sensitive": "Viewed private record",
+      "rights_changed": "Rights changed",
+      "grant_given": "Permission given",
+      "grant_revoked": "Permission stopped",
+      "grant_used": "Permission used",
+      "setting_changed": "Setting changed",
+      "user_changed": "User changed",
+      "org_changed": "Company set-up changed",
+      "admin_action": "Admin action"
+    },
+    "errors": {
+      "title": "Errors",
+      "subtitle": "Each refusal or failure the staff saw, with the reference they were given",
+      "caption": "Error log",
+      "col": { "ref": "Reference", "route": "Screen", "rule": "Rule", "message": "Message", "time": "Time" },
+      "empty": "No errors recorded. When someone sees an error, its reference appears here so Admin can find it."
+    }
+  }
+}

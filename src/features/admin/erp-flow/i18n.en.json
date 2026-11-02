@@ -1,0 +1,40 @@
+{
+  "erpFlow": {
+    "title": "Total workflow · Southfield Group",
+    "subtitle": "How work moves through the ERP for both companies: {{flows}} workflows over {{screens}} screens. Every screen shows its own workflow in a strip under the top bar, with the steps before and after it.",
+    "mainLine": "The main line · choose a box for its steps",
+    "supporting": "Supporting every step",
+    "screens_one": "{{count}} screen",
+    "screens_other": "{{count}} screens",
+    "usedBy": "Used by {{who}}",
+    "stepsCaption": "Steps of {{name}}",
+    "open": "Open →",
+    "openStep": "Open {{label}}",
+    "built": "Built",
+    "phaseN": "Phase {{n}}",
+    "handoffsTitle": "Hand-offs between workflows",
+    "glanceTitle": "Every workflow at a glance",
+    "handoffs": {
+      "h1": "Credit orders reserve against the customer’s approved limit",
+      "h2": "Released stock moves on two-person transfers and deliveries",
+      "h3": "Goods receipts go into quarantine, then stores",
+      "h4": "Released materials are picked and issued to each batch",
+      "h5": "Packed lots come back on hold, then are released",
+      "h6": "Released stock is picked, loaded and delivered",
+      "h7": "Received goods pass the incoming test and go into stock",
+      "h8": "Released materials are issued to Biochem batches",
+      "h9": "Granules and parts are issued to moulding and assembly",
+      "h10": "Plastics bills Biochem for trays, containers and lids",
+      "h11": "Released finished lots can be sold",
+      "h12": "Mixer parts become export orders",
+      "h13": "Invoiced orders are dispatched",
+      "h14": "Vans and the Kochi and Coimbatore shops are stocked from the factory",
+      "h15": "Salesmen and shops hand over and bank collections daily",
+      "h16": "Receipts are matched to bills",
+      "h17": "Payroll and advances are paid from cash and bank",
+      "h18": "Cash and bank feed the books and GST",
+      "h19": "Profit is shared out to partners",
+      "h20": "Tally loads and fixes feed the books"
+    }
+  }
+}

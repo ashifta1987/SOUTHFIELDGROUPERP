@@ -1,0 +1,97 @@
+{
+  "users": {
+    "title": "Users and rights",
+    "subtitle": "Only Admin can add users and grant special rights · every change goes to the user log",
+    "add": "Add user",
+    "tableCaption": "Users and their roles",
+    "col": { "user": "User", "role": "Role", "signIn": "Sign-in", "lastActive": "Last active", "special": "Special rights", "status": "Status", "actions": "Actions" },
+    "you": "you",
+    "allCompanies": "All companies",
+    "until": "until {{date}}",
+    "noRole": "No role yet",
+    "noSignIn": "No sign-in",
+    "never": "—",
+    "allRights": "All",
+    "running_one": "{{count}} running",
+    "running_other": "{{count}} running",
+    "statusActive": "Active",
+    "statusDisabled": "Switched off",
+    "removeRole": "Remove {{role}} role",
+    "addRole": "Add role",
+    "editUser": "Edit",
+    "emptyTitle": "No users yet",
+    "emptyBody": "A person appears here once their sign-in account exists. Use Add user to see how.",
+    "noAccess": "You don't have the right to see users. Ask Admin.",
+    "notReady": "The user tables are not set up on this database yet.",
+    "loadFailed": "Could not load the users. Reload the page; if it happens again, ask Admin.",
+    "signInNote": {
+      "everyone": "Everyone:",
+      "everyoneText": "WhatsApp number + password; a WhatsApp code on a new phone.",
+      "admin": "Admin and finance:",
+      "adminText": "email or WhatsApp number, password and a code every time.",
+      "kyc": "A login turns on once the WhatsApp number is in staff KYC."
+    },
+    "addUser": {
+      "title": "Add a user",
+      "lead": "Sign-in accounts are created with the Supabase admin key, which never goes to the browser. Admin creates the account in one of two ways:",
+      "dashboard": "In the Supabase dashboard: Authentication → Users → Add user. Enter the WhatsApp number or email and a password, and tick auto-confirm.",
+      "edge": "Or through the admin-users function, once it is deployed.",
+      "after": "The account then appears on this screen by itself (the database makes its profile). Give it a role with Add role on its row.",
+      "ok": "Understood"
+    },
+    "edit": {
+      "title": "Edit user",
+      "help": "Every change is kept in the user log.",
+      "name": "Display name",
+      "personCode": "Person code",
+      "personCodeHelp": "Staff ID from payroll, if any",
+      "language": "Language",
+      "status": "Status",
+      "nameErr": "Enter a name."
+    },
+    "lang": { "en": "English", "ml": "മലയാളം (Malayalam)", "hi": "हिन्दी (Hindi)", "bho": "भोजपुरी (Bhojpuri)" },
+    "assign": {
+      "title": "Add a role for {{name}}",
+      "help": "The role's rights apply at once. The reason goes into the user log.",
+      "role": "Role",
+      "pick": "Choose a role",
+      "company": "Company",
+      "validTo": "Access ends on",
+      "validToHelp": "Required for CA and auditor; leave empty for others",
+      "reason": "Reason (required)",
+      "roleErr": "Choose a role.",
+      "validToErr": "CA and auditor access needs an end date.",
+      "reasonErr": "Say why, in at least 5 characters."
+    },
+    "remove": {
+      "title": "Remove role",
+      "effect": "Removes the {{role}} role ({{scope}}) from {{name}}. Their menus and rights from this role stop at once. Recorded in the user log.",
+      "confirm": "Remove role"
+    },
+    "matrix": {
+      "title": "{{role}} role · starting rights",
+      "sub": "Applies to everyone with this role · for one person, give a special permission",
+      "role": "Role",
+      "fixed": "Owner, Admin, CA and auditor are not listed: their rights are fixed by their view.",
+      "module": "Module",
+      "action": { "view": "View", "create": "Create", "edit": "Edit", "cancel": "Cancel", "approve": "Approve", "export": "Export" },
+      "also": "Also",
+      "caption": "Module rights for the role",
+      "readOnly": "Only Admin can change role rights.",
+      "noRoles": "No roles are set up on this database yet."
+    },
+    "special": {
+      "title": "Special rights",
+      "lead": "Only Admin can grant these. To give one for a set time with limits, use",
+      "link": "Special permissions",
+      "adminOnly": "Admin only",
+      "never": "Never",
+      "reason": "Reason for this change (required)",
+      "reasonPh": "e.g. handles GST filing from next month",
+      "save": "Save rights",
+      "otpNote": "Admin code on WhatsApp arrives in Phase 3.",
+      "noChange": "No changes to save.",
+      "saved": "Rights saved for this role."
+    }
+  }
+}

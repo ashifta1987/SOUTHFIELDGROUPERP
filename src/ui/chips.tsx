@@ -77,3 +77,4 @@ export function TaxClassChip({ taxClass, reason }: { taxClass: TaxClass; reason?
     </Chip>
   )
 }
+

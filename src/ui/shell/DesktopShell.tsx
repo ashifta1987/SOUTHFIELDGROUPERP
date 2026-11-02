@@ -8,6 +8,7 @@ import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { FlowStrip } from './FlowStrip'
 import { HelpPanel } from './HelpPanel'
+import { GrantBanner } from './GrantBanner'
 
 /** Find the reference screen for the current path (exact route match). */
 export function useCurrentScreenFile(): string | undefined {
@@ -36,6 +37,7 @@ export function DesktopShell() {
       <div className="sf-main-col">
         <Topbar onMenu={() => setDrawer((d) => !d)} onHelp={() => setHelp(true)} drawerId="sf-sidebar" drawerOpen={drawer} />
         {file ? <FlowStrip file={file} /> : null}
+        <GrantBanner />
         {profile?.view === 'all-readonly' ? (
           <div className="sf-banner" data-tone="navy" role="status">
             {profile.readOnlyUntil ? t('views.readOnlyUntil', { date: formatDate(profile.readOnlyUntil) }) : t('views.readOnly')}

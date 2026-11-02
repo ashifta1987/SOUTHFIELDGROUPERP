@@ -130,3 +130,28 @@ Edge Functions are invoked regionally in `ap-south-1`.
 **Help assistant (§HELP-4):** choose the AI provider (Gemini on Vertex AI, Claude, other); prefer an India-region endpoint; key only in Edge Function secrets; set a monthly cost cap.
 
 **Tally bridge (Phase 2):** choose the import computer (Windows PC with TallyPrime); enable TallyPrime HTTP server on port 9000; bridge gets its own device key, never the Supabase secret key.
+
+## Database commands (Phase 1+)
+
+The database password is never stored in the repo. Export it in your shell for the session:
+
+```bash
+export DB_PASSWORD='…'          # DEV project database password
+pnpm db:push                     # apply supabase/migrations to DEV
+pnpm db:test                     # pgTAP (scripts/pgtap.mjs), every file rolled back
+pnpm db:types                    # regenerate src/shared/database.types.ts
+node scripts/e2e-cleanup.mjs     # remove synthetic E2E rows from DEV
+```
+
+GitHub Actions: `Database (DEV)` applies migrations and runs pgTAP on pushes touching `supabase/` when the repo secret `DEV_DB_PASSWORD` is set. `Database (PROD)` runs only by hand from the `production` environment — set that environment to **require the owner's approval** and add `PROD_DB_PASSWORD` and `PROD_SUPABASE_REF` there.
+
+## Edge Function `admin-users`
+
+Creates sign-in accounts from the Users screen. Deploy once (owner):
+
+```bash
+npx supabase login
+npx supabase functions deploy admin-users --project-ref fxwoabbwzcifxzqsmrie
+```
+
+The service-role key is provided to Edge Functions by Supabase automatically; never put it in Vercel or the repo. Until it is deployed, create accounts in the Supabase dashboard (Authentication → Add user); a profile is created automatically and Admin assigns the role on the Users screen.

@@ -65,3 +65,4 @@ export function Icon({ name, size = 18, strokeWidth = 1.9, path, title, ...rest 
     </svg>
   )
 }
+

@@ -1,0 +1,21 @@
+{
+  "lawRules": {
+    "title": "Built to Indian law",
+    "subtitle": "The rules the ERP enforces, where each one is enforced and how it is tested · the CA confirms each one",
+    "viewTitle": "Admin-only view of bills without GST",
+    "viewBody": "Only the Admin panel shows bills without GST, their figures and their amber marks. Limiting who can see them is allowed, because the books, the audit trail, the auditor and the tax returns still have every transaction. What the law does not allow is leaving GST off a taxable sale, so a bill without GST needs a lawful reason.",
+    "filter": "Status",
+    "allStatuses": "All statuses",
+    "caption": "Legal rules and how the ERP enforces them",
+    "count_one": "{{count}} rule",
+    "count_other": "{{count}} rules",
+    "col": { "rule": "The rule", "does": "What the ERP does", "where": "Enforced in", "test": "Test", "phase": "Phase", "status": "Status" },
+    "phaseN": "Phase {{n}}",
+    "noTest": "Test arrives with the phase",
+    "status": { "built": "Built", "planned": "Planned", "needs_ca": "Needs CA" },
+    "emptyTitle": "No rules for this filter",
+    "emptyBody": "Clear the status filter to see every rule.",
+    "emptyNotReady": "The rules list is not set up on this database yet.",
+    "footnote": "This is a design checklist, not legal advice; the CA confirms every rate and threshold before it is used."
+  }
+}

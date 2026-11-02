@@ -1,0 +1,56 @@
+{
+  "companies": {
+    "title": "Southfield Group · companies",
+    "subtitle": "Each company keeps its own books, GSTINs and number series; you see them together when your rights allow",
+    "add": "Add company",
+    "addTitle": "Add a company",
+    "editTitle": "Edit company",
+    "formHelp": "Enter the details exactly as on the incorporation and GST certificates. Every change is kept in the transaction log.",
+    "emptyTitle": "No companies yet",
+    "emptyBody": "Admin adds the companies. Ask Admin if you expect to see one here.",
+    "emptyBodyAdmin": "Add each legal entity from its certificates. Then add its GSTINs, branches and places.",
+    "emptyNotReady": "The company tables are not set up on this database yet.",
+    "setUp": "Set up",
+    "principal": "principal place",
+    "noGstin": "No GSTIN yet · add it on Branches and GSTINs",
+    "noSeries": "No invoice series yet · add it on Numbering & IDs",
+    "toBranches": "Branches, GSTINs and places →",
+    "k": { "gstins": "GSTINs", "pan": "PAN", "address": "Registered at", "branches": "Branches", "invoices": "Next invoice no." },
+    "f": {
+      "code": "Short code",
+      "codeHelp": "2–8 capitals or digits, used in IDs. Can't change later.",
+      "legalName": "Legal name",
+      "shortName": "Short name",
+      "pan": "PAN",
+      "cin": "CIN",
+      "logo": "Logo",
+      "address": "Registered address"
+    },
+    "logo": { "plastics": "Plastics logo", "biochem": "Biochem logo", "group": "Group logo" },
+    "err": {
+      "code": "Use 2–8 capital letters or digits.",
+      "legalName": "Enter the legal name.",
+      "pan": "A PAN is 5 letters, 4 digits and a letter, e.g. ABCDE1234F."
+    },
+    "apart": {
+      "title": "Kept apart, and shared",
+      "separate": "Separate for each company",
+      "shared": "Shared between them",
+      "s1": "GSTINs, GST returns, e-invoices and e-way bills",
+      "h1": "One login per person, with rights set per company",
+      "s2": "Ledgers, profit and loss, balance sheet",
+      "h2": "Buyers and suppliers list (balances kept per company)",
+      "s3": "Invoice, challan and voucher number series",
+      "h3": "Item list and IDs (stock kept per company)",
+      "s4": "Bank accounts, cash and month-end close",
+      "h4": "Staff list (each person has one employer)",
+      "s5": "Stock and stock value",
+      "h5": "Owner's dashboard, cash flow and reminders, combined or one at a time",
+      "s6": "Payroll, PF and ESI",
+      "h6": "WhatsApp number, templates and document layouts",
+      "s7": "TDS and audit",
+      "h7": "Backup and user log"
+    }
+  }
+}
+

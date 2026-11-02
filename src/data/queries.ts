@@ -148,3 +148,41 @@ export function useStaffMe() {
   const enabled = useSignedIn()
   return useQuery({ queryKey: ['api', 'staff_me'], queryFn: () => callRpc<StaffMe>('staff_me'), enabled, ...common })
 }
+
+
+/* ── Typed reads of any `api` view (Phase 1+). RLS decides the rows; the browser never filters by view. ── */
+import type { Database } from '@/shared/database.types'
+export type ApiViews = Database['api']['Views']
+export type ViewRow<V extends keyof ApiViews> = ApiViews[V]['Row']
+
+export function useApiView<V extends keyof ApiViews>(
+  view: V,
+  opts: { order?: string; ascending?: boolean; eq?: Record<string, string | number | boolean | null | undefined>; limit?: number; enabled?: boolean } = {},
+) {
+  const signedIn = useSignedIn()
+  const eq = opts.eq ?? {}
+  return useQuery({
+    queryKey: ['api', view as string, opts.order ?? '', JSON.stringify(eq), opts.limit ?? 0],
+    enabled: signedIn && (opts.enabled ?? true),
+    ...common,
+    staleTime: 10_000,
+    queryFn: () =>
+      readView<ViewRow<V>>(view as string, (q) => {
+        let s = q.select('*')
+        for (const [k, v] of Object.entries(eq)) if (v !== undefined && v !== null && v !== '') s = s.eq(k, v)
+        if (opts.order) s = s.order(opts.order, { ascending: opts.ascending ?? true })
+        if (opts.limit) s = s.limit(opts.limit)
+        return s
+      }),
+  })
+}
+
+export function rowsOf<T>(r: { data?: ApiResult<T[]> }): T[] {
+  return r.data?.status === 'ready' ? r.data.data : []
+}
+
+/* ── RPC reads (not idempotent writes) ── */
+export function useApiRpc<T>(fn: string, args: Record<string, unknown> = {}, enabled = true) {
+  const signedIn = useSignedIn()
+  return useQuery({ queryKey: ['api', fn, JSON.stringify(args)], enabled: signedIn && enabled, ...common, staleTime: 10_000, queryFn: () => callRpc<T>(fn, args) })
+}

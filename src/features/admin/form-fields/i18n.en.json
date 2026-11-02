@@ -1,0 +1,65 @@
+{
+  "formFields": {
+    "title": "Forms and fields",
+    "subtitle": "Admin only · add, rename, reorder or switch off your own fields on any form, for both companies",
+    "addField": "Add field",
+    "formsNav": "Forms",
+    "formTitle_one": "{{form}} form · {{count}} custom field",
+    "formTitle_other": "{{form}} form · {{count}} custom fields",
+    "builtInNote": "Built-in fields arrive with each form's phase. Here you add your own fields on top of them.",
+    "caption": "Custom fields on the {{form}} form",
+    "col": { "field": "Field", "type": "Type", "required": "Required", "company": "Company", "status": "Status", "admin": "Admin" },
+    "custom": "Custom field",
+    "bothCompanies": "Both companies",
+    "emptyTitle": "No custom fields on this form yet",
+    "emptyBody": "Add a field below. It appears on the form for the companies you choose.",
+    "emptyBodyReadOnly": "Admin adds custom fields here.",
+    "noForms": "The forms are not set up on this database yet.",
+    "readOnly": "Only Admin changes forms. You can see the fields here.",
+    "new": "New field",
+    "deactivate": "Switch off",
+    "activate": "Switch on",
+    "deactivateFor": "Switch off {{label}}",
+    "activateFor": "Switch on {{label}}",
+    "editFor": "Edit {{label}}",
+    "editTitle": "Edit field",
+    "editHelp": "The key, type and company can't change once the field exists. Every change goes into the transaction log.",
+    "f": {
+      "label": "Label",
+      "labelPlaceholder": "e.g. Route or area",
+      "key": "Field key",
+      "keyHelp": "lowercase_snake: small letters and underscores only. Can't change later.",
+      "type": "Type",
+      "required": "Required",
+      "company": "Company",
+      "options": "Choices",
+      "optionsHelp": "Separate the choices with commas.",
+      "sort": "Order",
+      "active": "Shown on the form"
+    },
+    "type": {
+      "text": "Text",
+      "number": "Number",
+      "date": "Date",
+      "select": "Choose from a list",
+      "checkbox": "Yes / no",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "err": {
+      "label": "Enter a label.",
+      "key": "Use small letters and underscores only, e.g. route_area.",
+      "options": "Enter at least one choice."
+    },
+    "removing": {
+      "title": "Switching a field off",
+      "p1": "A field is never deleted. Switching it off hides it from the form, and the values already saved stay on the records, so nothing is lost.",
+      "p2": "Fields that GST invoices and returns need (GSTIN, legal name, state, address, tax treatment) are built in and can't be switched off."
+    },
+    "logged": {
+      "title": "Every change is logged",
+      "p1": "Adding, editing or switching off a field is kept in the transaction log with the old and new value, who did it and when.",
+      "p2": "Company law requires accounting software to keep this edit log for every change, and it cannot be switched off."
+    }
+  }
+}

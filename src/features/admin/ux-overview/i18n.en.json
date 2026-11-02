@@ -1,0 +1,53 @@
+{
+  "uxOverview": {
+    "title": "How each person sees it",
+    "subtitle": "One ERP, one set of screens. The sign-in decides what fills them; nobody presses a switch.",
+    "decidesTitle": "The sign-in decides what each person sees",
+    "decidesBody": "There is no switch to press. The same screens fill differently for each login.",
+    "rolesIn": "Roles with this view",
+    "noRoles": "No role uses this view yet.",
+    "view": {
+      "all": {
+        "title": "All transactions",
+        "body": "Every transaction, everywhere: lists, totals, dashboards, reports, search, exports and WhatsApp. Bills without GST, and their receipts, returns and stock moves, carry the amber mark; totals show with GST, without GST and all. Only Admin can enter a bill without GST, and only with a reason the law allows: exempt, nil-rated or non-GST goods, an export under LUT, or a delivery challan. Taxable products are refused."
+      },
+      "all-readonly": {
+        "title": "All transactions · read-only",
+        "body": "Every transaction, read-only, for the dates Admin sets, to prepare and audit the accounts. Nothing can be entered or changed."
+      },
+      "gst": {
+        "title": "GST transactions",
+        "body": "Transactions with GST only. Bills without GST, their receipts, returns and stock moves are left out of every list, total, report, search, export and message, with no mark, gap or count. Seeing them cannot be granted to anyone."
+      }
+    },
+    "tableTitle": "Who sees what",
+    "caption": "What each role sees and how it signs in",
+    "col": {
+      "role": "Role",
+      "signIn": "Signs in with",
+      "mfa": "Second step",
+      "withoutGst": "Bills without GST",
+      "enter": "Can enter them",
+      "amber": "Amber tag",
+      "label": "Top bar label"
+    },
+    "signIn": { "email": "Email and password", "phone": "Phone and OTP", "both": "Email or phone" },
+    "mfa": { "yes": "Required", "no": "Not required" },
+    "withoutGst": {
+      "all": "All, in every list, total, report and export",
+      "all-readonly": "All, read-only, for the dates Admin opens",
+      "gst": "None, and no sign of them"
+    },
+    "enter": { "all": "Yes, with a lawful reason", "no": "No" },
+    "amber": { "shown": "Shown", "never": "Never" },
+    "phoneApp": "Phone app",
+    "emptyTitle": "No roles yet",
+    "emptyBody": "The roles are not set up on this database yet.",
+    "otherTitle": "Other people, other screens",
+    "cash": "Cash holder: counts the whole box. Cash from a customer whose bills are without GST is entered as “received for Admin”, with the amount only; Admin matches it to the bill.",
+    "partners": "Partners: their own figures from transactions with GST; their share of profit is worked out by Admin on all transactions and shown as one amount.",
+    "statements": "Balance sheet, profit and loss and the tax returns are always made from all transactions. Bills without GST go into GSTR-1 table 8 and GSTR-3B.",
+    "toLaw": "Built to Indian law →",
+    "footnote": "The amber “Without GST” tag, the without-GST totals and the reason column exist only on Admin and CA screens. For everyone else those bills are left out of lists, totals, search, exports and WhatsApp messages. The books, the audit trail and the tax returns still carry every bill."
+  }
+}

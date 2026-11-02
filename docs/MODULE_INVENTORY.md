@@ -7,7 +7,7 @@ Conventions:
 - Tables are schema-qualified and **planned**; final contracts go into `docs/DATABASE_SCHEMA.md` before each phase.
 - RPCs are in schema `api`; every posting RPC takes `p_client_request_id uuid` first (omitted below for brevity). Reads go through `api.v_*` `security_invoker` views.
 - Component paths are role-based, never people's names (reference files named after people are referenced only by their file name).
-- **Status values:** `missing (repo was empty)` · `Phase 0 shell: UI built, empty states; data in Phase N`.
+- **Status values:** `missing (repo was empty)` · `Phase 0 shell: UI built, empty states; data in Phase N` · `Built (Phase N)`.
 - Tests column is filled when a screen is built (pgTAP + Playwright DB assertion + axe), per §UX-12.
 
 ## Sign-in
@@ -147,28 +147,28 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Users & rights `Users` | `/admin/users-and-rights` | `src/features/admin/UsersPage.tsx` | `core.user_profiles`, `core.roles`, `core.rights`, `core.role_rights`, `core.user_roles`, `core.user_scopes`, `core.approval_limits` | `admin-users` Edge Fn, `api.assign_role`, `api.set_user_scope`, `api.set_approval_limit` | 1 | missing (repo was empty) |
-| User log `UserLog` | `/admin/user-log` | `src/features/admin/UserLogPage.tsx` | `audit.user_log` | `api.v_user_log` | 1 | missing (repo was empty) |
+| Users & rights `Users` | `/admin/users-and-rights` | `src/features/admin/users/UsersPage.tsx` | `core.user_profiles`, `core.roles`, `core.rights`, `core.role_rights`, `core.user_roles`, `core.user_scopes`, `core.approval_limits` | `admin-users` Edge Fn, `api.assign_role`, `api.set_user_scope`, `api.set_approval_limit` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-users.spec.ts; pgTAP 02_rights |
+| User log `UserLog` | `/admin/user-log` | `src/features/admin/user-log/UserLogPage.tsx` | `audit.user_log` | `api.v_user_log` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts |
 | Backup `Backup` | `/admin/backup` | `src/features/admin/BackupPage.tsx` | `ops.backup_runs`, `ops.restore_drills` | `api.record_backup_run`, `api.request_restore` (Admin) | 2 | missing (repo was empty) |
 | Import data `DataImport` | `/admin/import-data` | `src/features/admin/DataImportPage.tsx` | `ops.import_batches`, `ops.import_rows`, `ops.source_keys`, `ops.tally_group_map`, `ops.bridge_devices` | `api.start_import_batch`, `api.approve_import_batch`, `api.undo_import_batch` | 2 | missing (repo was empty) |
 | Document templates `DocPreview` | `/admin/document-templates` | `src/features/admin/DocPreviewPage.tsx` | `core.doc_templates`, storage `documents` | `pdf-render` Edge Fn, `api.send_document_whatsapp` | 3 | missing (repo was empty) |
-| Numbering & IDs `Numbering` | `/admin/numbering-and-ids` | `src/features/admin/NumberingPage.tsx` | `core.doc_series`, `core.doc_series_counters` | `api.upsert_doc_series` | 1 | missing (repo was empty) |
+| Numbering & IDs `Numbering` | `/admin/numbering-and-ids` | `src/features/admin/numbering/NumberingPage.tsx` | `core.doc_series`, `core.doc_series_counters` | `api.upsert_doc_series` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-numbering.spec.ts; pgTAP 04_numbering |
 | WhatsApp & email `WhatsApp` | `/admin/whatsapp-and-email` | `src/features/admin/WhatsAppPage.tsx` | `msg.channels`, `msg.templates`, `msg.contacts`, `msg.outbox`, `msg.inbound` | `api.upsert_template`, `api.set_reminder_schedule`, `api.reply_inbound` | 3 | missing (repo was empty) |
-| Units `Units` | `/admin/units` | `src/features/admin/UnitsPage.tsx` | `core.branches`, `core.places` | `api.upsert_branch`, `api.upsert_place` | 1 | missing (repo was empty) |
+| Units `Units` | `/admin/units` | `src/features/admin/units/UnitsPage.tsx` | `core.branches`, `core.places` | `api.upsert_branch`, `api.upsert_place` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-units.spec.ts |
 | Asset register `AssetRegister` | `/admin/asset-register` | `src/features/admin/AssetRegisterPage.tsx` | `core.assets`, `core.asset_events`, `core.asset_documents` | `api.add_asset`, `api.record_asset_event`, `api.run_depreciation` | 7 | missing (repo was empty) |
-| Companies `Companies` | `/admin/companies` | `src/features/admin/CompaniesPage.tsx` | `core.groups`, `core.companies` | `api.upsert_company` (Admin) | 1 | missing (repo was empty) |
-| Branches and GSTINs `Branches` | `/admin/branches-and-gstins` | `src/features/admin/BranchesPage.tsx` | `core.gstins`, `core.branches`, `acct.bank_accounts` | `api.upsert_gstin`, `api.upsert_branch` | 1 | missing (repo was empty) |
-| Forms and fields `FormFields` | `/admin/forms-and-fields` | `src/features/admin/FormFieldsPage.tsx` | `core.forms`, `core.form_fields` | `api.upsert_form_field` (Admin) | 1 | missing (repo was empty) |
+| Companies `Companies` | `/admin/companies` | `src/features/admin/companies/CompaniesPage.tsx` | `core.groups`, `core.companies` | `api.upsert_company` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-companies.spec.ts |
+| Branches and GSTINs `Branches` | `/admin/branches-and-gstins` | `src/features/admin/branches/BranchesPage.tsx` | `core.gstins`, `core.branches`, `acct.bank_accounts` | `api.upsert_gstin`, `api.upsert_branch` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-branches.spec.ts |
+| Forms and fields `FormFields` | `/admin/forms-and-fields` | `src/features/admin/form-fields/FormFieldsPage.tsx` | `core.forms`, `core.form_fields` | `api.upsert_form_field` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts |
 | Import data (second view) `TallyBiochem` | `/admin/import-data/tally-biochem` | `src/features/admin/TallyBooksPage.tsx` (company param) | `ops.import_batches`, `ops.import_rows`, `ops.bug_items` | `api.v_import_summary` | 2 | missing (repo was empty) |
 | Import data (second view) `TallyPlastics` | `/admin/import-data/tally-plastics` | `src/features/admin/TallyBooksPage.tsx` (company param) | as above | `api.v_import_summary` | 2 | missing (repo was empty) |
-| Built to Indian law `LawRules` | `/admin/built-to-indian-law` | `src/features/admin/LawRulesPage.tsx` | `core.law_rules` (from `LAW_RULES.md`), `ops.bug_items` | `api.v_law_rules` | 1 | missing (repo was empty) |
-| How each person sees it `UXOverview` | `/admin/how-each-person-sees-it` | `src/features/admin/UxOverviewPage.tsx` | `core.roles`, `core.role_rights` | `api.v_role_views` | 1 | missing (repo was empty) |
+| Built to Indian law `LawRules` | `/admin/built-to-indian-law` | `src/features/admin/law-rules/LawRulesPage.tsx` | `core.law_rules` (from `LAW_RULES.md`), `ops.bug_items` | `api.v_law_rules` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-explainers.spec.ts |
+| How each person sees it `UXOverview` | `/admin/how-each-person-sees-it` | `src/features/admin/ux-overview/UXOverviewPage.tsx` | `core.roles`, `core.role_rights` | `api.v_role_views` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-explainers.spec.ts |
 | Bug fixer `BookFixes` | `/admin/bug-fixer` | `src/features/admin/BugFixerPage.tsx` | `ops.bug_items`, `ops.bug_item_evidence` | `api.resolve_bug_item`, `api.merge_parties_preview`, `api.merge_parties`, `api.keep_separate` | 2 | missing (repo was empty) — label "Bug fixer", not "Fix in books" |
-| Special permissions `SpecialAccess` | `/admin/special-permissions` | `src/features/admin/SpecialAccessPage.tsx` | `core.special_grants`, `core.special_grant_requests` | `api.grant_special_permission`, `api.revoke_special_permission`, `api.request_special_permission` | 1 | missing (repo was empty) |
-| Transaction log `TransactionLog` | `/admin/transaction-log` | `src/features/admin/TransactionLogPage.tsx` | `audit.document_versions`, `audit.row_history` | `api.v_document_history` | 1 | missing (repo was empty) |
-| Total workflow `ERPFlow` | `/admin/total-workflow` | `src/features/admin/TotalWorkflowPage.tsx` | `src/app/flows.ts`; `core.state_transitions` | — (config) | 1 | missing (repo was empty) |
+| Special permissions `SpecialAccess` | `/admin/special-permissions` | `src/features/admin/special-access/SpecialAccessPage.tsx` | `core.special_grants`, `core.special_grant_requests` | `api.grant_special_permission`, `api.revoke_special_permission`, `api.request_special_permission` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-special-access.spec.ts; pgTAP 03_grants |
+| Transaction log `TransactionLog` | `/admin/transaction-log` | `src/features/admin/transaction-log/TransactionLogPage.tsx` | `audit.document_versions`, `audit.row_history` | `api.v_document_history` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts; pgTAP 01_audit |
+| Total workflow `ERPFlow` | `/admin/total-workflow` | `src/features/admin/erp-flow/ERPFlowPage.tsx` | `src/app/flows.ts`; `core.state_transitions` | — (config) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-explainers.spec.ts |
 | Licences and documents `Licences` | `/admin/licences-and-documents` | `src/features/admin/LicencesPage.tsx` | `core.licences`, `core.licence_documents` | `api.add_licence`, `api.renew_licence` | 7 | missing (repo was empty) |
-| *Settings* (no reference) | `/admin/settings` | `src/features/admin/SettingsPage.tsx` | `core.settings` (effective-dated) | `api.set_setting` (Admin) | 1 | missing (repo was empty) — build from §UX-7 admin pattern |
+| *Settings* (no reference) | `/admin/settings` | `src/features/admin/settings/SettingsPage.tsx` | `core.settings` (effective-dated) | `api.set_setting` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-settings.spec.ts |
 
 ## Phone and tablet screens by job
 

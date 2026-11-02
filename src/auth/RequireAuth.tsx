@@ -21,3 +21,4 @@ export function RequireAuth({ children, signInPath = '/sign-in' }: { children: R
   if (!session || needsMfa) return <Navigate to={signInPath} replace state={{ from: location.pathname }} />
   return <>{children}</>
 }
+

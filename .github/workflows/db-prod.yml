@@ -1,0 +1,25 @@
+name: Database (PROD) — owner approval required
+# Applies migrations to PRODUCTION only from the protected "production" environment, which must be set to
+# require the owner's manual approval (GitHub → Settings → Environments). Never run from a laptop.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DB_PASSWORD: ${{ secrets.PROD_DB_PASSWORD }}
+      SUPABASE_REF: ${{ secrets.PROD_SUPABASE_REF }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+      - name: Refuse if the prod project is not configured
+        run: test -n "$DB_PASSWORD" && test -n "$SUPABASE_REF"
+      - run: pnpm db:push

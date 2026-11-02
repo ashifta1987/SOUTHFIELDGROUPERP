@@ -1,0 +1,84 @@
+{
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Limits and financial years. A setting is never edited: each change starts on its date and the earlier values stay in the history.",
+    "readOnly": "You can see the settings but not change them. Ask Admin to change a setting or open a financial year.",
+    "group": "All companies",
+    "notSet": "Not set · owner/CA decides",
+    "history": "History",
+    "change": "Change",
+    "set": "Set",
+    "future": "Starts later",
+    "historyTitle": "History of {{key}} · {{scope}}",
+    "historyHelp": "Every value this setting has had, newest first, with who set it and why.",
+    "historyEmpty": "No value has been set yet.",
+    "addTitle": "Add a company setting",
+    "setTitle": "Change {{key}}",
+    "formHelp": "The new value starts on the date you choose; until then the current value applies. The change and its reason go into the user log.",
+    "fyOpen": "Open",
+    "fyClosed": "Closed",
+    "periods_one": "{{count}} of 12",
+    "periods_other": "{{count}} of 12",
+    "kind": {
+      "number": "Number",
+      "text": "Text",
+      "json": "JSON"
+    },
+    "k": {
+      "setting": "Setting",
+      "key": "Key",
+      "value": "Value",
+      "from": "In force from",
+      "note": "Reason",
+      "actions": "Actions",
+      "fy": "Financial year",
+      "closedPeriods": "Months closed"
+    },
+    "limits": {
+      "title": "Limits Admin fixes for everyone",
+      "help": "These apply across all companies. A value the owner or CA has not decided yet stays unset until they decide.",
+      "grantsMaxDays": "Longest special permission (days)",
+      "cashReceiptBlock": "Cash receipt refused from one person in a day, at or above (₹)",
+      "cashPaymentWarn": "Cash payment warning, above this to one person in a day (₹)",
+      "entriesBackdate": "How many days back an entry may be dated",
+      "workHours": "Working hours in a day"
+    },
+    "company": {
+      "title": "Company settings",
+      "help": "Settings that differ between the companies.",
+      "add": "Add a setting",
+      "empty": "No company settings yet."
+    },
+    "fy": {
+      "title": "Financial years",
+      "help": "April to March, IST. Opening a year creates its 12 monthly periods; months are closed at month-end.",
+      "open": "Open a financial year",
+      "openTitle": "Open a financial year",
+      "openHelp": "Creates the year from 1 April to 31 March and its 12 monthly periods. It can't be undone.",
+      "openLabel": "Open FY {{fy}}",
+      "startYear": "Starts in April of",
+      "startYearHelp": "e.g. 2026 opens FY 2026-27.",
+      "empty": "No financial year yet. Ask Admin to open one.",
+      "emptyAdmin": "No financial year yet. Open the current one to start numbering and entries."
+    },
+    "f": {
+      "scope": "Applies to",
+      "key": "Key",
+      "keyHelp": "Small letters, dots and underscores, e.g. area.name.",
+      "kind": "Kind of value",
+      "value": "Value",
+      "from": "In force from",
+      "fromHelp": "Today or a later date. Earlier values stay in the history.",
+      "note": "Reason (required)"
+    },
+    "err": {
+      "key": "Use small letters, dots and underscores.",
+      "number": "Enter a number, e.g. 7 or 8.5.",
+      "json": "This isn't valid JSON.",
+      "text": "Enter the value.",
+      "date": "Choose the date it starts.",
+      "note": "Say why this changes.",
+      "year": "Choose the company and a year such as 2026."
+    }
+  }
+}

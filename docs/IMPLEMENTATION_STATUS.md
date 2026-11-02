@@ -2,9 +2,9 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phase 0 — Audit and shell: complete → awaiting owner review. Phase 1 not started.** |
+| Current phase | **Phase 1 — Foundation: complete → awaiting owner review.** Phase 0 approved by the owner on 03-11-2026 ("resume"). Phase 2 not started. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
-| Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region not verified. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
+| Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
 | Hosting | Vercel (static SPA) |
 | Spec | `docs/spec/SOUTHFIELD_ERP_SPEC.md` **missing** — blocks Phase 1+ acceptance checks |
@@ -26,6 +26,22 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 1 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Data contracts in `DATABASE_SCHEMA.md` | Done |
+| 2 | Migrations `20261103000100…500` applied to DEV: schemas `app/core/audit/ops/api`, group structure, users/roles/rights, three views, special permissions with time windows and the never-grantable list, settings (versioned), numbering (gap-free, 16-char limit), forms, law register, audit row history, user log, error log, idempotency | Done |
+| 3 | Only the `api` schema is exposed by the Data API | Done (`pgrst.db_schemas = 'api, graphql_public'`) |
+| 4 | pgTAP: accountant can't read a bill without GST; CA can't write; other company invisible; grant expires on its own and its use is recorded; never-grantable refused; nobody approves their own request; history append-only; numbering gap-free / ≤16 chars; idempotency | **43/43 pass** (`pnpm db:test`) |
+| 5 | Screens: Companies, Branches and GSTINs, Units, Users & rights, Special permissions, User log, Transaction log, Numbering & IDs, Forms and fields, Settings, How each person sees it, Built to Indian law, Total workflow | Done, live data |
+| 6 | App uses `api.me()` for view, rights and running grants; special-permission banner with countdown; sign-in / sign-out / failed sign-in in the user log; error references stored in `ops.error_log` | Done |
+| 7 | Playwright with DB round-trip + axe | **28/28 pass** |
+| 8 | Edge Function `admin-users` (create accounts) | Code written; **not deployed** (needs owner's `supabase login`, see DEPLOYMENT_GUIDE) |
+| 9 | Stop for owner review | **Waiting for the owner** |
+
+Known Phase 1 gaps: account lock-out after repeated failures relies on Supabase rate limits (an app-level lock needs the Auth password-verification hook, Q-08); concurrency of numbering is protected by a row lock but the two-session test runs only with a local Supabase (needs Docker); the Admin WhatsApp code for giving rights arrives with WhatsApp in Phase 3; GSTIN check against the GST portal arrives with the GSP in Phase 8; 4 inactive `E2E…` test companies remain in DEV because their versioned settings rows are append-only.
 
 ## Phase 0–9 plan
 
@@ -125,9 +141,9 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 
 | # | Question | Owner | Safest reading taken |
 |---|---|---|---|
-| Q-01 | **`docs/spec/SOUTHFIELD_ERP_SPEC.md` is missing.** Prompt §0 says to ask for it before building any module it covers; Part I holds the acceptance checks. | Owner | Phase 0 proceeds (shell only). **Phase 1+ blocked** until the spec is added. Acceptance checks above are provisional. |
+| Q-01 | **`docs/spec/SOUTHFIELD_ERP_SPEC.md` is still missing.** Phase 1 was built from the prompt with the owner's go-ahead; its checks must be reconciled with spec Part I when the spec arrives. Prompt §0 says to ask for it before building any module it covers; Part I holds the acceptance checks. | Owner | Phase 0 proceeds (shell only). **Phase 1+ blocked** until the spec is added. Acceptance checks above are provisional. |
 | Q-02 | Only **one Supabase project** exists. The prompt requires separate dev and prod projects in `ap-south-1`. | Owner | The existing project is treated as **DEV**. No real business data may be loaded into it. Prod must be created before Phase 2 data loads. |
-| Q-03 | Region of the existing project **not verified** as `ap-south-1` (Mumbai). | Owner | Treat as unverified; if it is not Mumbai, recreate it there before any schema work (Rule 3, data in India). |
+| Q-03 | ~~Region not verified~~ **Resolved 03-11-2026:** the project is in `ap-south-1` (Mumbai). | — | — |
 | Q-04 | **A Supabase secret key was shared in chat.** | Owner | It must be **rotated** in Supabase (API keys → roll secret key) and never pasted again. Code never uses it. |
 | Q-05 | GitHub repo visibility must be **private**; branch protection and required checks not yet confirmed. | Owner | Assume not yet set; steps in `DEPLOYMENT_GUIDE.md`. |
 
@@ -202,3 +218,6 @@ Differences from `design-reference/` that remain after Phase 0, and nearest-patt
 | StaffHome | Reference header had a broken image on the right; replaced by the 48 px help button | §UX-4.2 asks for a help icon there | — |
 | Sidebar | Parts & consumables, Receipts, Purchase orders, Bills & payments, Settings have no reference screen | Not in the canvas | Built later from list/document patterns (§UX-7); they show a planned page now |
 | Dev gallery | `/dev/ui` strings are English-only | Development-only page, never shipped | — |
+
+| Users | The owner's own Admin account doesn't exist yet: create it in Supabase (Authentication → Add user) with `app_metadata` `{"role":"owner"}`, or deploy `admin-users` and add it from the Users screen | Owner | Review accounts `phase0.*@southfield.test` are synthetic and can be removed after |
+| Settings | Values for `cash.receipt_block_amount`, `cash.payment_warn_amount`, `entries.backdate_days`, `work.hours` are left unset until the owner/CA set them on Settings (the cash RPCs in Phase 3 will refuse to post until the cash limits are set) | Owner / CA | Unset; never invented |

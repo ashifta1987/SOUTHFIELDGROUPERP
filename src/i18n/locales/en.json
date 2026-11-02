@@ -1,5 +1,8 @@
 {
-  "_meta": { "language": "English", "needs-native-review": false },
+  "_meta": {
+    "language": "English",
+    "needs-native-review": false
+  },
   "brand": {
     "group": "Southfield Group",
     "plastics": "Southfield Plastics Pvt Ltd",
@@ -16,7 +19,27 @@
     "save": "Save",
     "loading": "Loading",
     "nothingYet": "Nothing here yet.",
-    "language": "Language"
+    "language": "Language",
+    "add": "Add",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "reason": "Reason (required)",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "none": "None",
+    "all": "All",
+    "yes": "Yes",
+    "no": "No",
+    "code": "Code",
+    "name": "Name",
+    "company": "Company",
+    "from": "From",
+    "to": "To",
+    "when": "When",
+    "who": "Who",
+    "details": "Details",
+    "noAccess": "No access"
   },
   "shell": {
     "mainMenu": "Main",
@@ -45,9 +68,18 @@
     "account": "Your account"
   },
   "views": {
-    "all": { "chip": "All transactions", "title": "Signed in as Admin: every list, total, report and export includes bills without GST, each one marked. Nothing to switch." },
-    "all-readonly": { "chip": "All transactions · read-only", "title": "CA / Auditor: you can read everything and change nothing." },
-    "gst": { "chip": "GST transactions", "title": "You see documents with GST. Lists, totals and exports are made from them." },
+    "all": {
+      "chip": "All transactions",
+      "title": "Signed in as Admin: every list, total, report and export includes bills without GST, each one marked. Nothing to switch."
+    },
+    "all-readonly": {
+      "chip": "All transactions · read-only",
+      "title": "CA / Auditor: you can read everything and change nothing."
+    },
+    "gst": {
+      "chip": "GST transactions",
+      "title": "You see documents with GST. Lists, totals and exports are made from them."
+    },
     "readOnlyUntil": "Read-only until {{date}}",
     "readOnly": "Read-only access"
   },
@@ -170,7 +202,41 @@
   },
   "errors": {
     "loadFailed": "Could not load this page's figures.",
-    "tryAgain": "Check your connection and reload. If it happens again, give this reference to Admin."
+    "tryAgain": "Check your connection and reload. If it happens again, give this reference to Admin.",
+    "rules": {
+      "rights.missing": "You don't have the right for this. Ask Admin for it, or for a special permission.",
+      "rights.read_only": "Read-only access: the CA and auditors can read everything but change nothing.",
+      "rights.reason_required": "Say why this changes. The reason goes into the user log.",
+      "rights.admin_only": "That right belongs to Admin only and can't be given to this role.",
+      "rights.self_demote": "You can't remove your own Admin role. Ask another Admin.",
+      "rights.ca_needs_end": "CA and auditor access needs an end date.",
+      "rights.role_fixed": "Admin and CA rights are fixed by their view and can't be edited.",
+      "grant.never_grantable": "This right can never be given as a special permission.",
+      "grant.self": "Nobody can give a permission to themselves.",
+      "grant.too_long": "That is longer than the longest permission Admin allows.",
+      "grant.bad_window": "The end must be after the start.",
+      "grant.reason_required": "A reason is required.",
+      "sod.self_approval": "Nobody approves their own request. Another person must decide it.",
+      "org.gstin_pan_mismatch": "This GSTIN doesn't carry the company's PAN. Check both numbers on the certificate.",
+      "org.gstin_other_company": "That GSTIN belongs to another company.",
+      "numbering.in_use": "Numbers are already issued from this series, so its prefix and counter are locked.",
+      "numbering.too_long": "The number would be longer than 16 characters. Use a shorter prefix.",
+      "users.self_disable": "You can't switch off your own account.",
+      "unique": "That code or number is already used.",
+      "grant.already_stopped": "This permission is already stopped.",
+      "grant.already_decided": "This request has already been decided.",
+      "rights.role_missing": "That role doesn't exist.",
+      "grant.not_on_list": "This right is not on the special permission list.",
+      "numbering.no_series": "There is no active number series for this document in this financial year. Add one on Numbering & IDs.",
+      "org.company_missing": "That company doesn't exist.",
+      "org.branch_missing": "That branch doesn't exist.",
+      "request.id_missing": "The request had no ID. Reload the page and try again.",
+      "auth.required": "Your session has ended. Sign in again."
+    },
+    "invalidValue": "One of the values is not in the right format. Check the highlighted fields.",
+    "saveFailed": "Could not save. Nothing was changed.",
+    "nextStep": "Fix it and try again. If it keeps happening, give this reference to Admin.",
+    "noAccess": "You don't have access to this screen. Ask Admin."
   },
   "home": {
     "title": "Today",
@@ -255,7 +321,13 @@
     }
   },
   "staff": {
-    "nav": { "label": "Staff app", "home": "Home", "requests": "Requests", "payslips": "Payslips", "details": "My details" },
+    "nav": {
+      "label": "Staff app",
+      "home": "Home",
+      "requests": "Requests",
+      "payslips": "Payslips",
+      "details": "My details"
+    },
     "home": {
       "subPending": "Staff record set up in Phase 3",
       "payTitle": "This month's pay",
@@ -410,5 +482,10 @@
       "whatsapp": "WhatsApp & email",
       "settings": "Settings"
     }
+  },
+  "grants": {
+    "banner": "Working under special permission {{code}}: {{label}}",
+    "timeLeft": "Time left",
+    "recordedUnder": "Recorded under grant {{code}}"
   }
 }

@@ -1,0 +1,48 @@
+{
+  "units": {
+    "title": "Units",
+    "subtitle_one": "{{count}} unit, one company · stock, machines, people, cash and costs kept per unit · goods move between them on transfer notes",
+    "subtitle_other": "{{count}} units, one company · stock, machines, people, cash and costs kept per unit · goods move between them on transfer notes",
+    "subtitleNone": "Stock, machines, people, cash and costs kept per unit · goods move between them on transfer notes",
+    "add": "Add unit",
+    "addTitle": "Add a unit",
+    "editTitle": "Edit unit",
+    "readOnly": "You can see the units but not change them. Ask Admin to add or change a unit, place or department.",
+    "emptyTitle": "No units yet",
+    "emptyBody": "Admin adds the units. Ask Admin if you expect to see one here.",
+    "emptyBodyAdmin": "Add each factory, production unit or godown, then the places inside it where stock is kept.",
+    "machinesLater": "Added from the asset register",
+    "k": {
+      "kind": "Kind",
+      "machines": "Machines"
+    },
+    "moving": {
+      "title": "Moving goods between units",
+      "noteLead": "Transfer note",
+      "note": "with a delivery challan; e-way bill when the value is above the limit. Stock leaves one unit and arrives at the other only when received.",
+      "priceLead": "Transfer price",
+      "price": "so each unit's cost is real: goods move between units at their material and factory cost.",
+      "mouldsLead": "Moulds",
+      "moulds": "carry their current unit; a mould can only run on a machine in the unit where it is.",
+      "gstinLead": "Same GSTIN:",
+      "gstin": "a transfer is not a sale. Each unit must be on the GST registration as a place of business; confirm with your CA."
+    },
+    "depts": {
+      "title": "Departments",
+      "add": "Add department",
+      "addTitle": "Add a department",
+      "editTitle": "Edit department",
+      "help": "Departments group staff and costs inside the company. Every change is kept in the transaction log.",
+      "name": "Department name",
+      "empty": "No departments yet. Ask Admin to add them.",
+      "emptyAdmin": "No departments yet. Add them to group staff and costs."
+    },
+    "reports": {
+      "title": "Reports by unit",
+      "body": "Production, stock, labour, power, scrap and profit for each unit, and for the company."
+    },
+    "err": {
+      "deptName": "Enter the department name."
+    }
+  }
+}

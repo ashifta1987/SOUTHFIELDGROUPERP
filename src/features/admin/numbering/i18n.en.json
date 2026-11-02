@@ -1,0 +1,71 @@
+{
+  "numbering": {
+    "title": "Numbering and IDs",
+    "subtitle": "The app gives every record its ID. Formats can change until the first record is saved, then they lock.",
+    "add": "Add series",
+    "addTitle": "Add a number series",
+    "editTitle": "Edit number series",
+    "formHelp": "Numbers are issued by the database, in order and without gaps, when a document is saved. The prefix and counter lock once the first number is issued.",
+    "readOnly": "You can see the number series but not change them. Ask Admin to add or change a series.",
+    "gstDocument": "GST document",
+    "allGstins": "All GSTINs of the company",
+    "fits_one": "{{count}} of {{max}} characters",
+    "fits_other": "{{count}} of {{max}} characters",
+    "tooLong_one": "Too long · {{count}} of {{max}} characters",
+    "tooLong_other": "Too long · {{count}} of {{max}} characters",
+    "warnTooLong": "The number would be longer than {{max}} characters. Use a shorter prefix.",
+    "preview": "Next number will look like",
+    "previewLength_one": "{{count}} of {{max}} characters",
+    "previewLength_other": "{{count}} of {{max}} characters",
+    "noFyTitle": "{{company}} has no financial year {{fy}} yet",
+    "noFyBody": "Number series run per financial year. Ask Admin to open the financial year.",
+    "noFyBodyAdmin": "Number series run per financial year (April to March). Open it to add its series; its 12 monthly periods are created with it.",
+    "openFy": "Open FY {{fy}}",
+    "status": {
+      "active": "In use",
+      "closed": "Closed"
+    },
+    "k": {
+      "record": "Record",
+      "gstin": "GSTIN",
+      "prefix": "Prefix",
+      "next": "Next",
+      "length": "Length"
+    },
+    "docs": {
+      "title": "Documents",
+      "perFy": "per financial year {{fy}}",
+      "empty": "No number series for this year yet. Ask Admin to add them.",
+      "emptyAdmin": "No number series for this year yet. Use “Add series” for each document type, per GSTIN where the law needs it."
+    },
+    "masters": {
+      "title": "People, parties and items",
+      "body": "Staff, supplier, buyer, transporter and item IDs are given when those lists are set up."
+    },
+    "notes": {
+      "never": "IDs are never typed, edited or reused, even after cancelling.",
+      "gapFree": "Each series is gap-free: a number is issued once, in order, when the document is saved.",
+      "limit": "Invoice numbers: at most {{max}} characters, unique in the financial year.",
+      "limitUnknown": "Invoice numbers are unique in the financial year.",
+      "lock": "The prefix and counter lock once the first number is issued."
+    },
+    "f": {
+      "docType": "Document",
+      "fy": "Financial year",
+      "gstin": "GSTIN",
+      "gstinHelp": "Pick a GSTIN when each registration keeps its own series.",
+      "prefix": "Prefix",
+      "prefixHelp": "Up to 12 capitals, digits, / or -. The year and the counter are added after it.",
+      "pad": "Digits in the counter",
+      "padHelp": "1 to 8, e.g. 4 gives 0001.",
+      "next": "Next counter",
+      "nextHelp": "Start at 1, or continue after the last number used before going live."
+    },
+    "err": {
+      "docType": "Choose the document.",
+      "prefix": "Use 1–12 capital letters, digits, / or -.",
+      "pad": "Use a number from 1 to 8.",
+      "next": "Use a whole number of 1 or more."
+    }
+  }
+}

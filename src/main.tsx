@@ -26,3 +26,4 @@ createRoot(root).render(
     </QueryClientProvider>
   </StrictMode>,
 )
+

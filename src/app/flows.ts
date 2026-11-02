@@ -657,7 +657,8 @@ export const MAIN_FLOW_OVERRIDES: Record<string, string> = {
 /** Screens that never show the strip: sign-in, investor portal and every phone/tablet screen. */
 export function flowForScreen(file: string): { flow: Flow; stepIndex: number } | null {
   const screen = SCREEN_BY_FILE[file]
-  if (!screen || screen.device !== 'desktop' || screen.route.startsWith('/investor') || screen.route.includes('sign-in')) {
+  // Total workflow is the map of every flow, so it has no strip of its own (design).
+  if (!screen || file === 'ERPFlow' || screen.device !== 'desktop' || screen.route.startsWith('/investor') || screen.route.includes('sign-in')) {
     return null
   }
   const preferred = MAIN_FLOW_OVERRIDES[file]

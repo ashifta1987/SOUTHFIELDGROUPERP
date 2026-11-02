@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { supabase } from '@/shared/supabase'
+import { api, supabase } from '@/shared/supabase'
 
 /** Shared validation for sign-in forms (reusable by Edge Functions later). */
 export const phoneSchema = z
@@ -29,7 +29,12 @@ function mapAuthError(message: string | undefined, code: string | undefined): st
 
 export async function signInWithPassword(input: { email: string } | { phone: string }, password: string): Promise<SignInResult> {
   const { error } = await supabase.auth.signInWithPassword({ ...input, password })
-  if (error) return { ok: false, errorKey: mapAuthError(error.message, error.code) }
+  if (error) {
+    // Failed sign-ins go to the user log (identifier stored masked, throttled on the server).
+    void api().rpc('log_sign_in_failure', { p_identifier: 'email' in input ? input.email : input.phone }).then(() => undefined)
+    return { ok: false, errorKey: mapAuthError(error.message, error.code) }
+  }
+  await api().rpc('log_user_event', { p_event: 'sign_in', p_detail: { method: 'email' in input ? 'email' : 'phone' } })
   const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel()
   return { ok: true, needsMfa: Boolean(data && data.nextLevel === 'aal2' && data.currentLevel !== 'aal2') }
 }
@@ -50,3 +55,4 @@ export function landingFor(role: string | undefined): string {
   const phoneRoles = new Set(['staff', 'factory_staff', 'machine_operator', 'driver', 'salesman', 'shop_staff'])
   return role && phoneRoles.has(role) ? '/staff/home' : '/'
 }
+

@@ -12,12 +12,43 @@ import { HomePage } from '@/features/home/HomePage'
 import { CustomersPage } from '@/features/sales/CustomersPage'
 import { StaffHomePage } from '@/features/staff/StaffHomePage'
 import { NotFoundPage, PlannedPage, PlannedPhonePage } from '@/features/common/PlannedPage'
+import { CompaniesPage } from '@/features/admin/companies/CompaniesPage'
+import { BranchesPage } from '@/features/admin/branches/BranchesPage'
+import { UnitsPage } from '@/features/admin/units/UnitsPage'
+import { UsersPage } from '@/features/admin/users/UsersPage'
+import { SpecialAccessPage } from '@/features/admin/special-access/SpecialAccessPage'
+import { UserLogPage } from '@/features/admin/user-log/UserLogPage'
+import { TransactionLogPage } from '@/features/admin/transaction-log/TransactionLogPage'
+import { NumberingPage } from '@/features/admin/numbering/NumberingPage'
+import { FormFieldsPage } from '@/features/admin/form-fields/FormFieldsPage'
+import { SettingsPage } from '@/features/admin/settings/SettingsPage'
+import { UXOverviewPage } from '@/features/admin/ux-overview/UXOverviewPage'
+import { LawRulesPage } from '@/features/admin/law-rules/LawRulesPage'
+import { ERPFlowPage } from '@/features/admin/erp-flow/ERPFlowPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
   Main: <HomePage />,
   Customers: <CustomersPage />,
   StaffHome: <StaffHomePage />,
+  // Phase 1
+  Companies: <CompaniesPage />,
+  Branches: <BranchesPage />,
+  Units: <UnitsPage />,
+  Users: <UsersPage />,
+  SpecialAccess: <SpecialAccessPage />,
+  UserLog: <UserLogPage />,
+  TransactionLog: <TransactionLogPage />,
+  Numbering: <NumberingPage />,
+  FormFields: <FormFieldsPage />,
+  UXOverview: <UXOverviewPage />,
+  LawRules: <LawRulesPage />,
+  ERPFlow: <ERPFlowPage />,
+}
+
+/** Built screens for sidebar items that have no reference screen. */
+const BUILT_ROUTES: Record<string, React.ReactNode> = {
+  '/admin/settings': <SettingsPage />,
 }
 
 const SPECIAL = new Set(['Login', 'StaffSignIn'])
@@ -46,7 +77,7 @@ for (const s of SCREENS) {
   else otherPhone.push(route)
 }
 for (const item of ROUTES_WITHOUT_REFERENCE) {
-  desktop.push({ path: item.route.slice(1), element: <PlannedPage /> })
+  desktop.push({ path: item.route.slice(1), element: BUILT_ROUTES[item.route] ?? <PlannedPage /> })
 }
 
 const UiGalleryPage = import.meta.env.DEV ? lazy(() => import('@/features/dev/UiGalleryPage').then((m) => ({ default: m.UiGalleryPage }))) : null
@@ -93,3 +124,4 @@ export const router = createBrowserRouter([
     children: desktop,
   },
 ])
+

@@ -1,11 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
-import { supabase, supabaseConfigured } from '@/shared/supabase'
+import { useQuery } from '@tanstack/react-query'
+import { api, isNotReady, supabase, supabaseConfigured } from '@/shared/supabase'
 
 /**
- * The three views (§6, §UX-5). The view always comes from the server, never from a client toggle.
- * Phase 0: derived from `app_metadata.role`, which only the service role can set (users cannot edit it).
- * Phase 1 replaces this with `api.me()` reading core.user_roles, rights and special-permission grants.
+ * The three views (§6, §UX-5). The view always comes from the server, never from a client toggle:
+ * `api.me()` computes it from core.user_roles (Phase 1). Before `api.me()` answers, the server-set
+ * `app_metadata.role` is used as a first guess (users cannot edit it).
  */
 export type ViewKind = 'all' | 'all-readonly' | 'gst'
 
@@ -22,6 +23,37 @@ export type RoleKey =
   | 'staff'
   | string
 
+export interface ActiveGrant {
+  id: string
+  code: string
+  right: string
+  label: string
+  company_id: string | null
+  params: Record<string, unknown>
+  ends_at: string
+}
+
+export interface MeRole {
+  role: string
+  label: string
+  company_id: string | null
+  valid_to: string | null
+}
+
+/** Shape returned by api.me() */
+export interface Me {
+  user_id: string
+  display_name: string | null
+  person_code: string | null
+  language: string | null
+  status: string | null
+  view: ViewKind
+  roles: MeRole[]
+  rights: string[]
+  grants: ActiveGrant[]
+  read_only_until: string | null
+}
+
 export interface Profile {
   userId: string
   displayName: string
@@ -33,6 +65,13 @@ export interface Profile {
   language?: string
   email?: string
   phone?: string
+  /** Rights from the server ('*' = everything; '*.view' / '*.export' for read-only) */
+  rights: string[]
+  grants: ActiveGrant[]
+  roles: MeRole[]
+  personCode?: string
+  /** True once api.me() has answered */
+  fromServer: boolean
 }
 
 const ROLE_LABELS: Record<string, string> = {
@@ -70,7 +109,39 @@ export function profileFromUser(user: User): Profile {
     language: typeof meta.language === 'string' ? meta.language : undefined,
     email: user.email ?? undefined,
     phone: user.phone ?? undefined,
+    rights: viewForRole(role) === 'all' ? ['*'] : viewForRole(role) === 'all-readonly' ? ['*.view', '*.export'] : ['home.view', 'staff.self'],
+    grants: [],
+    roles: [],
+    fromServer: false,
   }
+}
+
+/** Merge api.me() into the profile. The server's view, roles, rights and grants always win. */
+export function profileFromMe(user: User, me: Me): Profile {
+  const base = profileFromUser(user)
+  const top = me.roles[0]
+  const role = me.view === 'all' ? (me.roles.find((r) => r.role === 'owner') ? 'owner' : 'admin') : me.view === 'all-readonly' ? (top?.role ?? 'ca') : (top?.role ?? 'staff')
+  return {
+    ...base,
+    displayName: me.display_name ?? base.displayName,
+    role,
+    roleLabel: me.roles.find((r) => r.role === role)?.label ?? ROLE_LABELS[role] ?? role,
+    view: me.view,
+    readOnlyUntil: me.read_only_until ?? undefined,
+    language: me.language ?? base.language,
+    rights: me.rights,
+    grants: me.grants,
+    roles: me.roles,
+    personCode: me.person_code ?? undefined,
+    fromServer: true,
+  }
+}
+
+/** Does a rights list allow this right? Supports '*', '*.view', '*.export'. */
+export function rightsAllow(rights: string[], right: string): boolean {
+  if (rights.includes('*') || rights.includes(right)) return true
+  const action = right.split('.')[1]
+  return Boolean(action && rights.includes(`*.${action}`))
 }
 
 interface AuthState {
@@ -124,18 +195,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const me = useQuery({
+    queryKey: ['api', 'me', session?.user.id ?? 'none'],
+    enabled: Boolean(session),
+    staleTime: 60_000,
+    refetchInterval: 60_000, // grants start and end on their own; refresh the banner and menus
+    queryFn: async (): Promise<Me | null> => {
+      const { data, error } = await api().rpc('me')
+      if (error) {
+        if (isNotReady(error)) return null
+        throw error
+      }
+      return data as Me | null
+    },
+  })
+
   const value = useMemo<AuthState>(
     () => ({
-      loading,
+      loading: loading || (Boolean(session) && me.isLoading),
       session,
-      profile: session?.user ? profileFromUser(session.user) : null,
+      profile: session?.user ? (me.data ? profileFromMe(session.user, me.data) : profileFromUser(session.user)) : null,
       needsMfa,
       refreshMfa,
       signOut: async () => {
         await supabase.auth.signOut()
       },
     }),
-    [loading, session, needsMfa],
+    [loading, session, needsMfa, me.data, me.isLoading],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
@@ -149,16 +235,13 @@ export function useAuth(): AuthState {
 
 /**
  * Rights check for showing menus and buttons. Hiding is never the security: RLS and RPCs check again.
- * Phase 0: Owner/Admin/CA see every menu (CA read-only); other roles see Home and their phone app.
- * Phase 1 replaces this with the role → rights (module.action) table.
+ * Rights come from api.me(): role rights for the user's companies plus running special permissions.
  */
 export function useCan() {
   const { profile } = useAuth()
   return (right: string): boolean => {
     if (!profile) return false
-    if (profile.view === 'all' || profile.view === 'all-readonly') {
-      return profile.view === 'all' || right.endsWith('.view')
-    }
-    return right === 'home.view' || right.startsWith('staff.')
+    if (rightsAllow(profile.rights, right)) return true
+    return profile.grants.some((g) => g.right === right)
   }
 }

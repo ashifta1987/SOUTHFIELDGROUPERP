@@ -1,0 +1,34 @@
+name: Database (DEV)
+# Applies migrations to the DEV Supabase project and runs pgTAP, on pushes to main that touch supabase/.
+# Needs repo secret DEV_DB_PASSWORD (and optionally DEV_SUPABASE_REF). Skips cleanly if it is not set.
+on:
+  push:
+    branches: [main]
+    paths: ['supabase/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  migrate-and-test:
+    runs-on: ubuntu-latest
+    env:
+      DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+      SUPABASE_REF: ${{ secrets.DEV_SUPABASE_REF || 'fxwoabbwzcifxzqsmrie' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check secret
+        id: s
+        run: echo "ok=${{ env.DB_PASSWORD != '' }}" >> "$GITHUB_OUTPUT"
+      - uses: pnpm/action-setup@v4
+        if: steps.s.outputs.ok == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.s.outputs.ok == 'true'
+        with: { node-version: 24, cache: pnpm }
+      - run: pnpm install --frozen-lockfile
+        if: steps.s.outputs.ok == 'true'
+      - run: pnpm db:push
+        if: steps.s.outputs.ok == 'true'
+      - run: pnpm db:test
+        if: steps.s.outputs.ok == 'true'

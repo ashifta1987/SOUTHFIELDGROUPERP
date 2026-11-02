@@ -19,11 +19,26 @@ export const LANGUAGES = [
 
 export type LanguageCode = (typeof LANGUAGES)[number]['code']
 
+/** Feature strings live next to each feature as i18n.<lang>.json and are merged in under their namespace key. */
+const featureFiles = import.meta.glob('../features/**/i18n.*.json', { eager: true, import: 'default' }) as Record<string, Record<string, unknown>>
+function withFeatures(lang: string, base: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...base }
+  for (const [path, data] of Object.entries(featureFiles)) {
+    if (path.endsWith(`i18n.${lang}.json`)) Object.assign(out, data)
+  }
+  return out
+}
+
 void i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: { en: { translation: en }, ml: { translation: ml }, hi: { translation: hi }, bho: { translation: bho } },
+    resources: {
+      en: { translation: withFeatures('en', en) },
+      ml: { translation: withFeatures('ml', ml) },
+      hi: { translation: withFeatures('hi', hi) },
+      bho: { translation: withFeatures('bho', bho) },
+    },
     supportedLngs: LANGUAGES.map((l) => l.code),
     fallbackLng: { bho: ['hi', 'en'], default: ['en'] },
     interpolation: { escapeValue: false },
@@ -42,3 +57,4 @@ export function setLanguage(code: LanguageCode) {
 }
 
 export default i18n
+
