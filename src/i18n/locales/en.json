@@ -1,0 +1,414 @@
+{
+  "_meta": { "language": "English", "needs-native-review": false },
+  "brand": {
+    "group": "Southfield Group",
+    "plastics": "Southfield Plastics Pvt Ltd",
+    "biochem": "Southfield Biochem Pvt Ltd"
+  },
+  "common": {
+    "comingInPhase": "Coming in phase {{phase}}",
+    "reference": "Reference",
+    "askHelp": "Ask Help about this",
+    "copy": "Copy",
+    "cancel": "Cancel",
+    "close": "Close",
+    "edit": "Edit",
+    "save": "Save",
+    "loading": "Loading",
+    "nothingYet": "Nothing here yet.",
+    "language": "Language"
+  },
+  "shell": {
+    "mainMenu": "Main",
+    "footPlace": "Wadakkanchery, Thrissur",
+    "footRights": "Menus follow your user rights",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skip": "Skip to main content"
+  },
+  "topbar": {
+    "groupScope": "{{companies}} companies · {{gstins}} GSTINs",
+    "noCompanies": "No companies set up yet",
+    "companySwitcher": "Company and GSTIN",
+    "companiesPhase": "Admin adds the companies, GSTINs, branches and places in Phase 1. Then you can switch between them here.",
+    "fy": "FY {{fy}}",
+    "fyLabel": "Financial year",
+    "fyPhase": "Financial years and periods are set up per company in Phase 1. The current year (April to March, IST) is shown.",
+    "scopeGroup": "Whole group",
+    "scopeLabel": "Scope",
+    "scopePhase": "Choose both companies, one company or one place once companies are set up (Phase 1).",
+    "search": "Search",
+    "searchPlaceholder": "Search anything — documents, items, parties, serial numbers…",
+    "searchPhase": "Search across documents, items and parties arrives with the masters in Phase 2.",
+    "notifications": "Notifications",
+    "noNotifications": "No notifications.",
+    "account": "Your account"
+  },
+  "views": {
+    "all": { "chip": "All transactions", "title": "Signed in as Admin: every list, total, report and export includes bills without GST, each one marked. Nothing to switch." },
+    "all-readonly": { "chip": "All transactions · read-only", "title": "CA / Auditor: you can read everything and change nothing." },
+    "gst": { "chip": "GST transactions", "title": "You see documents with GST. Lists, totals and exports are made from them." },
+    "readOnlyUntil": "Read-only until {{date}}",
+    "readOnly": "Read-only access"
+  },
+  "roles": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "md": "Managing Director",
+    "gm": "General Manager",
+    "finance_head": "Finance Head",
+    "accountant": "Accountant",
+    "office_admin": "Office admin",
+    "ca": "CA",
+    "auditor": "Auditor",
+    "staff": "Staff"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "ownLogin": "Your own login · never shared",
+    "oneSignIn": "One sign-in for both companies. You see the companies your rights allow.",
+    "plasticsLine": "Moulds, plastic components and assembled plasticware",
+    "biochemLine": "Bath and Care range, home care and perfumes",
+    "method": "How you sign in",
+    "tabPhone": "WhatsApp number",
+    "tabEmail": "Email · Admin and finance",
+    "whatsappNumber": "WhatsApp number",
+    "phonePlaceholder": "10 digits",
+    "email": "Email",
+    "password": "Password",
+    "mfaPrompt": "Password accepted. Enter the 6-digit code from your authenticator app to finish signing in.",
+    "verify": "Verify code",
+    "mfaTitle": "Code from your authenticator app",
+    "otpTitle": "Then, if asked: a 6-digit code",
+    "codeLabel": "Code digit",
+    "otpHelp": "Asked every time for Admin and finance users. Codes on WhatsApp for a new phone arrive with WhatsApp in Phase 3.",
+    "forgotPhase": "Forgot password? Reset by WhatsApp code · coming in phase 3. Until then, ask Admin.",
+    "lockNote": "Repeated wrong tries lock the account for a while.",
+    "staffPhoneLink": "How this looks on a staff phone →",
+    "errors": {
+      "phone": "Enter the 10-digit mobile number on WhatsApp, without +91 or 0.",
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "invalid": "Number or password is wrong. Check both and try again.",
+      "locked": "Too many tries. Wait a few minutes, then try again, or ask Admin.",
+      "phoneDisabled": "Sign-in with a WhatsApp number is not switched on yet. Ask Admin.",
+      "banned": "This account is switched off. Ask Admin.",
+      "network": "No connection to the server. Check your signal and try again.",
+      "generic": "Could not sign in. Try again, or ask Admin.",
+      "noFactor": "This account has no authenticator set up. Ask Admin.",
+      "code": "That code is not right. Enter the 6 digits shown in your authenticator app now.",
+      "notConfigured": "This copy of the app is not connected to the database. Set VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY."
+    }
+  },
+  "staffSignIn": {
+    "title": "Staff sign in",
+    "sub": "Your WhatsApp number and your password.",
+    "forgotPhase": "Forgot password? Code on WhatsApp · phase 3. Ask Admin now.",
+    "newPhone": "New phone? Code on WhatsApp",
+    "foot": "First time? Admin gives you your password. Stays signed in on this phone."
+  },
+  "strip": {
+    "label": "Workflow: {{name}}",
+    "step": "· step {{i}} of {{n}} · used by {{who}}",
+    "bug": "Bug fixer",
+    "bugOpen": "Bug fixer · {{count}} open",
+    "bugNotReady": "Bug fixer · none yet",
+    "total": "Total workflow →"
+  },
+  "flows": {
+    "home": "Owner overview",
+    "purchase": "Buying",
+    "warehouse": "Warehouse loop",
+    "stock": "Stock",
+    "bio": "Biochem production",
+    "plastics": "Plastics production",
+    "export": "Mixer grinder export",
+    "sales": "Selling",
+    "field": "Field sales and own shops",
+    "credit": "Credit and collections",
+    "delivery": "Delivery",
+    "money": "Cash and bank",
+    "books": "Books and tax",
+    "staff": "Staff and payroll",
+    "partners": "Partners and investors",
+    "setup": "Set-up",
+    "control": "Records and safety"
+  },
+  "help": {
+    "open": "Help",
+    "title": "Southfield Help",
+    "intro": "Ask in your own language what a screen does, why something is blocked, or what an error means. Help reads with your own rights and never changes data.",
+    "chipWhy": "Why is this blocked?",
+    "chipHow": "How do I do this?",
+    "chipError": "Explain an error",
+    "phase": "The help assistant answers from Phase 3."
+  },
+  "status": {
+    "draft": "Draft",
+    "pending": "Pending",
+    "approved": "Approved",
+    "posted": "Posted",
+    "released": "Released",
+    "onHold": "On hold",
+    "inTransit": "In transit",
+    "delivered": "Delivered",
+    "failed": "Failed",
+    "blocked": "Blocked",
+    "overdue": "Overdue",
+    "check": "Check"
+  },
+  "tax": {
+    "taxable": "Taxable",
+    "zeroRated": "Zero-rated",
+    "exempt": "Exempt",
+    "nilRated": "Nil-rated",
+    "nonGst": "Non-GST",
+    "reverseCharge": "Reverse charge",
+    "withoutGst": "Without GST",
+    "noReason": "None · CA review"
+  },
+  "errors": {
+    "loadFailed": "Could not load this page's figures.",
+    "tryAgain": "Check your connection and reload. If it happens again, give this reference to Admin."
+  },
+  "home": {
+    "title": "Today",
+    "subtitleEmpty": "No books loaded yet",
+    "kpisLabel": "Key figures",
+    "kpis": {
+      "emptyTitle": "No figures yet",
+      "emptyBody": "Sales, bank, cash and what customers owe appear here once the companies are set up and the Tally books are loaded.",
+      "emptyAction": "Load Tally data →"
+    },
+    "chart": {
+      "title": "Sales by month",
+      "unit": "₹, bill value",
+      "withGst": "With GST",
+      "withoutGst": "Without GST",
+      "emptyTitle": "No sales yet this year",
+      "emptyBody": "Each month's bill value appears as a bar once invoices are posted or loaded from Tally."
+    },
+    "needs": {
+      "title": "Needs you",
+      "emptyTitle": "Nothing needs you right now",
+      "emptyBody": "Open problems — payroll ready, cash limits, bills needing a reason, returns due — appear here, each with a link that fixes it."
+    },
+    "bills": {
+      "title": "Latest bills",
+      "all": "All bills →",
+      "date": "Date",
+      "bill": "Bill",
+      "customer": "Customer",
+      "kind": "Kind",
+      "amount": "Amount ₹",
+      "withGst": "With GST",
+      "emptyTitle": "No bills yet",
+      "emptyBody": "The latest bills appear here once invoices are posted (Phase 3) or loaded from Tally (Phase 2).",
+      "noteAll": "Admin is signed in, so bills without GST are here, marked. Anyone else opening this page sees the bills with GST and totals made from them only.",
+      "noteGst": "You see bills with GST, and totals made from them."
+    }
+  },
+  "customers": {
+    "title": "Customers",
+    "subtitle": "Customers of the company you choose · each starts as a draft for KYC",
+    "subtitleEmpty": "Customers come from Customer KYC and the Tally load · each starts as a draft for KYC",
+    "companyTabs": "Company",
+    "noCompanies": "No companies set up yet",
+    "adminNote": "You are Admin: you can add, edit any field and remove. Other users follow the rights Admin gives them.",
+    "rightsNote": "You see and change customers as your rights allow. Ask Admin for more.",
+    "editForm": "Edit the customer form",
+    "add": "Add customer",
+    "deactivate": "Deactivate",
+    "remove": "Remove",
+    "col": {
+      "customer": "Customer",
+      "howPaid": "How they paid",
+      "received": "Received this FY ₹",
+      "payments": "Payments",
+      "lastPaid": "Last paid",
+      "status": "Status",
+      "admin": "Admin"
+    },
+    "status": {
+      "draft": "Draft · for KYC",
+      "check": "Check",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "emptyTitle": "No customers yet",
+    "emptyBody": "Add a customer, or load the customer masters from Tally.",
+    "emptyBodyPhase": "The customer master is built in Phase 2: Customer KYC with GSTIN checks, and the Tally load without duplicates.",
+    "emptyAction": "Load Tally data →",
+    "foot": "Names as the bank or Tally shows them; Edit fixes the spelling and adds GSTIN, address and contacts. A party under more than one name is merged into one.",
+    "removeCard": {
+      "title": "What Remove does",
+      "noDocsLead": "No invoices, receipts or orders yet:",
+      "noDocs": "the customer is removed. The user log keeps who removed it and when.",
+      "withDocsLead": "With documents:",
+      "withDocs": "Remove becomes Deactivate (no new orders or invoices) or Merge into another customer. Their past invoices stay, because the books must keep them."
+    },
+    "editCard": {
+      "title": "Edit any field",
+      "p1": "Admin can change any field, on any customer, at any time. Each change keeps the old and new value, who changed it and when.",
+      "p2": "A changed GSTIN or state applies to new invoices; invoices already issued are corrected with a credit note and a new invoice."
+    }
+  },
+  "staff": {
+    "nav": { "label": "Staff app", "home": "Home", "requests": "Requests", "payslips": "Payslips", "details": "My details" },
+    "home": {
+      "subPending": "Staff record set up in Phase 3",
+      "payTitle": "This month's pay",
+      "payslip": "Payslip",
+      "present": "Present",
+      "leave": "Leave",
+      "advanceCut": "Advance cut",
+      "payEmpty": "No payslip yet. Your pay shows here once payroll runs.",
+      "attendancePending": "Attendance not marked yet",
+      "requestLeave": "Request leave",
+      "requestAdvance": "Request advance",
+      "myDetails": "My details",
+      "payslips": "Payslips",
+      "myRequests": "My requests",
+      "noRequests": "No requests yet. Answers come here and on WhatsApp."
+    }
+  },
+  "phone": {
+    "offline": "Offline · sends when back in signal"
+  },
+  "planned": {
+    "title": "Planned screen",
+    "subtitle": "Built in phase {{phase}} of the plan",
+    "emptyTitle": "This screen arrives in phase {{phase}}",
+    "emptyBody": "Its tables, rules and posting functions are built in that phase, then the screen is wired to live data. Nothing here is a mock-up.",
+    "phoneBody": "This part of the app is built in a later phase.",
+    "backHome": "Back to Home",
+    "backStaffHome": "Back to home"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "There is no screen at this address."
+  },
+  "nav": {
+    "home": "Home",
+    "sales": {
+      "_": "Sales",
+      "quotationsOrders": "Quotations & orders",
+      "invoices": "Invoices",
+      "receipts": "Receipts",
+      "customers": "Customers",
+      "shops": "Shops and supermarkets",
+      "routeSales": "Route sales",
+      "ownShops": "Own shops",
+      "creditCustomers": "Credit customers",
+      "customerCare": "Customer care and agents",
+      "biochemProducts": "Biochem products",
+      "priceLists": "Price lists",
+      "onlineChannels": "Online channels",
+      "onlineListings": "Online listings"
+    },
+    "purchase": {
+      "_": "Purchase",
+      "purchaseRequests": "Purchase requests",
+      "billPhoto": "Bill photo capture",
+      "priceChanges": "Price changes",
+      "purchaseOrders": "Purchase orders",
+      "goodsReceipt": "Goods receipt",
+      "billsPayments": "Bills & payments",
+      "suppliers": "Suppliers"
+    },
+    "production": {
+      "_": "Production",
+      "biochemFlow": "Biochem production flow",
+      "biochemManufacturing": "Biochem manufacturing",
+      "biochemProduction": "Biochem production entry",
+      "factoryWork": "Factory work assignment",
+      "biochemLabs": "Biochem labs",
+      "freeItems": "Free items and gift packs",
+      "biochemMachines": "Biochem machines",
+      "biochemCosting": "Biochem costing",
+      "mouldProjects": "Mould projects",
+      "mouldRegister": "Mould register",
+      "mouldCosting": "Mould costing",
+      "machineAssembly": "Machine assembly",
+      "injection": "Injection production",
+      "componentCosting": "Component costing",
+      "assembled": "Assembled products",
+      "padPrinting": "Pad printing",
+      "quality": "Quality",
+      "maintenance": "Maintenance",
+      "jobWork": "Job work"
+    },
+    "inventory": {
+      "_": "Inventory",
+      "warehouse": "Warehouse",
+      "stockTransfers": "Stock transfers",
+      "productMaster": "Product master",
+      "rawMaterial": "Raw material",
+      "componentStock": "Component stock",
+      "parts": "Parts & consumables",
+      "stockMovements": "Stock movements",
+      "scrap": "Scrap and regrind"
+    },
+    "logistics": {
+      "_": "Logistics",
+      "dispatch": "Dispatch board",
+      "trips": "Trips",
+      "vehicles": "Vehicles & drivers",
+      "vehicleFile": "Vehicle file"
+    },
+    "exports": {
+      "_": "Exports",
+      "exportOrders": "Export orders",
+      "mixerCosting": "Mixer grinder costing"
+    },
+    "hr": {
+      "_": "HR & payroll",
+      "employees": "Employees & KYC",
+      "attendance": "Attendance",
+      "duties": "Staff duties",
+      "rotation": "Staff rotation",
+      "workers": "Workers and hours",
+      "requests": "Leave & advance requests",
+      "allowances": "Allowances and benefits",
+      "cashGiven": "Cash given to staff",
+      "payroll": "Payroll"
+    },
+    "accounts": {
+      "_": "Accounts",
+      "cashBook": "Cash book",
+      "bank": "Bank",
+      "cashFlow": "Cash flow and reminders",
+      "directors": "Directors and investment",
+      "partners": "Partners and profit sharing",
+      "partnerRequests": "Partner requests",
+      "monthClose": "Month-end close",
+      "gst": "GST",
+      "financials": "Financials",
+      "scheduleIII": "Schedule III statements"
+    },
+    "admin": {
+      "_": "Admin",
+      "companies": "Companies",
+      "branches": "Branches and GSTINs",
+      "units": "Units",
+      "assets": "Asset register",
+      "licences": "Licences and documents",
+      "users": "Users & rights",
+      "specialPermissions": "Special permissions",
+      "totalWorkflow": "Total workflow",
+      "howEachPersonSees": "How each person sees it",
+      "indianLaw": "Built to Indian law",
+      "formsFields": "Forms and fields",
+      "userLog": "User log",
+      "transactionLog": "Transaction log",
+      "backup": "Backup",
+      "importData": "Import data",
+      "bugFixer": "Bug fixer",
+      "numbering": "Numbering & IDs",
+      "documentTemplates": "Document templates",
+      "whatsapp": "WhatsApp & email",
+      "settings": "Settings"
+    }
+  }
+}

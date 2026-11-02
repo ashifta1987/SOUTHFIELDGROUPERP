@@ -1,0 +1,43 @@
+# Southfield ERP: keep secrets and real business data out of Git
+
+# Approved design reference: contains real figures, names and payroll. Local only.
+design-reference/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+supabase/.env
+supabase/functions/.env
+*.pem
+*.key
+
+# Real data exports must never be committed
+*.tbk
+TBK*/
+*.001
+/imports/
+/exports/
+/backups/
+/data/
+*.dump
+*.sql.gz
+
+# Build and tooling
+node_modules/
+dist/
+.vercel/
+.turbo/
+coverage/
+playwright-report/
+test-results/
+supabase/.temp/
+supabase/.branches/
+.DS_Store
+
+# Local pack copies (contain the design reference)
+*.zip
+_pack/
+/SOUTHFIELD_ERP_PROMPT.md
+dev-dist/
+.env.test.local

@@ -1,0 +1,64 @@
+{
+  "_meta": { "language": "भोजपुरी", "needs-native-review": true, "note": "Machine draft. A native Bhojpuri speaker must review every string before go-live. Missing keys fall back to Hindi, then English." },
+  "common": {
+    "comingInPhase": "चरण {{phase}} में आई",
+    "askHelp": "एकरा बारे में मदद पूछीं",
+    "cancel": "रद्द करीं",
+    "close": "बंद करीं",
+    "save": "सेव करीं",
+    "loading": "लोड हो रहल बा",
+    "language": "भाषा"
+  },
+  "auth": {
+    "signIn": "साइन इन",
+    "signOut": "साइन आउट",
+    "ownLogin": "रउआ आपन लॉगिन · केहू के मत दीं",
+    "whatsappNumber": "WhatsApp नंबर",
+    "phonePlaceholder": "10 अंक",
+    "password": "पासवर्ड",
+    "lockNote": "बार-बार गलत डलला पर खाता कुछ देर खातिर लॉक हो जाला।",
+    "errors": {
+      "phone": "WhatsApp वाला 10 अंक के मोबाइल नंबर डालीं, +91 भा 0 बिना।",
+      "password": "आपन पासवर्ड डालीं।",
+      "invalid": "नंबर भा पासवर्ड गलत बा। दुनो देख के फेर कोसिस करीं।",
+      "network": "सर्वर से जुड़ाव नइखे। सिग्नल देख के फेर कोसिस करीं।",
+      "generic": "साइन इन ना हो पाइल। फेर कोसिस करीं, भा एडमिन से पूछीं।"
+    }
+  },
+  "staffSignIn": {
+    "title": "स्टाफ साइन इन",
+    "sub": "रउआ WhatsApp नंबर आ पासवर्ड।",
+    "forgotPhase": "पासवर्ड भुला गइनी? WhatsApp पर कोड · चरण 3। अबहीं एडमिन से पूछीं।",
+    "newPhone": "नया फोन? WhatsApp पर कोड",
+    "foot": "पहिला बेर? एडमिन रउआ के पासवर्ड दिहें। एह फोन पर साइन इन बनल रही।"
+  },
+  "help": {
+    "open": "मदद",
+    "title": "साउथफील्ड मदद",
+    "phase": "मदद सहायक चरण 3 से जवाब दी।"
+  },
+  "staff": {
+    "nav": { "label": "स्टाफ ऐप", "home": "होम", "requests": "अरजी", "payslips": "तनखा पर्ची", "details": "हमार जानकारी" },
+    "home": {
+      "payTitle": "एह महीना के तनखा",
+      "payslip": "तनखा पर्ची",
+      "present": "हाजिर",
+      "leave": "छुट्टी",
+      "advanceCut": "एडवांस कटौती",
+      "payEmpty": "अबहीं कवनो तनखा पर्ची नइखे। पेरोल चलला के बाद इहाँ देखाई।",
+      "attendancePending": "हाजिरी अबहीं ना लागल",
+      "requestLeave": "छुट्टी माँगीं",
+      "requestAdvance": "एडवांस माँगीं",
+      "myDetails": "हमार जानकारी",
+      "payslips": "तनखा पर्ची",
+      "myRequests": "हमार अरजी",
+      "noRequests": "अबहीं कवनो अरजी नइखे। जवाब इहाँ आ WhatsApp पर आई."
+    }
+  },
+  "phone": { "offline": "ऑफलाइन · सिग्नल अइला पर भेजी" },
+  "planned": {
+    "emptyTitle": "ई स्क्रीन चरण {{phase}} में आई",
+    "phoneBody": "ऐप के ई हिस्सा बाद के चरण में बनी।",
+    "backStaffHome": "होम पर लवटीं"
+  }
+}

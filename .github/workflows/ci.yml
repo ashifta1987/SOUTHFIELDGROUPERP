@@ -1,0 +1,47 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+        env:
+          # Browser-safe placeholders only; real values live in Vercel. Never put secrets here.
+          VITE_SUPABASE_URL: http://localhost:54321
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder
+      - name: Playwright smoke (sign-in screens, axe)
+        run: |
+          npx playwright install --with-deps chromium
+          npx playwright test -g "sign-in screens"
+        env:
+          VITE_SUPABASE_URL: http://localhost:54321
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

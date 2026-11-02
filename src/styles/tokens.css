@@ -1,0 +1,100 @@
+/* Southfield ERP design tokens, taken from the approved design canvas (Style guide + every screen).
+   Import once at the app root. Never hard-code these hex values in components: use the variables. */
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Malayalam:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+
+:root {
+  /* Base */
+  --sf-ink: #17212B;            /* text, sidebar background */
+  --sf-paper: #F5F3EE;          /* app background */
+  --sf-surface: #FFFFFF;        /* cards, tables, forms, top bar, workflow strip */
+  --sf-line: #E2DED4;           /* card borders, table header rule, top bar rule */
+  --sf-line-soft: #ECEAE4;      /* table row dividers; neutral chip fill */
+  --sf-line-faint: #F0EEE8;     /* key–value row dividers inside cards */
+  --sf-border-input: #D3CEC2;   /* inputs, secondary buttons, kbd hint */
+  --sf-row-group: #F6F5F1;      /* group header rows in tables */
+
+  /* Text */
+  --sf-text: #17212B;
+  --sf-text-2: #3E4851;         /* body copy inside cards */
+  --sf-text-muted: #5B6670;     /* helper text, table headers, sub-titles */
+  --sf-text-faint: #8A939B;
+
+  /* Brand and states (fill / tint / ink-on-tint) */
+  --sf-primary: #0F6B67;        /* main actions, selected items, links */
+  --sf-primary-hover: #0B504D;
+  --sf-primary-tint: #DDEFED;   /* with --sf-primary-hover text (Taxable chip, avatar) */
+  --sf-navy: #16345A;           /* "All transactions" view, phone and tablet headers */
+  --sf-navy-tint: #E6ECF4;
+
+  --sf-signal: #D9901A;         /* amber: a FILL or border only, never text on white */
+  --sf-signal-tint: #FBEFD9;
+  --sf-signal-ink: #7A4E07;
+
+  --sf-success: #2E7D4F;
+  --sf-success-tint: #E3F1E8;
+  --sf-success-ink: #1F5C38;
+
+  --sf-danger: #B8402A;
+  --sf-danger-tint: #F8E4DF;
+  --sf-danger-ink: #8E2F1D;
+  --sf-danger-border: #E4B5AA;
+
+  --sf-info: #2D6AA8;
+  --sf-info-tint: #E1ECF7;
+  --sf-info-ink: #1F4E80;
+
+  --sf-transit: #5E2A7A;        /* in-transit state in transfers */
+  --sf-transit-tint: #F3E8F7;
+
+  --sf-neutral-tint: #ECEAE4;   /* Exempt, Nil-rated, Scheduled chips */
+  --sf-neutral-ink: #3E4851;
+
+  /* Sidebar */
+  --sf-side-bg: #17212B;
+  --sf-side-text: #C9D1D8;
+  --sf-side-foot: #8A97A3;
+  --sf-side-rule: #2B3743;
+  --sf-side-active-bg: #0F6B67;
+  --sf-side-active-text: #FFFFFF;
+
+  /* Phone and tablet header */
+  --sf-app-head-bg: #16345A;
+  --sf-app-head-sub: #C9D8E8;
+  --sf-app-avatar: #1FA9DD;
+
+  /* Type */
+  --sf-font: 'IBM Plex Sans', 'Noto Sans Malayalam', 'Noto Sans Devanagari', system-ui, sans-serif;
+  --sf-font-mono: 'IBM Plex Mono', ui-monospace, monospace;   /* amounts, document numbers, GSTINs, vehicle numbers */
+  --sf-fs-page: 28px;   --sf-fw-page: 700;   /* page title, letter-spacing -0.01em */
+  --sf-fs-card: 16px;   --sf-fw-card: 600;   /* card title */
+  --sf-fs-body: 14px;   --sf-lh-body: 1.45;
+  --sf-fs-table: 13px;
+  --sf-fs-th: 12px;     --sf-fw-th: 600;
+  --sf-fs-help: 12px;
+  --sf-fs-chip: 12px;   --sf-fw-chip: 600;
+  --sf-fs-phone: 16px;  /* phone and tablet body */
+
+  /* Shape and space (4 px grid) */
+  --sf-radius-card: 8px;
+  --sf-radius-input: 6px;
+  --sf-radius-chip: 999px;
+  --sf-radius-kbd: 4px;
+  --sf-space-1: 4px; --sf-space-2: 8px; --sf-space-3: 12px; --sf-space-4: 16px;
+  --sf-space-5: 20px; --sf-space-6: 24px; --sf-space-8: 32px; --sf-space-12: 48px;
+
+  /* Layout */
+  --sf-sidebar-w: 232px;
+  --sf-main-max: 1240px;
+  --sf-main-pad: 24px 32px 48px;
+  --sf-topbar-pad: 12px 32px;
+  --sf-strip-pad: 9px 32px;
+  --sf-btn-h: 40px;           /* desktop */
+  --sf-btn-h-touch: 52px;     /* phone and tablet, up to 60px for the one primary action */
+  --sf-input-h: 38px;
+  --sf-touch-min: 48px;
+}
+
+/* Amounts: right-aligned, tabular, Indian grouping done in code (Intl.NumberFormat('en-IN')). */
+.sf-amount { font-family: var(--sf-font-mono); font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.sf-amount[data-negative='true'] { color: var(--sf-danger-ink); }
