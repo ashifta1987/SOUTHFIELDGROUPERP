@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phase 2 — Masters and data load: complete → awaiting owner review.** Phase 1 approved by the owner on 03-11-2026 ("start phase 2"). Phase 3 not started. |
+| Current phase | **Phase 3 — Cash, invoicing and payroll: complete on DEV → awaiting owner review.** Phase 2 approved by the owner on 03-11-2026 ("go ahead"). Phase 4 not started. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,20 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 3 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` | Done |
+| 2 | Migrations `20261103002000…3200` on DEV: vouchers + append-only GL, bill allocations, bank accounts/statement lines/matching, cash limits (₹2 lakh receipt refused, ₹10,000 payment warn + reason + Admin flag), sales documents with tax from HSN by date (CGST/SGST vs IGST), purchase bills, receipts/payments/journals/reversals, trial balance / ledger / statement, cash book and cash flow summaries, payroll (staff profiles, attendance, OT from settings, requests, cash given with the cash limit, payroll prepare/approve by a different person, payslips), duties, messaging (channels, templates, consent-only allow list, outbox, inbound), help pages and problem reports, Home summary | Done |
+| 3 | Screens: Invoice, Sales register (Admin/accountant), Document templates, Receipts, Bank (reconcile + set-up), Cash book, Cash book check, Cash flow & reminders, Bills & payments, Cash entry (phone), Employees, Add staff, Attendance, Worker hours, Duties, Rotation, Requests, Allowances, Cash given, Payroll (all/company), Payroll trend, Staff workflow, Staff home/leave/advance/details/payslip, WhatsApp & email, Help panel v1 (+ "Ask Help about this" on every error box) | Done, live data |
+| 4 | pgTAP **155/155**; Vitest **39**; Playwright full suite (DB round-trip + axe) — see `TEST_RESULTS.md` | Done |
+| 5 | Help pages: 26 in `docs/help/`, loaded with `scripts/help-seed.mjs` | Done |
+| 6 | Edge Functions `whatsapp-sender`, `whatsapp-webhook` (Meta Cloud + mock provider) | Code written; **not deployed** (WhatsApp Business account + `supabase login` needed) |
+| 7 | Stop for owner review | **Waiting for the owner** |
+
+Known Phase 3 gaps: no WhatsApp sending until the Business account exists (outbox fills, nothing leaves); no AI model in Help (search, pages and error explanations only, Q-14); PDF is browser print (server PDF + e-invoice in Phase 8); delivery challan for branch moves arrives with stock in Phase 4; "Against Tally" comparison on Cash book check waits for an imported company; Cash flow forecast covers bills only (no salaries/EMIs/statutory dues yet); "Messages by event" matrix, owner daily summary and message cost cards are Phase 6; KYC document uploads for staff, the investor/official section of Add staff, allowance classification, labour cost per hour on Duties and Excel exports are not built; StaffDetails is read-only; payroll groups follow pay basis (monthly/daily) rather than named groups. Every Playwright payroll/staff run leaves one synthetic `E2EP…` company in DEV (append-only rows), switched off by `scripts/e2e-cleanup.mjs`.
 
 ## Phase 2 result (03-11-2026)
 
@@ -199,6 +213,10 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 | Q-24 | TDS sections and rates (Income-tax Act 2025); MSME expense treatment. | Settings, unset until confirmed. |
 | Q-25 | Stock valuation method. | Weighted average per company (§9) unless CA decides otherwise. |
 | Q-26 | Whether Southfield is a registered micro/small enterprise (MSME selling rule > 45 days). | Rule ready, switched by setting. |
+| Q-27 | Confirm the cash limits as configured: receipt of ₹2,00,000 or more from one person in a day refused (s.269ST); cash payment over ₹10,000 to one person in a day warned (s.40A(3)). | Seeded as settings `cash.receipt_block_amount` / `cash.payment_warn_amount`; change only via Settings. |
+| Q-28 | Overtime multiplier (seeded 2× as in the prompt) and whether paid leave counts as payable days. | OT from `payroll.ot_multiplier`; `prepare_payroll` falls back to 2 if the setting is missing; leave is treated as unpaid until decided. |
+| Q-29 | Advance recovery cap (% of monthly pay) and advance approval thresholds (who may approve how much). | Not enforced; nobody approves their own request; Admin decides. |
+| Q-30 | Minimum cash/bank balance for the Cash flow "days below minimum" indicator. | No `cash.min_balance` setting created; the indicator stays hidden until set. |
 
 ## Translations awaiting native review
 
@@ -212,6 +230,8 @@ All `ml`, `hi` and `bho` strings are machine first drafts flagged `needs-native-
 | Main (Home) | needs review | needs review | needs review |
 | Customers | needs review | needs review | needs review |
 | StaffHome + StaffNav | needs review | needs review | needs review |
+| StaffLeave, StaffAdvance, StaffDetails, StaffPayslip (`src/features/staff/**/i18n.*.json`) | needs review | needs review | needs review (partial; falls back to hi) |
+| Help panel (`src/features/help/i18n.*.json`) | needs review | needs review | needs review (partial; falls back to hi) |
 | Shared components (empty / error / offline / ComingInPhase) | needs review | needs review | needs review |
 
 ## Design deviations
@@ -234,6 +254,12 @@ Differences from `design-reference/` that remain after Phase 0, and nearest-patt
 | StaffHome | Header shows the signed-in name and "Staff record set up in Phase 3" instead of code · company; pay card shows "No payslip yet" | `hr` schema is Phase 3 | `api.staff_me()` |
 | StaffHome | Reference header had a broken image on the right; replaced by the 48 px help button | §UX-4.2 asks for a help icon there | — |
 | Sidebar | Parts & consumables, Receipts, Purchase orders, Bills & payments, Settings have no reference screen | Not in the canvas | Built later from list/document patterns (§UX-7); they show a planned page now |
+| StaffLeave | "Add photo (doctor's note)" omitted | `submit_staff_request` has no attachment yet | Add a storage path to the request RPC |
+| StaffAdvance | "Up to ₹X can be cut from one month's pay" box replaced by a neutral note; "Goes to" shows "Admin or the HR approver" | The cut limit and approval threshold are owner/payroll settings that do not exist yet; never invented | Show the server's limit once a setting exists |
+| StaffDetails | Address, emergency contact and photo rows and the "Add" actions omitted; details are read-only | No columns or self-service change-request RPC yet (changes go through the office) | Staff detail-change requests with Admin approval |
+| StaffPayslip | "Share" omitted; "PDF" is Print / save as PDF; "Monthly salary / rate per day" lines replaced by days paid, earned, allowances, OT, gross | The payslip row has no salary rate; salary is read only through `staff_pay` | Server-made payslip PDF with the document templates |
+| WhatsApp | "Messages by event" tick matrix, "Owner's daily summary" and "Message costs" cards omitted; replaced by Templates / Test numbers / Outbox / Received / Numbers tabs | No routing table yet; daily summary and cost caps are Phase 6 (§WA-9) | Event routing table + cost report |
+| Help panel | No AI answers, no microphone; search + pages + error explanation + problem reports only | Model provider not chosen (§HELP-4); voice is Phase 8 | `help-agent` Edge Function once the provider is chosen |
 | Dev gallery | `/dev/ui` strings are English-only | Development-only page, never shipped | — |
 
 | Users | The owner's own Admin account doesn't exist yet: create it in Supabase (Authentication → Add user) with `app_metadata` `{"role":"owner"}`, or deploy `admin-users` and add it from the Users screen | Owner | Review accounts `phase0.*@southfield.test` are synthetic and can be removed after |

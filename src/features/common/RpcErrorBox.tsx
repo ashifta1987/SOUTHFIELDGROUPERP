@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import type { RpcError } from '@/data/rpc'
 import { ErrorRef } from '@/ui'
+import { askHelp } from '@/features/help/events'
 
 /** Turns a refused RPC into the rule and the next step, with the error reference (§UX-8). */
 export function useRpcMessage() {
@@ -22,5 +23,5 @@ export function RpcErrorBox({ error }: { error: RpcError | null | undefined }) {
   const { t } = useTranslation()
   const message = useRpcMessage()
   if (!error) return null
-  return <ErrorRef message={message(error)} next={t('errors.nextStep')} refId={error.ref} />
+  return <ErrorRef message={message(error)} next={t('errors.nextStep')} refId={error.ref} onAskHelp={() => askHelp({ errorCode: error.ref })} />
 }

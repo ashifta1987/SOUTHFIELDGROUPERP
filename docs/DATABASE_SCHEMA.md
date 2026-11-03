@@ -134,3 +134,19 @@ Contracts are written at the start of each phase. The plan is in [IMPLEMENTATION
 | `api.decide_staff_request` (replaced) | Refuses a missing request (`staff.request_missing`); leave marking only when the request has a company. |
 
 Tests: `supabase/tests/10_hr_screens.sql` (18).
+
+### Phase 3 staff app, WhatsApp admin, Help v1 (`20261103003200_staff_help_msg.sql`, built)
+
+| Object | Contract |
+|---|---|
+| `hr.requests` (+ columns) | `leave_type` casual\|sick\|unpaid, `half_day`, `repay_months` 1–12, `needed_by`, `paid_in` cash\|bank. For the approver only; payroll still recovers what was actually given (`hr.cash_given`). |
+| `api.submit_staff_request(crid, p)` (replaced) | Own request only (`app.my_person()`), locks the person row. Leave: dates required, a half day is one date (`staff.half_day`), leave type checked. Advance: amount > 0, pay back 1–12 months, needed-by not in the past (IST), cash or bank. Rule codes `staff.*`. |
+| `api.staff_requests` (view, invoker; columns appended) | + `leave_type, half_day, repay_months, needed_by, paid_in`. |
+| `api.staff_me()` (replaced, read) | Adds `person_id`, masked `phone_masked` / `bank_masked`, `language`, `join_date`, `pay_basis`, `kyc_done/kyc_needed`, and `payslips[]` = the person's own payslips of **posted** runs only (drafts never shown). Requests carry leave type, half day and the approver's note. |
+| `api.upsert_template(crid, p)` | Admin only. New → draft v1; edit of a draft updates in place (row locked); edit of a submitted/approved template inserts a new draft version (approved one keeps working). Body `{{n}}` count must equal the parameter list (`msg.template_params`). Events `hr.*` may not carry ₹/amounts or salary/bank/KYC words or parameter names (`msg.staff_template_private`, §WA-7). |
+| `app.consented_number(number)` | Admin only (null otherwise): `party:<name>` when a party contact with WhatsApp consent has the number, `staff:<name>` for an active staff member with their own sign-in. |
+| `api.set_allow_list` (replaced) | Admin only. Number normalised to +91; adding requires `app.consented_number` (`msg.not_consented`); bad format `msg.bad_number`. |
+| `api.msg_allow_list` (view, columns appended) | + `number_masked`, `belongs_to_kind`, `belongs_to`. |
+| `api.msg_inbound` (view, invoker) | Received messages with `from_masked`, party, window expiry (RLS: Admin, or accounts of that company). |
+
+Tests: `supabase/tests/11_staff_help.sql` (25).

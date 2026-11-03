@@ -1,0 +1,19 @@
+{
+  "staffApp": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "back": "होम पर वापस",
+    "send": "निहोरा भेजीं",
+    "sent": "निहोरा भेजा गइल। जवाब इहाँ आ व्हाट्सऐप पर मिली।",
+    "kind": {
+      "leave": "छुट्टी",
+      "advance": "एडवांस"
+    },
+    "rules": {
+      "reason": "कुछ शब्द में कारण बताईं।",
+      "amount": "रकम लिखीं।"
+    }
+  }
+}

@@ -40,3 +40,13 @@ Notes: pgTAP runs through `scripts/pgtap.mjs` against the DEV project because Do
 | Unit tests | `pnpm test` | **39 passed** (adds 9 Tally XML parser tests) |
 | pgTAP (DEV, rolled back) | `pnpm db:test` | **73 passed, 0 failed** — adds `05_masters` (16) and `06_import` (15): same file twice creates nothing, rename under same GUID → alias + review item, one person across both companies, near-duplicate → Bug fixer item and no new party, unmapped group → "Map this head", voucher changed after loading → "Changed in Tally" with the loaded entry untouched, opening bills hidden from the GST view |
 | End to end + axe | `npx playwright test --workers=1` | **38 passed**, 5 skipped (screenshot specs) |
+
+## Phase 3 — 03-11-2026
+
+| Check | Command | Result |
+|---|---|---|
+| Lint / types | `pnpm lint`, `npx tsc -b` | Pass |
+| Unit tests | `pnpm test` | **39 passed** |
+| pgTAP (DEV, rolled back) | `pnpm db:test` | **155 passed, 0 failed** — adds `07_documents` (GST by place of supply, rate from HSN, no taxable sale without GST, Admin-only without GST, MRP, gap-free numbers, balanced GL, idempotent posting), `08_money_payroll` (cash limits, allocations, closed period, OT, preparer cannot approve payroll, own payslip only), `09_money_screens` (8), `10_hr_screens` (20), `11_staff_help` (25). `05_masters` plan count corrected (15). |
+| End to end + axe | `npx playwright test --workers=1` | **46 passed**, 5 skipped (screenshot specs). New: `phase3-invoice` (2), `phase3-money` (3), `phase3-payroll` (3), `phase3-staff`, `phase3-help`, `phase3-whatsapp` — each asserts DB state and runs axe. `phase0` assertions relaxed so they hold once DEV has figures; `phase2-import` waited on the always-visible intro text and is now tied to the success message. |
+

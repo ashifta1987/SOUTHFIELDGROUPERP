@@ -1,0 +1,21 @@
+{
+  "staffAdvance": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "അഡ്വാൻസ് അപേക്ഷ",
+    "leaveLink": "അവധി",
+    "amount": "തുക",
+    "amountFormat": "രൂപയിൽ തുക നൽകുക, ഉദാ. 2500.",
+    "cutNote": "ഓരോ മാസവും എത്ര കുറയ്ക്കുമെന്ന് ശമ്പള പട്ടിക തയ്യാറാക്കുമ്പോൾ കണക്കാക്കും.",
+    "payBack": "തിരിച്ചടവ് കാലം",
+    "oneMonth": "1 മാസം",
+    "neededBy": "ആവശ്യമുള്ള തീയതി",
+    "paidIn": "നൽകുന്നത്",
+    "cash": "പണം",
+    "bank": "ബാങ്ക്",
+    "reason": "കാരണം",
+    "mine": "എന്റെ അഡ്വാൻസ് അപേക്ഷകൾ"
+  }
+}

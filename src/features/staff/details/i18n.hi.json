@@ -1,0 +1,23 @@
+{
+  "staffDetails": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "मेरा विवरण",
+    "kyc": "KYC {{done}} / {{needed}}",
+    "staffId": "स्टाफ ID",
+    "name": "नाम",
+    "work": "काम",
+    "joined": "जुड़े",
+    "whatsapp": "व्हाट्सऐप नंबर",
+    "locked": "बंद",
+    "bank": "वेतन का बैंक खाता",
+    "firstLanguage": "पहली भाषा",
+    "notChosen": "नहीं चुनी",
+    "notEntered": "अभी नहीं भरा",
+    "appLanguage": "इस ऐप की भाषा",
+    "note1": "ये विवरण केवल ऑफिस बदल सकता है। एडमिन की मंज़ूरी के बाद बदलाव लागू होता है।",
+    "note2": "नए बैंक खाते के लिए पासबुक की फोटो या रद्द चेक चाहिए।"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "staffLeave": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "छुट्टी के निहोरा",
+    "from": "से",
+    "to": "ले",
+    "reason": "कारण"
+  }
+}

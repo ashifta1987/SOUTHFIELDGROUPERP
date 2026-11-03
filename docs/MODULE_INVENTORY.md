@@ -22,28 +22,28 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Main `Main` | `/` | `src/features/home/HomePage.tsx` | `api.v_home_kpis` over `acct.gl_entries`, `sales.invoices`, `ops.bug_items`, `core.licences`, `hr.attendance_hours` | `api.home_dashboard(p_company_id, p_from, p_to)` | 0 | Phase 0 shell: UI built, empty states; data in Phase 3 (KPIs grow through Phase 7) |
+| Main `Main` | `/` | `src/features/home/HomePage.tsx` | `api.v_home_kpis` over `acct.gl_entries`, `sales.invoices`, `ops.bug_items`, `core.licences`, `hr.attendance_hours` | `api.home_dashboard(p_company_id, p_from, p_to)` | 0 | Built (Phase 3) — live data via api.home_summary / api.staff_me |
 
 ## Sales
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Invoices `Invoice` | `/sales/invoices` | `src/features/sales/InvoicePage.tsx` | `sales.invoices`, `sales.invoice_lines`, `sales.invoice_tax_lines`, `master.hsn_rates`, `core.doc_series` | `api.preview_invoice_tax`, `api.post_sales_invoice`, `api.reverse_document` | 3 | missing (repo was empty) |
+| Invoices `Invoice` | `/sales/invoices` | `src/features/sales/InvoicePage.tsx` | `sales.invoices`, `sales.invoice_lines`, `sales.invoice_tax_lines`, `master.hsn_rates`, `core.doc_series` | `api.preview_invoice_tax`, `api.post_sales_invoice`, `api.reverse_document` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Quotations & orders `SalesOrders` | `/sales/quotations-and-orders` | `src/features/sales/SalesOrdersPage.tsx` | `sales.quotations`, `sales.orders`, `sales.order_lines`, `inv.reservations` | `api.create_quotation`, `api.confirm_sales_order`, `api.check_credit_exposure` | 6 | missing (repo was empty) |
 | Customers (second view) `CustomerKYC` | `/sales/customers/customer-kyc` | `src/features/sales/customer-kyc/CustomerKycPage.tsx` | `master.parties`, `master.party_companies`, `master.party_contacts`, `master.party_addresses`, `master.party_documents`, `master.gstin_checks`, `msg.contacts` | `api.propose_customer`, `api.verify_party_kyc`, `api.record_consent` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-customers.spec.ts; pgTAP 05_masters |
 | Shops and supermarkets `ShopSales` | `/sales/shops-and-supermarkets` | `src/features/sales/ShopSalesPage.tsx` | `sales.orders`, `sales.invoices`, `master.parties` | `api.confirm_sales_order`, `api.post_sales_invoice` | 6 | missing (repo was empty) |
 | Price lists `PriceList` | `/sales/price-lists` | `src/features/sales/price-lists/PriceListPage.tsx` | `master.price_lists`, `master.price_list_items`, `master.product_mrp_history` | `api.upsert_price_list`, `api.approve_price_change` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-pricelists.spec.ts |
 | Online channels `OnlineSales` | `/sales/online-channels` | `src/features/sales/OnlineSalesPage.tsx` | `sales.online_channels`, `sales.online_orders`, `acct.tcs_reconciliation` | `api.ingest_online_order` (via `store-webhooks`) | 6 | missing (repo was empty) |
 | Customers `Customers` | `/sales/customers` | `src/features/sales/CustomersPage.tsx` | `master.parties`, `master.party_companies`, `api.v_customer_outstanding` | `api.v_customers` (list), `api.propose_customer`, `api.archive_party` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-customers.spec.ts |
-| Invoices (second view) `CompanyPortal` | `/sales/invoices/company-portal` | `src/features/sales/AccountantRegisterPage.tsx` | `api.v_sales_register` (RLS: GST view) | `api.sales_register(p_filters)` | 3 | missing (repo was empty) |
-| Invoices (second view) `SalesRegister` | `/sales/invoices/sales-register` | `src/features/sales/SalesRegisterPage.tsx` | `api.v_sales_register` (RLS: all view) | `api.sales_register(p_filters)`, `api.export_register` | 3 | missing (repo was empty) |
+| Invoices (second view) `CompanyPortal` | `/sales/invoices/company-portal` | `src/features/sales/AccountantRegisterPage.tsx` | `api.v_sales_register` (RLS: GST view) | `api.sales_register(p_filters)` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Invoices (second view) `SalesRegister` | `/sales/invoices/sales-register` | `src/features/sales/SalesRegisterPage.tsx` | `api.v_sales_register` (RLS: all view) | `api.sales_register(p_filters)`, `api.export_register` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Biochem products `BiochemProducts` | `/sales/biochem-products` | `src/features/sales/biochem-products/BiochemProductsPage.tsx` | `master.products`, `master.product_labels`, `master.product_mrp_history`, `master.hsn_rates` | `api.upsert_product`, `api.check_label` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-products.spec.ts (data) |
 | Online listings `OnlineListings` | `/sales/online-listings` | `src/features/sales/OnlineListingsPage.tsx` | `sales.listings`, `master.products` | `api.publish_listing` (Admin) | 6 | missing (repo was empty) |
 | Route sales `RouteSales` | `/sales/route-sales` | `src/features/sales/RouteSalesPage.tsx` | `field.beats`, `field.visits`, `field.gps_points`, `field.cash_handovers` | `api.plan_beat`, `api.approve_out_of_geofence` | 6 | missing (repo was empty) |
 | Own shops `Outlets` | `/sales/own-shops` | `src/features/sales/OwnShopsPage.tsx` | `sales.shop_days`, `sales.invoices`, `inv.transfers` | `api.shop_day_close`, `api.cash_handover` | 6 | missing (repo was empty) |
 | Credit customers `CreditControl` | `/sales/credit-customers` | `src/features/sales/CreditControlPage.tsx` | `sales.credit_applications`, `sales.credit_approvals`, `sales.credit_exceptions`, `master.credit_terms` | `api.submit_credit_application`, `api.approve_credit_stage`, `api.grant_md_exception` | 6 | missing (repo was empty) |
 | Customer care and agents `SalesControls` | `/sales/customer-care-and-agents` | `src/features/sales/CustomerCarePage.tsx` | `sales.complaints`, `sales.complaint_events`, `sales.agents`, `sales.agent_commissions`, `sales.private_label_orders`, `msg.outbox` | `api.log_complaint`, `api.qc_hold_batch`, `api.close_complaint`, `api.schedule_reminders` | 6 | missing (repo was empty) |
-| *Receipts* (no reference) | `/sales/receipts` | `src/features/sales/ReceiptsPage.tsx` | `sales.receipts`, `sales.receipt_allocations`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt` | 3 | missing (repo was empty) — build from §UX-7 list + document patterns |
+| *Receipts* (no reference) | `/sales/receipts` | `src/features/sales/ReceiptsPage.tsx` | `sales.receipts`, `sales.receipt_allocations`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Purchase
 
@@ -55,7 +55,7 @@ Conventions:
 | Bill photo capture `BillReview` | `/purchase/bill-photo-capture` | `src/features/purchase/BillReviewPage.tsx` | `purch.bill_captures`, `purch.bills`, `purch.orders`, `purch.goods_receipts` | `api.match_bill_to_po_grn`, `api.post_purchase_bill` | 4 | missing (repo was empty) |
 | Price changes `PriceChanges` | `/purchase/price-changes` | `src/features/purchase/PriceChangesPage.tsx` | `purch.price_history` | `api.v_price_changes` | 4 | missing (repo was empty) |
 | *Purchase orders* (no reference) | `/purchase/purchase-orders` | `src/features/purchase/PurchaseOrdersPage.tsx` | `purch.rfqs`, `purch.quotations`, `purch.orders`, `purch.order_lines` | `api.create_rfq`, `api.record_quotation`, `api.issue_purchase_order` | 4 | missing (repo was empty) — build from §UX-7 patterns |
-| *Bills & payments* (no reference) | `/purchase/bills-and-payments` | `src/features/purchase/BillsPaymentsPage.tsx` | `purch.bills`, `purch.payments`, `purch.payment_allocations`, `acct.tds_entries` | `api.post_purchase_bill`, `api.check_cash_limit`, `api.post_payment`, `api.approve_payment` | 3 | missing (repo was empty) — build from §UX-7 patterns |
+| *Bills & payments* (no reference) | `/purchase/bills-and-payments` | `src/features/purchase/BillsPaymentsPage.tsx` | `purch.bills`, `purch.payments`, `purch.payment_allocations`, `acct.tds_entries` | `api.post_purchase_bill`, `api.check_cash_limit`, `api.post_payment`, `api.approve_payment` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Production
 
@@ -113,35 +113,35 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Employees & KYC `StaffKYC` | `/hr-and-payroll/employees-and-kyc` | `src/features/hr/StaffKycPage.tsx` | `hr.employees`, `hr.employee_kyc` (Aadhaar last 4 only), `hr.employee_bank` (masked) | `api.upsert_employee`, `api.record_kyc_view` | 3 | missing (repo was empty) |
-| Payroll `Payroll` | `/hr-and-payroll/payroll` | `src/features/hr/PayrollPage.tsx` | `hr.payroll_runs`, `hr.payroll_lines`, `hr.payslips` | `api.run_payroll`, `api.approve_payroll`, `api.post_payroll` | 3 | missing (repo was empty) |
-| Attendance `Attendance` | `/hr-and-payroll/attendance` | `src/features/hr/AttendancePage.tsx` | `hr.attendance_hours` | `api.record_attendance` | 3 | missing (repo was empty) |
-| Leave & advance requests `Requests` | `/hr-and-payroll/leave-and-advance-requests` | `src/features/hr/RequestsPage.tsx` | `hr.leave_requests`, `hr.advance_requests` | `api.decide_request` | 3 | missing (repo was empty) |
-| Staff duties `StaffDuties` | `/hr-and-payroll/staff-duties` | `src/features/hr/StaffDutiesPage.tsx` | `hr.duties`, `hr.designations` | `api.assign_duty` | 3 | missing (repo was empty) |
-| Staff rotation `StaffRotation` | `/hr-and-payroll/staff-rotation` | `src/features/hr/StaffRotationPage.tsx` | `hr.employee_company_assignments`, `hr.rotations` | `api.rotate_employee` | 3 | missing (repo was empty) |
-| Payroll (second view) `PayrollBiochem` | `/hr-and-payroll/payroll/payroll-biochem` | `src/features/hr/PayrollCompanyPage.tsx` | `hr.payroll_runs`, `hr.payroll_lines` | `api.v_payroll_company` | 3 | missing (repo was empty) |
-| Payroll (second view) `PayrollBiochemTrend` | `/hr-and-payroll/payroll/payroll-biochem-trend` | `src/features/hr/PayrollTrendPage.tsx` | `hr.payroll_runs` | `api.v_payroll_trend` | 3 | missing (repo was empty) |
-| Employees & KYC (second view) `AddStaff` | `/hr-and-payroll/employees-and-kyc/add-staff` | `src/features/hr/AddStaffPage.tsx` | `hr.employees`, `hr.designations`, `core.people` | `api.upsert_employee` | 3 | missing (repo was empty) |
-| Workers and hours `WorkerHours` | `/hr-and-payroll/workers-and-hours` | `src/features/hr/WorkerHoursPage.tsx` | `hr.attendance_hours`, `hr.employee_company_assignments` | `api.v_worker_hours` | 3 | missing (repo was empty) |
-| Workers and hours (second view) `StaffWorkflow` | `/hr-and-payroll/workers-and-hours/staff-workflow` | `src/features/hr/StaffWorkflowPage.tsx` | `core.state_transitions` | `api.v_state_machine('employee')` | 3 | missing (repo was empty) |
-| Allowances and benefits `Allowances` | `/hr-and-payroll/allowances-and-benefits` | `src/features/hr/AllowancesPage.tsx` | `hr.allowance_types`, `hr.allowance_lines` | `api.classify_allowance_line` | 3 | missing (repo was empty) |
-| Cash given to staff `CashGiven` | `/hr-and-payroll/cash-given-to-staff` | `src/features/hr/CashGivenPage.tsx` | `hr.cash_given`, `acct.gl_entries` | `api.record_cash_given` (cash-limit checked) | 3 | missing (repo was empty) |
+| Employees & KYC `StaffKYC` | `/hr-and-payroll/employees-and-kyc` | `src/features/hr/StaffKycPage.tsx` | `hr.employees`, `hr.employee_kyc` (Aadhaar last 4 only), `hr.employee_bank` (masked) | `api.upsert_employee`, `api.record_kyc_view` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Payroll `Payroll` | `/hr-and-payroll/payroll` | `src/features/hr/PayrollPage.tsx` | `hr.payroll_runs`, `hr.payroll_lines`, `hr.payslips` | `api.run_payroll`, `api.approve_payroll`, `api.post_payroll` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Attendance `Attendance` | `/hr-and-payroll/attendance` | `src/features/hr/AttendancePage.tsx` | `hr.attendance_hours` | `api.record_attendance` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Leave & advance requests `Requests` | `/hr-and-payroll/leave-and-advance-requests` | `src/features/hr/RequestsPage.tsx` | `hr.leave_requests`, `hr.advance_requests` | `api.decide_request` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Staff duties `StaffDuties` | `/hr-and-payroll/staff-duties` | `src/features/hr/StaffDutiesPage.tsx` | `hr.duties`, `hr.designations` | `api.assign_duty` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Staff rotation `StaffRotation` | `/hr-and-payroll/staff-rotation` | `src/features/hr/StaffRotationPage.tsx` | `hr.employee_company_assignments`, `hr.rotations` | `api.rotate_employee` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Payroll (second view) `PayrollBiochem` | `/hr-and-payroll/payroll/payroll-biochem` | `src/features/hr/PayrollCompanyPage.tsx` | `hr.payroll_runs`, `hr.payroll_lines` | `api.v_payroll_company` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Payroll (second view) `PayrollBiochemTrend` | `/hr-and-payroll/payroll/payroll-biochem-trend` | `src/features/hr/PayrollTrendPage.tsx` | `hr.payroll_runs` | `api.v_payroll_trend` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Employees & KYC (second view) `AddStaff` | `/hr-and-payroll/employees-and-kyc/add-staff` | `src/features/hr/AddStaffPage.tsx` | `hr.employees`, `hr.designations`, `core.people` | `api.upsert_employee` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Workers and hours `WorkerHours` | `/hr-and-payroll/workers-and-hours` | `src/features/hr/WorkerHoursPage.tsx` | `hr.attendance_hours`, `hr.employee_company_assignments` | `api.v_worker_hours` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Workers and hours (second view) `StaffWorkflow` | `/hr-and-payroll/workers-and-hours/staff-workflow` | `src/features/hr/StaffWorkflowPage.tsx` | `core.state_transitions` | `api.v_state_machine('employee')` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Allowances and benefits `Allowances` | `/hr-and-payroll/allowances-and-benefits` | `src/features/hr/AllowancesPage.tsx` | `hr.allowance_types`, `hr.allowance_lines` | `api.classify_allowance_line` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Cash given to staff `CashGiven` | `/hr-and-payroll/cash-given-to-staff` | `src/features/hr/CashGivenPage.tsx` | `hr.cash_given`, `acct.gl_entries` | `api.record_cash_given` (cash-limit checked) | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Accounts
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Cash book `CashBook` | `/accounts/cash-book` | `src/features/accounts/CashBookPage.tsx` | `acct.vouchers`, `acct.voucher_lines`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt`, `api.post_payment`, `api.post_contra` | 3 | missing (repo was empty) |
-| Bank `BankReco` | `/accounts/bank` | `src/features/accounts/BankRecoPage.tsx` | `acct.bank_accounts`, `acct.bank_statements`, `acct.bank_statement_lines`, `acct.bank_matches` | `api.stage_bank_lines` (via Edge Fn), `api.match_bank_line` | 3 | missing (repo was empty) |
+| Cash book `CashBook` | `/accounts/cash-book` | `src/features/accounts/CashBookPage.tsx` | `acct.vouchers`, `acct.voucher_lines`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt`, `api.post_payment`, `api.post_contra` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| Bank `BankReco` | `/accounts/bank` | `src/features/accounts/BankRecoPage.tsx` | `acct.bank_accounts`, `acct.bank_statements`, `acct.bank_statement_lines`, `acct.bank_matches` | `api.stage_bank_lines` (via Edge Fn), `api.match_bank_line` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Financials `Reports` | `/accounts/financials` | `src/features/accounts/FinancialsPage.tsx` | `acct.gl_entries`, `acct.accounts` | `api.trial_balance`, `api.profit_and_loss`, `api.balance_sheet`, `api.party_ledger`, `api.general_ledger`, `api.day_book` | 6 | missing (repo was empty) |
 | GST `GST` | `/accounts/gst` | `src/features/accounts/GstPage.tsx` | `acct.gst_workings`, `sales.invoices`, `purch.bills` | `api.build_gstr1`, `api.build_gstr3b`, `api.itc_match` | 6 | missing (repo was empty) |
 | Month-end close `MonthClose` | `/accounts/month-end-close` | `src/features/accounts/MonthClosePage.tsx` | `acct.close_checklists`, `acct.close_tasks`, `core.periods` | `api.complete_close_task`, `api.close_period` | 7 | missing (repo was empty) |
-| Cash flow and reminders `CashFlow` | `/accounts/cash-flow-and-reminders` | `src/features/accounts/CashFlowPage.tsx` | `acct.gl_entries`, `acct.bill_allocations` | `api.cash_flow_forecast` | 3 | missing (repo was empty) |
+| Cash flow and reminders `CashFlow` | `/accounts/cash-flow-and-reminders` | `src/features/accounts/CashFlowPage.tsx` | `acct.gl_entries`, `acct.bill_allocations` | `api.cash_flow_forecast` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Directors and investment `Directors` | `/accounts/directors-and-investment` | `src/features/accounts/DirectorsPage.tsx` | `acct.partners`, `acct.director_loans`, `acct.director_declarations` | `api.record_director_loan` (s.185 check) | 7 | missing (repo was empty) |
 | Partners and profit sharing `ProfitSharing` | `/accounts/partners-and-profit-sharing` | `src/features/accounts/ProfitSharingPage.tsx` | `acct.profit_share_minutes`, `acct.profit_shares` | `api.compute_profit_share`, `api.post_profit_share` | 7 | missing (repo was empty) |
 | Partner requests `PartnerRequests` | `/accounts/partner-requests` | `src/features/accounts/PartnerRequestsPage.tsx` | `acct.partner_requests` | `api.decide_partner_request` | 7 | missing (repo was empty) |
 | Schedule III statements `ScheduleIIIBiochem` | `/accounts/schedule-iii-statements` | `src/features/accounts/ScheduleIIIPage.tsx` | `acct.gl_entries`, `acct.schedule3_map` | `api.schedule3_statements(p_company_id, p_fy)` | 6 | missing (repo was empty) |
-| Cash book (second view) `CashBookCheck` | `/accounts/cash-book/cash-book-check` | `src/features/accounts/CashBookCheckPage.tsx` | `acct.gl_entries`, `ops.import_rows`, `ops.bug_items` | `api.cash_book_check(p_company_id, p_from, p_to)` | 3 | missing (repo was empty) |
+| Cash book (second view) `CashBookCheck` | `/accounts/cash-book/cash-book-check` | `src/features/accounts/CashBookCheckPage.tsx` | `acct.gl_entries`, `ops.import_rows`, `ops.bug_items` | `api.cash_book_check(p_company_id, p_from, p_to)` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Admin
 
@@ -151,9 +151,9 @@ Conventions:
 | User log `UserLog` | `/admin/user-log` | `src/features/admin/user-log/UserLogPage.tsx` | `audit.user_log` | `api.v_user_log` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts |
 | Backup `Backup` | `/admin/backup` | `src/features/admin/backup/BackupPage.tsx` | `ops.backup_runs`, `ops.restore_drills` | `api.record_backup_run`, `api.request_restore` (Admin) | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-backup.spec.ts |
 | Import data `DataImport` | `/admin/import-data` | `src/features/admin/import-data/DataImportPage.tsx` | `ops.import_batches`, `ops.import_rows`, `ops.source_keys`, `ops.tally_group_map`, `ops.bridge_devices` | `api.start_import_batch`, `api.approve_import_batch`, `api.undo_import_batch` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-import.spec.ts; pgTAP 06_import |
-| Document templates `DocPreview` | `/admin/document-templates` | `src/features/admin/DocPreviewPage.tsx` | `core.doc_templates`, storage `documents` | `pdf-render` Edge Fn, `api.send_document_whatsapp` | 3 | missing (repo was empty) |
+| Document templates `DocPreview` | `/admin/document-templates` | `src/features/admin/DocPreviewPage.tsx` | `core.doc_templates`, storage `documents` | `pdf-render` Edge Fn, `api.send_document_whatsapp` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Numbering & IDs `Numbering` | `/admin/numbering-and-ids` | `src/features/admin/numbering/NumberingPage.tsx` | `core.doc_series`, `core.doc_series_counters` | `api.upsert_doc_series` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-numbering.spec.ts; pgTAP 04_numbering |
-| WhatsApp & email `WhatsApp` | `/admin/whatsapp-and-email` | `src/features/admin/WhatsAppPage.tsx` | `msg.channels`, `msg.templates`, `msg.contacts`, `msg.outbox`, `msg.inbound` | `api.upsert_template`, `api.set_reminder_schedule`, `api.reply_inbound` | 3 | missing (repo was empty) |
+| WhatsApp & email `WhatsApp` | `/admin/whatsapp-and-email` | `src/features/admin/WhatsAppPage.tsx` | `msg.channels`, `msg.templates`, `msg.contacts`, `msg.outbox`, `msg.inbound` | `api.upsert_template`, `api.set_reminder_schedule`, `api.reply_inbound` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Units `Units` | `/admin/units` | `src/features/admin/units/UnitsPage.tsx` | `core.branches`, `core.places` | `api.upsert_branch`, `api.upsert_place` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-units.spec.ts |
 | Asset register `AssetRegister` | `/admin/asset-register` | `src/features/admin/AssetRegisterPage.tsx` | `core.assets`, `core.asset_events`, `core.asset_documents` | `api.add_asset`, `api.record_asset_event`, `api.run_depreciation` | 7 | missing (repo was empty) |
 | Companies `Companies` | `/admin/companies` | `src/features/admin/companies/CompaniesPage.tsx` | `core.groups`, `core.companies` | `api.upsert_company` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-companies.spec.ts |
@@ -180,7 +180,7 @@ Conventions:
 | RafeeqHome `RafeeqHome` | `/me/buying-logistics` | `src/features/me/BuyingLogisticsHomePage.tsx` | `purch.requests`, `purch.orders`, `acct.vouchers` | `api.v_my_buying_tasks` | 4 | missing (repo was empty) |
 | OperatorCheck `OperatorCheck` | `/me/machine-check` | `src/features/me/MachineCheckPage.tsx` | `prod.machine_checks` | `api.record_machine_check` | 5 | missing (repo was empty) |
 | IsmailHome `IsmailHome` | `/me/factory-manager` | `src/features/me/FactoryManagerHomePage.tsx` | `prod.injection_shifts`, `prod.quality_inspections` | `api.v_factory_today` | 5 | missing (repo was empty) |
-| CashEntry `CashEntry` | `/me/cash-entry` | `src/features/me/CashEntryPage.tsx` | `acct.vouchers`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_payment` | 3 | missing (repo was empty) |
+| CashEntry `CashEntry` | `/me/cash-entry` | `src/features/me/CashEntryPage.tsx` | `acct.vouchers`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_payment` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | LabPanel `LabPanel` | `/lab` | `src/features/lab/LabPanelPage.tsx` | `prod.lab_samples`, `prod.lab_tests`, `prod.rnd_trials`, `prod.instruments` | `api.record_lab_result`, `api.qc_release_batch` | 5 | missing (repo was empty) |
 | SalesmanApp `SalesmanApp` | `/field/today` | `src/features/field/SalesmanTodayPage.tsx` | `field.beats`, `field.visits`, `field.salesman_customers` | `api.check_in_visit`, `api.check_out_visit` | 6 | missing (repo was empty) |
 
@@ -202,11 +202,11 @@ Conventions:
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
 | StaffHome `StaffHome` | `/staff/home` | `src/features/staff/StaffHomePage.tsx` | `hr.employees`, `hr.attendance_hours`, `hr.leave_requests`, `hr.payslips` | `api.v_staff_me` | 3 | Phase 0 shell: UI built, empty states; data in Phase 3 |
-| StaffLeave `StaffLeave` | `/staff/leave` | `src/features/staff/StaffLeavePage.tsx` | `hr.leave_requests` | `api.submit_leave_request` | 3 | missing (repo was empty) |
-| StaffAdvance `StaffAdvance` | `/staff/advance` | `src/features/staff/StaffAdvancePage.tsx` | `hr.advance_requests` | `api.submit_advance_request` | 3 | missing (repo was empty) |
-| StaffDetails `StaffDetails` | `/staff/details` | `src/features/staff/StaffDetailsPage.tsx` | `hr.employees`, `hr.employee_kyc` (masked) | `api.v_staff_me` | 3 | missing (repo was empty) |
-| StaffPayslip `StaffPayslip` | `/staff/payslip` | `src/features/staff/StaffPayslipPage.tsx` | `hr.payslips` | `api.v_my_payslips` | 3 | missing (repo was empty) |
-| StaffPayslipHasanan `StaffPayslipHasanan` | `/staff/payslip` (allowances variant) | `src/features/staff/StaffPayslipPage.tsx` (same component, allowances section) | `hr.payslips`, `hr.allowance_lines` | `api.v_my_payslips` | 3 | missing (repo was empty) |
+| StaffLeave `StaffLeave` | `/staff/leave` | `src/features/staff/StaffLeavePage.tsx` | `hr.leave_requests` | `api.submit_leave_request` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| StaffAdvance `StaffAdvance` | `/staff/advance` | `src/features/staff/StaffAdvancePage.tsx` | `hr.advance_requests` | `api.submit_advance_request` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| StaffDetails `StaffDetails` | `/staff/details` | `src/features/staff/StaffDetailsPage.tsx` | `hr.employees`, `hr.employee_kyc` (masked) | `api.v_staff_me` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| StaffPayslip `StaffPayslip` | `/staff/payslip` | `src/features/staff/StaffPayslipPage.tsx` | `hr.payslips` | `api.v_my_payslips` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
+| StaffPayslipHasanan `StaffPayslipHasanan` | `/staff/payslip` (allowances variant) | `src/features/staff/StaffPayslipPage.tsx` (same component, allowances section) | `hr.payslips`, `hr.allowance_lines` | `api.v_my_payslips` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Driver app (phone)
 

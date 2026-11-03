@@ -1,0 +1,27 @@
+{
+  "staffPayslip": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "वेतन पर्ची",
+    "month": "महीना",
+    "none": "अभी कोई वेतन पर्ची नहीं।",
+    "daysPaid": "वेतन वाले दिन",
+    "of": "{{b}} में से {{a}}",
+    "present": "उपस्थित दिन",
+    "halfDays": "आधे दिन",
+    "leave": "छुट्टी के दिन",
+    "otHours": "ओवरटाइम घंटे",
+    "earned": "कमाया",
+    "allowances": "भत्ते",
+    "otPay": "ओवरटाइम वेतन",
+    "gross": "कुल",
+    "advance": "एडवांस कटौती",
+    "deductions": "कटौतियाँ",
+    "roundOff": "राउंड",
+    "paid": "भुगतान",
+    "print": "प्रिंट / PDF",
+    "source": "{{month}} की वेतन शीट से।"
+  }
+}

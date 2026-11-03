@@ -1,10 +1,11 @@
-import { useOutletContext } from 'react-router-dom'
+import { Link, useOutletContext } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/auth/AuthProvider'
 import { useStaffMe } from '@/data/queries'
 import { formatIndian, initials } from '@/shared/format'
 import { ActionTile, Icon, OfflineBadge, PhoneHeader, Skeleton } from '@/ui'
 import type { PhoneOutletContext } from '@/ui/shell/StaffShell'
+import { NotLinked, RequestLine } from './common'
 
 /**
  * Staff app home (`StaffHome`). Pay, attendance and requests come from `api.staff_me()` (hr schema, Phase 3).
@@ -36,13 +37,14 @@ export function StaffHomePage() {
         onHelp={openHelp}
       />
       <div className="sf-phone-body">
+        {!me.isLoading && !data ? <NotLinked /> : null}
         <section className="sf-phone-card" aria-labelledby="pay-h">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 8 }}>
             <h2 id="pay-h">{data?.pay_month_label ?? t('staff.home.payTitle')}</h2>
             {data?.net_pay ? (
-              <a href="/staff/payslip" style={{ fontSize: 14, fontWeight: 600 }}>
+              <Link to="/staff/payslip" style={{ fontSize: 14, fontWeight: 600 }}>
                 {t('staff.home.payslip')}
-              </a>
+              </Link>
             ) : null}
           </div>
           {me.isLoading ? (
@@ -80,7 +82,11 @@ export function StaffHomePage() {
 
         <section className="sf-phone-line">
           <Icon name="calendar" size={20} />
-          <span>{data?.attendance_note ?? t('staff.home.attendancePending')}</span>
+          <span>
+            {data?.attendance && Number(data.attendance.marked) > 0
+              ? t('staffApp.attendanceMonth', { present: Number(data.attendance.present), leave: Number(data.attendance.leave), marked: Number(data.attendance.marked) })
+              : (data?.attendance_note ?? t('staff.home.attendancePending'))}
+          </span>
         </section>
 
         <div className="sf-tiles">
@@ -93,11 +99,7 @@ export function StaffHomePage() {
         <section className="sf-phone-section" aria-labelledby="req-h">
           <h2 id="req-h">{t('staff.home.myRequests')}</h2>
           {data && data.requests.length > 0 ? (
-            data.requests.map((r) => (
-              <div key={r.id} className="sf-phone-note">
-                {r.kind} · {r.status}
-              </div>
-            ))
+            data.requests.map((r) => <RequestLine key={r.id} r={r} />)
           ) : (
             <div className="sf-phone-note">{t('staff.home.noRequests')}</div>
           )}

@@ -6,6 +6,7 @@ import { RequireAuth } from '@/auth/RequireAuth'
 import { DesktopShell } from '@/ui/shell/DesktopShell'
 import { StaffShell, type PhoneOutletContext } from '@/ui/shell/StaffShell'
 import { HelpPanel } from '@/ui/shell/HelpPanel'
+import { askHelp } from '@/features/help/events'
 import { SignInPage } from '@/features/auth/SignInPage'
 import { StaffSignInPage } from '@/features/auth/StaffSignInPage'
 import { HomePage } from '@/features/home/HomePage'
@@ -136,8 +137,8 @@ function PhoneOnlyShell() {
   const [help, setHelp] = useState(false)
   return (
     <div className="sf-phone">
-      <Outlet context={{ openHelp: () => setHelp(true) } satisfies PhoneOutletContext} />
-      <HelpPanel open={help} onClose={() => setHelp(false)} />
+      <Outlet context={{ openHelp: () => askHelp() } satisfies PhoneOutletContext} />
+      <HelpPanel open={help} onOpen={() => setHelp(true)} onClose={() => setHelp(false)} />
     </div>
   )
 }

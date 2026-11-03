@@ -9,6 +9,7 @@ import { Topbar } from './Topbar'
 import { FlowStrip } from './FlowStrip'
 import { HelpPanel } from './HelpPanel'
 import { GrantBanner } from './GrantBanner'
+import { askHelp } from '@/features/help/events'
 
 /** Find the reference screen for the current path (exact route match). */
 export function useCurrentScreenFile(): string | undefined {
@@ -35,7 +36,7 @@ export function DesktopShell() {
       <Sidebar id="sf-sidebar" onNavigate={() => setDrawer(false)} />
       <button type="button" className="sf-drawer-backdrop" aria-label={t('shell.closeMenu')} tabIndex={-1} onClick={() => setDrawer(false)} />
       <div className="sf-main-col">
-        <Topbar onMenu={() => setDrawer((d) => !d)} onHelp={() => setHelp(true)} drawerId="sf-sidebar" drawerOpen={drawer} />
+        <Topbar onMenu={() => setDrawer((d) => !d)} onHelp={() => askHelp()} drawerId="sf-sidebar" drawerOpen={drawer} />
         {file ? <FlowStrip file={file} /> : null}
         <GrantBanner />
         {profile?.view === 'all-readonly' ? (
@@ -47,7 +48,7 @@ export function DesktopShell() {
           <Outlet />
         </main>
       </div>
-      <HelpPanel open={help} onClose={() => setHelp(false)} />
+      <HelpPanel open={help} onOpen={() => setHelp(true)} onClose={() => setHelp(false)} />
     </div>
   )
 }

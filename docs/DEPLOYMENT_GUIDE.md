@@ -155,3 +155,22 @@ npx supabase functions deploy admin-users --project-ref fxwoabbwzcifxzqsmrie
 ```
 
 The service-role key is provided to Edge Functions by Supabase automatically; never put it in Vercel or the repo. Until it is deployed, create accounts in the Supabase dashboard (Authentication → Add user); a profile is created automatically and Admin assigns the role on the Users screen.
+
+## Edge Functions `whatsapp-sender` and `whatsapp-webhook` (Phase 3)
+
+Not deployed yet — needs the WhatsApp Business account (Q-13) and the owner's `supabase login`. Until then the outbox fills and nothing is sent.
+
+```bash
+supabase secrets set --project-ref <ref> WHATSAPP_TOKEN=… WHATSAPP_APP_SECRET=… WHATSAPP_VERIFY_TOKEN=… APP_ENV=dev WHATSAPP_PROVIDER=mock
+supabase functions deploy whatsapp-sender --project-ref <ref>
+supabase functions deploy whatsapp-webhook --project-ref <ref> --no-verify-jwt   # Meta calls it; the signature is checked in code
+```
+
+- Invoke regionally (`x-region: ap-south-1`) so data stays in India.
+- Schedule the sender every minute with `pg_cron` + `pg_net` (call the function URL with the service key from Vault, never from the repo).
+- Keep `WHATSAPP_PROVIDER=mock` on DEV; in dev only allow-listed numbers receive messages.
+- Webhook URL to give Meta: `https://<ref>.supabase.co/functions/v1/whatsapp-webhook`.
+
+## Help pages (Phase 3)
+
+`docs/help/*.md` are loaded into `help.pages` with `DB_PASSWORD=… node scripts/help-seed.mjs` after each change.

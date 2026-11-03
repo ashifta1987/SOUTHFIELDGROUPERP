@@ -1,1 +1,16 @@
-{}
+{
+  "staffLeave": {
+    "title": "Request leave",
+    "advanceLink": "Advance",
+    "type": "Type",
+    "typeHint": "Types and yearly balances are set by Admin.",
+    "from": "From",
+    "to": "To",
+    "halfDay": "Half day only",
+    "reason": "Reason",
+    "summary": "Summary",
+    "leaveThisMonth": "Leave this month",
+    "days": "{{n}} days",
+    "mine": "My leave requests"
+  }
+}

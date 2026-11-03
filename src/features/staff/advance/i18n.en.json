@@ -1,1 +1,17 @@
-{}
+{
+  "staffAdvance": {
+    "title": "Request advance",
+    "leaveLink": "Leave",
+    "amount": "Amount",
+    "amountFormat": "Enter the amount in rupees, e.g. 2500 or 2500.50.",
+    "cutNote": "How much is cut from each month's pay is worked out when payroll runs. A large advance may need Admin's approval.",
+    "payBack": "Pay back over",
+    "oneMonth": "1 month",
+    "neededBy": "Needed by",
+    "paidIn": "Paid in",
+    "cash": "Cash",
+    "bank": "Bank",
+    "reason": "Reason",
+    "mine": "My advance requests"
+  }
+}

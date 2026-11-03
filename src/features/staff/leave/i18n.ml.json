@@ -1,0 +1,20 @@
+{
+  "staffLeave": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "അവധി അപേക്ഷ",
+    "advanceLink": "അഡ്വാൻസ്",
+    "type": "തരം",
+    "typeHint": "തരങ്ങളും വാർഷിക ബാക്കിയും അഡ്മിൻ നിശ്ചയിക്കുന്നു.",
+    "from": "മുതൽ",
+    "to": "വരെ",
+    "halfDay": "അര ദിവസം മാത്രം",
+    "reason": "കാരണം",
+    "summary": "ചുരുക്കം",
+    "leaveThisMonth": "ഈ മാസത്തെ അവധി",
+    "days": "{{n}} ദിവസം",
+    "mine": "എന്റെ അവധി അപേക്ഷകൾ"
+  }
+}

@@ -335,14 +335,14 @@ export type Database = {
                   ]
                 },"msg_allow_list": {
                   Row: {
-                    "note": string | null,"number": string
+                    "belongs_to": string | null,"belongs_to_kind": string | null,"note": string | null,"number": string,"number_masked": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                           "note"?: string | null,"number"?: string | null
+                           "belongs_to"?: never,"belongs_to_kind"?: never,"note"?: string | null,"number"?: string | null,"number_masked"?: never
                          }
                         Update: {
-                           "note"?: string | null,"number"?: string | null
+                           "belongs_to"?: never,"belongs_to_kind"?: never,"note"?: string | null,"number"?: string | null,"number_masked"?: never
                          }
                         Relationships: [
                     
@@ -359,6 +359,14 @@ export type Database = {
                            "company_id"?: string | null,"display_name"?: string | null,"id"?: string | null,"phone_number_id"?: string | null,"provider"?: string | null,"quality_rating"?: string | null,"status"?: string | null,"waba_id"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"msg_inbound": {
+                  Row: {
+                    "body": string | null,"company_id": string | null,"from_masked": string | null,"handled_at": string | null,"id": string,"kind": string,"party_id": string | null,"party_name": string | null,"received_at": string,"window_expires_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"msg_outbox": {
@@ -733,7 +741,7 @@ export type Database = {
                   ]
                 },"staff_requests": {
                   Row: {
-                    "amount": number | null,"company_id": string | null,"created_at": string,"decided_at": string | null,"decision_note": string | null,"from_date": string | null,"id": string,"kind": string,"person_id": string,"person_name": string,"reason": string,"requested_by": string,"status": string,"to_date": string | null
+                    "amount": number | null,"company_id": string | null,"created_at": string,"decided_at": string | null,"decision_note": string | null,"from_date": string | null,"half_day": boolean,"id": string,"kind": string,"leave_type": string | null,"needed_by": string | null,"paid_in": string | null,"person_id": string,"person_name": string,"reason": string,"repay_months": number | null,"requested_by": string,"status": string,"to_date": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1128,6 +1136,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_staff_profile":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_template":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "view_bank_account":

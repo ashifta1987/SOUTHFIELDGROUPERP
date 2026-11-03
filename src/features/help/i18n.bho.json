@@ -1,0 +1,30 @@
+{
+  "helpPanel": {
+    "_meta": { "needs-native-review": true, "note": "Machine draft. A native Bhojpuri speaker must review before go-live; missing keys fall back to Hindi." },
+    "notice": "सहायता रउआ के खोज आ बतावल समस्या स्क्रीन के नाम संगे राखेला, ताकि एडमिन जवाब दे सकस। ई ओतने पढ़ेला जेतना रउआ के अधिकार बा, आ कवनो डेटा ना बदलेला।",
+    "noticeOk": "समझ गइनी",
+    "intro": "कवनो काम कइसे करीं, कुछ काहे मना भइल, खोजीं या एडमिन के समस्या बताईं।",
+    "chipScreen": "ई स्क्रीन समझाईं",
+    "chipBlocked": "ई काहे रुकल?",
+    "chipReport": "समस्या बताईं",
+    "chipAccess": "अनुमति माँगीं",
+    "accessNote": "अनुमति खाली एडमिन देलें। एडमिन के बताईं कि कवन काम आ केतना समय खातिर चाहीं।",
+    "errorTitle": "{{ref}} के बारे में",
+    "checkedError": "जाँचल: {{ref}} · {{when}}",
+    "serverSaid": "ERP कहलस: {{message}}",
+    "errorNotFound": "ई संदर्भ रउआ के गलती में नइखे। कोड जाँचीं या समस्या बताईं।",
+    "reportThis": "ई समस्या बताईं",
+    "refLabel": "गलती के संदर्भ",
+    "explain": "समझाईं",
+    "reportTitle": "समस्या बताईं",
+    "filed": "एडमिन के भेजल गइल:",
+    "whatHappened": "का भइल?",
+    "send": "एडमिन के भेजीं",
+    "back": "← सहायता पर वापस",
+    "searchLabel": "सहायता खोजीं",
+    "search": "खोजीं",
+    "myReports": "रउआ के समस्या रिपोर्ट",
+    "status": { "open": "खुलल", "in_progress": "जाँच चलत बा", "closed": "जवाब मिलल" },
+    "rules": { "describe": "कुछ शब्द में बताईं कि का भइल।" }
+  }
+}

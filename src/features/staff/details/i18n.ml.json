@@ -1,0 +1,23 @@
+{
+  "staffDetails": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "എന്റെ വിവരങ്ങൾ",
+    "kyc": "KYC {{done}} / {{needed}}",
+    "staffId": "സ്റ്റാഫ് ID",
+    "name": "പേര്",
+    "work": "ജോലി",
+    "joined": "ചേർന്നത്",
+    "whatsapp": "വാട്ട്സ്ആപ്പ് നമ്പർ",
+    "locked": "പൂട്ടി",
+    "bank": "ശമ്പള ബാങ്ക് അക്കൗണ്ട്",
+    "firstLanguage": "ആദ്യ ഭാഷ",
+    "notChosen": "തിരഞ്ഞെടുത്തിട്ടില്ല",
+    "notEntered": "ഇതുവരെ നൽകിയിട്ടില്ല",
+    "appLanguage": "ഈ ആപ്പിന്റെ ഭാഷ",
+    "note1": "ഈ വിവരങ്ങൾ ഓഫീസിന് മാത്രമേ മാറ്റാനാകൂ. അഡ്മിൻ അംഗീകരിച്ച ശേഷം മാറ്റം വരും.",
+    "note2": "പുതിയ ബാങ്ക് അക്കൗണ്ടിന് പാസ്ബുക്ക് ഫോട്ടോ അല്ലെങ്കിൽ റദ്ദാക്കിയ ചെക്ക് വേണം."
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "staffAdvance": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "एडवांस का अनुरोध",
+    "leaveLink": "छुट्टी",
+    "amount": "राशि",
+    "amountFormat": "रुपये में राशि लिखें, जैसे 2500।",
+    "cutNote": "हर महीने वेतन से कितना कटेगा, यह पेरोल बनते समय तय होता है।",
+    "payBack": "कितने महीने में लौटाएँ",
+    "oneMonth": "1 महीना",
+    "neededBy": "कब तक चाहिए",
+    "paidIn": "कैसे मिले",
+    "cash": "नकद",
+    "bank": "बैंक",
+    "reason": "कारण",
+    "mine": "मेरे एडवांस अनुरोध"
+  }
+}

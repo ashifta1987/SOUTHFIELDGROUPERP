@@ -1,0 +1,41 @@
+{
+  "staffApp": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "back": "होम पर वापस",
+    "notLinked": "आपका साइन-इन अभी किसी स्टाफ रिकॉर्ड से नहीं जुड़ा है। एडमिन से कहें।",
+    "goesTo": "किसके पास जाता है",
+    "goesToValue": "एडमिन या HR अनुमोदक · कभी आप स्वयं नहीं",
+    "send": "अनुरोध भेजें",
+    "sent": "अनुरोध भेजा गया। जवाब यहाँ और व्हाट्सऐप पर दिखेगा।",
+    "sentOn": "भेजा {{date}}",
+    "leaveHalf": "आधा दिन {{date}}",
+    "leaveOne": "छुट्टी {{date}}",
+    "leaveRange": "छुट्टी {{from}} से {{to}}",
+    "kind": {
+      "leave": "छुट्टी",
+      "advance": "एडवांस"
+    },
+    "leaveType": {
+      "casual": "आकस्मिक",
+      "sick": "बीमारी",
+      "unpaid": "बिना वेतन"
+    },
+    "status": {
+      "refused": "अस्वीकार",
+      "withdrawn": "वापस लिया"
+    },
+    "attendanceMonth": "इस महीने: उपस्थित {{present}} · छुट्टी {{leave}} · {{marked}} दिन दर्ज",
+    "rules": {
+      "not_linked": "आपका साइन-इन स्टाफ रिकॉर्ड से नहीं जुड़ा है। एडमिन से कहें।",
+      "reason": "कुछ शब्दों में कारण बताएँ।",
+      "dates": "छुट्टी की तारीखें चुनें।",
+      "half_day": "आधा दिन केवल एक तारीख।",
+      "amount": "राशि लिखें।",
+      "repay_months": "1 से 12 महीने।",
+      "needed_by": "बीती तारीख नहीं चलेगी।"
+    }
+  }
+}

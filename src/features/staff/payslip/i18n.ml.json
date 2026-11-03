@@ -1,0 +1,27 @@
+{
+  "staffPayslip": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "ശമ്പള സ്ലിപ്പ്",
+    "month": "മാസം",
+    "none": "ഇതുവരെ ശമ്പള സ്ലിപ്പ് ഇല്ല.",
+    "daysPaid": "ശമ്പളമുള്ള ദിവസങ്ങൾ",
+    "of": "{{b}} ൽ {{a}}",
+    "present": "ഹാജർ ദിവസങ്ങൾ",
+    "halfDays": "അര ദിവസങ്ങൾ",
+    "leave": "അവധി ദിവസങ്ങൾ",
+    "otHours": "ഓവർടൈം മണിക്കൂർ",
+    "earned": "സമ്പാദിച്ചത്",
+    "allowances": "അലവൻസുകൾ",
+    "otPay": "ഓവർടൈം ശമ്പളം",
+    "gross": "ആകെ",
+    "advance": "അഡ്വാൻസ് തിരിച്ചുപിടിച്ചത്",
+    "deductions": "കിഴിവുകൾ",
+    "roundOff": "റൗണ്ട് ചെയ്തത്",
+    "paid": "നൽകിയത്",
+    "print": "പ്രിന്റ് / PDF",
+    "source": "{{month}} ശമ്പള പട്ടികയിൽ നിന്ന്."
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "staffLeave": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "छुट्टी का अनुरोध",
+    "advanceLink": "एडवांस",
+    "type": "प्रकार",
+    "typeHint": "प्रकार और सालाना बकाया एडमिन तय करते हैं।",
+    "from": "से",
+    "to": "तक",
+    "halfDay": "केवल आधा दिन",
+    "reason": "कारण",
+    "summary": "सारांश",
+    "leaveThisMonth": "इस महीने की छुट्टी",
+    "days": "{{n}} दिन",
+    "mine": "मेरे छुट्टी अनुरोध"
+  }
+}

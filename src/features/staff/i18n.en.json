@@ -1,0 +1,40 @@
+{
+  "staffApp": {
+    "back": "Back to home",
+    "notLinked": "Your sign-in is not linked to a staff record yet. Ask Admin to link it; then your pay, attendance and requests show here.",
+    "goesTo": "Goes to",
+    "goesToValue": "Admin or the HR approver · never yourself",
+    "send": "Send request",
+    "sent": "Request sent. The answer shows here and on WhatsApp.",
+    "sentOn": "Sent {{date}}",
+    "leaveHalf": "Half day {{date}}",
+    "leaveOne": "Leave {{date}}",
+    "leaveRange": "Leave {{from}} to {{to}}",
+    "kind": {
+      "leave": "Leave",
+      "advance": "Advance"
+    },
+    "leaveType": {
+      "casual": "Casual",
+      "sick": "Sick",
+      "unpaid": "Unpaid"
+    },
+    "status": {
+      "refused": "Refused",
+      "withdrawn": "Withdrawn"
+    },
+    "attendanceMonth": "This month: present {{present}} · leave {{leave}} · {{marked}} days marked",
+    "rules": {
+      "not_linked": "Your sign-in is not linked to a staff record yet. Ask Admin.",
+      "kind": "Choose leave or advance.",
+      "reason": "Say why in a few words.",
+      "dates": "Choose the leave dates. The last day cannot be before the first.",
+      "half_day": "A half day is one date only.",
+      "leave_type": "Choose casual, sick or unpaid leave.",
+      "amount": "Enter the amount.",
+      "repay_months": "Pay back over 1 to 12 months.",
+      "needed_by": "The date needed cannot be in the past.",
+      "paid_in": "Choose cash or bank."
+    }
+  }
+}

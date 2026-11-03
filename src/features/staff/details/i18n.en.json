@@ -1,1 +1,19 @@
-{}
+{
+  "staffDetails": {
+    "title": "My details",
+    "kyc": "KYC {{done}} of {{needed}}",
+    "staffId": "Staff ID",
+    "name": "Name",
+    "work": "Work",
+    "joined": "Joined",
+    "whatsapp": "WhatsApp number",
+    "locked": "Locked",
+    "bank": "Bank account for salary",
+    "firstLanguage": "First language",
+    "notChosen": "Not chosen",
+    "notEntered": "Not entered yet",
+    "appLanguage": "Language of this app",
+    "note1": "Only the office can change these details. Changes apply after Admin approves, and old and new details are both kept.",
+    "note2": "A new bank account needs a photo of the passbook or a cancelled cheque. Your first salary to it is checked again."
+  }
+}

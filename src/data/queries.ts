@@ -141,7 +141,32 @@ export interface StaffMe {
   leave_days: string | null
   advance_cut: string | null
   attendance_note: string | null
-  requests: { id: string; kind: string; status: string; created_at: string }[]
+  requests: StaffMeRequest[]
+  /** Added in 20261103003200: own masked details and posted payslips only. */
+  person_id?: string
+  designation?: string | null
+  payslip_id?: string | null
+  attendance?: { present: number | string; leave: number | string; marked: number | string } | null
+  phone_masked?: string | null
+  bank_masked?: string | null
+  language?: string | null
+  join_date?: string | null
+  pay_basis?: string | null
+  kyc_done?: number | null
+  kyc_needed?: number | null
+  payslips?: { id: string; month: string; company_label: string | null }[]
+}
+export interface StaffMeRequest {
+  id: string
+  kind: 'leave' | 'advance' | string
+  status: 'pending' | 'approved' | 'refused' | 'withdrawn' | string
+  created_at: string
+  from_date?: string | null
+  to_date?: string | null
+  amount?: number | string | null
+  leave_type?: string | null
+  half_day?: boolean | null
+  decision_note?: string | null
 }
 
 export function useStaffMe() {

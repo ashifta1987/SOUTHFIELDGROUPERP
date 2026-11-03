@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BottomNav } from '@/ui'
 import { HelpPanel } from './HelpPanel'
+import { askHelp } from '@/features/help/events'
 
 export interface PhoneOutletContext {
   openHelp: () => void
@@ -14,7 +15,7 @@ export function StaffShell() {
   const [help, setHelp] = useState(false)
   return (
     <div className="sf-phone">
-      <Outlet context={{ openHelp: () => setHelp(true) } satisfies PhoneOutletContext} />
+      <Outlet context={{ openHelp: () => askHelp() } satisfies PhoneOutletContext} />
       <BottomNav
         label={t('staff.nav.label')}
         items={[
@@ -24,7 +25,7 @@ export function StaffShell() {
           { to: '/staff/details', label: t('staff.nav.details'), icon: 'user' },
         ]}
       />
-      <HelpPanel open={help} onClose={() => setHelp(false)} />
+      <HelpPanel open={help} onOpen={() => setHelp(true)} onClose={() => setHelp(false)} />
     </div>
   )
 }

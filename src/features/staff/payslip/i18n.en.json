@@ -1,1 +1,23 @@
-{}
+{
+  "staffPayslip": {
+    "title": "Payslip",
+    "month": "Month",
+    "none": "No payslip yet. It shows here once payroll for a month is approved.",
+    "daysPaid": "Days paid",
+    "of": "{{a}} of {{b}}",
+    "present": "Days present",
+    "halfDays": "Half days",
+    "leave": "Leave days",
+    "otHours": "Overtime hours",
+    "earned": "Earned",
+    "allowances": "Allowances",
+    "otPay": "Overtime pay",
+    "gross": "Gross",
+    "advance": "Advance recovered",
+    "deductions": "Deductions",
+    "roundOff": "Rounded",
+    "paid": "Paid",
+    "print": "Print or save as PDF",
+    "source": "Figures from the {{month}} salary sheet."
+  }
+}

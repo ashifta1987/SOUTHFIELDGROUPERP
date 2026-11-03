@@ -104,7 +104,7 @@ test.describe('Phase 2 · Import data and Tally books', () => {
       await expect(mapping.getByRole('row').filter({ hasText: g })).toHaveCount(0)
     }
     await page.getByRole('button', { name: /Load waiting ledgers again for IMP-/ }).click()
-    await expect(page.getByText(/loaded again/)).toBeVisible({ timeout: 60_000 })
+    await expect(page.getByText(/Batch IMP-\S+ loaded again:/)).toBeVisible({ timeout: 60_000 })
     await page.reload()
     const accounts = page.getByRole('region', { name: 'Accounts', exact: true })
     await expect(accounts.getByRole('row').filter({ hasText: party })).toBeVisible()

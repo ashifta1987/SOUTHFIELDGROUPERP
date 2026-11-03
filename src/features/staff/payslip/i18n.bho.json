@@ -1,0 +1,10 @@
+{
+  "staffPayslip": {
+    "_meta": {
+      "needs-native-review": true,
+      "note": "Machine draft; a native speaker must review before go-live."
+    },
+    "title": "तनखाह पर्ची",
+    "month": "महीना"
+  }
+}
