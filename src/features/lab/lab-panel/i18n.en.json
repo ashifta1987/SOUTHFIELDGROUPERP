@@ -1,0 +1,30 @@
+{
+  "labPanel": {
+    "title": "Lab panel",
+    "sub": "Testing lab and R&D lab",
+    "noRight": "You have no lab or production rights in this company. Ask Admin.",
+    "tabs": "My lab work",
+    "tab": "{{name}} {{n}}",
+    "tabName": {
+      "today": "Today",
+      "sample": "Samples",
+      "stability": "R&D",
+      "calibration": "Instruments"
+    },
+    "myWork": "My work today",
+    "empty": "Nothing waiting for you.",
+    "kind": {
+      "sample": "Test sample {{ref}}",
+      "stability": "Stability check · {{ref}}",
+      "calibration": "Calibration · {{ref}}",
+      "release": "Release lot {{ref}}"
+    },
+    "due": "due {{date}}",
+    "youMade": "You helped make this batch, so its release goes to another QC person.",
+    "someoneElse": "Someone else",
+    "mine": "Assigned to me",
+    "toDo": "To do",
+    "open": "Open",
+    "openOne": "Open {{ref}}"
+  }
+}

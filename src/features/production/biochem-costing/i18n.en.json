@@ -1,0 +1,56 @@
+{
+  "biochemCosting": {
+    "title": "Biochem product costing",
+    "subtitle": "Cost of one saleable pack per batch, from the consumption ledger and the rates Admin sets · fixed when the batch closes",
+    "final": "Fixed at close",
+    "running": "Running",
+    "noCostRight": "Costs are hidden — you need the \"See cost and margin\" right. Ask Admin.",
+    "listTitle": "Batch cost sheets",
+    "emptyTitle": "No batch cost yet",
+    "emptyBody": "A cost sheet appears once a batch has started using materials; it is fixed when the batch closes.",
+    "missingTitle": "{{n}} batch(es) were costed with a missing rate (counted as zero)",
+    "missingNext": "Admin sets the missing rates below; batches closed later use them. A closed batch keeps the cost it was closed with.",
+    "ratesMissing": "Missing rates (counted as zero): {{list}}. Admin sets them on Biochem costing.",
+    "col": {
+      "batch": "Batch",
+      "product": "Product",
+      "materials": "Materials",
+      "packaging": "Packaging",
+      "labour": "Labour",
+      "machine": "Machine",
+      "overhead": "Overhead",
+      "total": "Total",
+      "packs": "Good packs",
+      "perPack": "Cost per pack",
+      "mrp": "MRP",
+      "missing": "Rates missing"
+    },
+    "rate": {
+      "labour_hour": "Labour per hour",
+      "machine_hour": "Machine per hour",
+      "overhead_per_kg": "Overhead per kg of bulk",
+      "overhead_per_piece": "Overhead per piece"
+    },
+    "how": {
+      "title": "How one pack is costed",
+      "formula": "(materials + packaging + labour hours × rate + machine hours × rate + overhead per kg × bulk) ÷ good packs",
+      "materials": { "title": "Materials", "body": "each checked weighing at the lot's rate, from the consumption ledger." },
+      "packaging": { "title": "Packaging", "body": "used in packs plus scrapped at the line, at lot rates." },
+      "labour": { "title": "Labour and machine", "body": "hours recorded on the batch × the rate in force on the batch date." },
+      "overhead": { "title": "Overhead", "body": "per kg of bulk made, at the rate Admin sets; absorption into stock value is a CA decision." }
+    },
+    "rates": {
+      "title": "Cost rates",
+      "kind": "Rate",
+      "rate": "Rate (₹)",
+      "from": "From",
+      "note": "Note",
+      "empty": "No rate set",
+      "emptyBody": "Until Admin sets the rates, labour, machine and overhead count as zero and every cost sheet lists them as missing.",
+      "save": "Set rate",
+      "saved": "Rate saved.",
+      "hint": "Enter the rate as a number (zero or more).",
+      "adminOnly": "Only Admin sets cost rates."
+    }
+  }
+}

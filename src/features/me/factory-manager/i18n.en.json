@@ -1,0 +1,26 @@
+{
+  "factoryHome": {
+    "title": "Factory manager home",
+    "sub": "Factory manager · {{code}}",
+    "noRight": "You have no production rights in this company. Ask Admin.",
+    "blocked": "Production blocked",
+    "blockedLine": "No valid licence for: {{list}}. Batches of these families can't be planned or entered.",
+    "licences": "Licences",
+    "batches": "Open batches",
+    "toCheck": "Batches with weighings to check: {{n}}",
+    "toRelease": "Packed, waiting for QC release: {{n}}",
+    "toClose": "Released or rejected, to close: {{n}}",
+    "mismatch": "{{n}} batch(es) don't reconcile — recount before closing.",
+    "entry": "Production entry",
+    "flow": "Production flow",
+    "openList": "Batches in progress",
+    "duty": "Today's duty",
+    "dutyCount": "{{n}} people on duty",
+    "noDuty": "No duty assigned for today yet.",
+    "assign": "Assign work",
+    "checks": "Machines and licences",
+    "calDue": "Scales and instruments past calibration: {{n}}",
+    "licExpiring": "Licences expiring in 30 days: {{n}}",
+    "machines": "Machines"
+  }
+}

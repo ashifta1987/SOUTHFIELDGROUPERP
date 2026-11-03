@@ -1,0 +1,79 @@
+{
+  "biochemWork": {
+    "title": "Factory work · who does what today",
+    "subtitle": "One person can hold several duties. Work is assigned to people, and each job is checked against what that person already did on the same batch.",
+    "date": "Work date",
+    "shift": "Shift",
+    "noRight": "You can see the duty board but not assign work. Ask Admin for the production edit right.",
+    "load": {
+      "title": "People on duty · {{date}}",
+      "person": "Person",
+      "duties": "Duties",
+      "hours": "Hours",
+      "batches": "Batches",
+      "emptyTitle": "Nobody assigned yet for this date",
+      "emptyBody": "Assign the day's duties below; each job goes to the person's own screen."
+    },
+    "assign": {
+      "title": "Assign a duty",
+      "person": "Person",
+      "choosePerson": "Choose a person",
+      "noPeople": "Only Admin can see the full list of people; otherwise people already on the duty board are shown.",
+      "duty": "Duty",
+      "batch": "Batch",
+      "noBatch": "No batch",
+      "machine": "Machine",
+      "noMachine": "No machine",
+      "place": "Place",
+      "noPlace": "No place",
+      "hours": "Hours (optional)",
+      "submit": "Assign",
+      "hint": "Choose the person.",
+      "done": "Duty assigned."
+    },
+    "board": {
+      "title": "Today's jobs · {{date}}",
+      "make": "Batches to make",
+      "pack": "Packing jobs",
+      "test": "Samples to test",
+      "release": "Releases",
+      "makeOne": "Make {{no}}",
+      "packOne": "Pack {{no}}",
+      "testOne": "Test {{no}}",
+      "releaseOne": "Release {{no}}",
+      "assign": "Assign",
+      "assignOne": "Assign {{what}}",
+      "none": "Nothing waiting."
+    },
+    "list": {
+      "title": "Duties on this date",
+      "empty": "No duty on this date."
+    },
+    "remove": "Remove",
+    "removeOne": "Remove {{duty}} from {{who}}",
+    "removeReason": "Reason to remove",
+    "duty": {
+      "batch_maker": "Batch maker",
+      "weigher": "Weigher",
+      "weigh_checker": "Weighing checker",
+      "packer": "Packer",
+      "labour": "Labour",
+      "supervisor": "Supervisor",
+      "qc_tester": "QC tester",
+      "qc_releaser": "QC releaser",
+      "rnd": "R&D",
+      "operator": "Operator",
+      "helper": "Helper",
+      "inspector": "Inspector",
+      "assembler": "Assembler",
+      "printer": "Printer"
+    },
+    "checks": {
+      "title": "Checks when work is assigned",
+      "same": "Same person, same batch: whoever made, weighed, issued or packed a batch can't be its QC releaser, and its QC releaser can't help make it.",
+      "role": "Only someone with a role in this company can be given work.",
+      "started": "A making duty stays on record once the batch has started; it can't be removed.",
+      "logged": "Who assigned what to whom, and when, is kept in the transaction log."
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "biochemMachines": {
+    "title": "Machines and assets · Biochem",
+    "subtitle": "Every machine and asset of the company, grouped by kind · each has an ID, its place, and its maintenance and calibration dates · production entries and lab results pick machines from here",
+    "add": "Add machine",
+    "addTitle": "Add a machine or asset",
+    "editTitle": "Change a machine or asset",
+    "dialogHint": "The place and first calibration date are set when the machine is added; later moves and calibrations are recorded as events.",
+    "groups": "Machines by kind",
+    "allKinds": "All kinds",
+    "groupSub": "{{n}} items",
+    "groupDue": "{{n}} calibration overdue",
+    "listTitle": "Machines and assets",
+    "emptyTitle": "No machine listed yet",
+    "emptyBody": "Add the machines of each line, the scales and the lab instruments with their calibration interval.",
+    "openOne": "{{name}} ({{code}})",
+    "panelTitle": "{{code}} · {{name}}",
+    "toSet": "to set",
+    "noMake": "Make not entered",
+    "calOverdue": "Calibration overdue",
+    "calDue": "Calibration {{date}}",
+    "amcUntil": "AMC until {{date}}",
+    "col": {
+      "asset": "Asset name",
+      "id": "Asset ID",
+      "kind": "Kind",
+      "place": "Line or place",
+      "cost": "Cost",
+      "next": "Next check"
+    },
+    "f": {
+      "make": "Make",
+      "model": "Model",
+      "serial": "Serial number",
+      "purchased": "Purchase date",
+      "putToUse": "Put to use",
+      "interval": "Calibration interval (days)",
+      "calDue": "First calibration due",
+      "amcVendor": "AMC vendor",
+      "amcUntil": "AMC until",
+      "needsCal": "Needs calibration (scales, meters, lab instruments)"
+    },
+    "kind": {
+      "mixer": "Mixer",
+      "scale": "Scale",
+      "filling": "Filling",
+      "soap_line": "Soap line",
+      "lab_instrument": "Lab instrument",
+      "injection_machine": "Injection machine",
+      "pad_printer": "Pad printer",
+      "assembly_station": "Assembly station",
+      "compressor": "Compressor",
+      "chiller": "Chiller",
+      "utility": "Utility",
+      "vehicle": "Vehicle",
+      "it": "IT",
+      "other": "Other"
+    },
+    "event": {
+      "added": "Added",
+      "moved": "Moved",
+      "repair": "Repair",
+      "service": "Service",
+      "amc": "AMC",
+      "breakdown": "Breakdown",
+      "restored": "Back in use",
+      "disposed": "Disposed",
+      "note": "Note"
+    },
+    "ev": {
+      "title": "History",
+      "record": "Record an event",
+      "date": "Date",
+      "kind": "Event",
+      "place": "Moved to",
+      "amcUntil": "AMC until",
+      "detail": "Detail",
+      "amount": "Amount (₹)",
+      "by": "Recorded by",
+      "save": "Record event",
+      "saved": "Event recorded.",
+      "empty": "No event yet."
+    },
+    "doc": {
+      "title": "Documents",
+      "kind": "Kind",
+      "path": "File",
+      "valid": "Valid until",
+      "empty": "No document attached",
+      "uploadLater": "Uploading invoices, warranties and certificates needs a private document store for assets, which is not set up yet."
+    },
+    "docKind": {
+      "invoice": "Invoice",
+      "warranty": "Warranty",
+      "amc": "AMC contract",
+      "manual": "Manual",
+      "calibration_certificate": "Calibration certificate",
+      "photo": "Photo",
+      "other": "Other"
+    },
+    "holds": {
+      "title": "What each machine record holds",
+      "identity": { "title": "Identity", "body": "asset ID, name, make, model, serial number, purchase date and cost." },
+      "where": { "title": "Where it works", "body": "the line or place; moves are recorded as events." },
+      "maintenance": { "title": "Maintenance", "body": "service, repair, breakdowns and AMC, with amounts." },
+      "calibration": { "title": "Calibration", "body": "for scales, meters and lab instruments: result, agency and next due." },
+      "depreciation": { "title": "Depreciation", "body": "life and residual value are set with the CA." }
+    },
+    "scales": {
+      "title": "Scales and lab instruments",
+      "body": "A scale or instrument past its calibration date can't be used for weighing in a production entry or for a lab result. A failed calibration takes it out of service until it passes again."
+    }
+  }
+}

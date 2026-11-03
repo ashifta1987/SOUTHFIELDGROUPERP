@@ -75,6 +75,17 @@ import { StockMovementsPage } from '@/features/inventory/stock-movements/StockMo
 import { ScrapPage } from '@/features/inventory/scrap/ScrapPage'
 import { WarehousePage } from '@/features/inventory/warehouse/WarehousePage'
 import { StockTransfersPage } from '@/features/inventory/stock-transfers/StockTransfersPage'
+import { BiochemManufacturingPage } from '@/features/production/biochem-manufacturing/BiochemManufacturingPage'
+import { BiochemProductionEntryPage } from '@/features/production/biochem-production-entry/BiochemProductionEntryPage'
+import { BiochemProductionFlowPage } from '@/features/production/biochem-production-flow/BiochemProductionFlowPage'
+import { BiochemLabsPage } from '@/features/production/biochem-labs/BiochemLabsPage'
+import { FactoryWorkAssignmentPage } from '@/features/production/biochem-work/FactoryWorkAssignmentPage'
+import { FreeItemsAndGiftPacksPage } from '@/features/production/biochem-packs/FreeItemsAndGiftPacksPage'
+import { BiochemMachinesPage } from '@/features/production/biochem-machines/BiochemMachinesPage'
+import { BiochemCostingPage } from '@/features/production/biochem-costing/BiochemCostingPage'
+import { FactoryManagerHomePage } from '@/features/me/factory-manager/FactoryManagerHomePage'
+import { LabPanelPage } from '@/features/lab/lab-panel/LabPanelPage'
+import { LicencesPage } from '@/features/admin/licences/LicencesPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -148,6 +159,18 @@ const BUILT: Record<string, React.ReactNode> = {
   Scrap: <ScrapPage />,
   Warehouse: <WarehousePage />,
   StockTransfer: <StockTransfersPage />,
+  // Phase 5 · Biochem production
+  BiochemManufacturing: <BiochemManufacturingPage />,
+  BiochemProduction: <BiochemProductionEntryPage />,
+  BiochemFlow: <BiochemProductionFlowPage />,
+  BiochemLabs: <BiochemLabsPage />,
+  BiochemWork: <FactoryWorkAssignmentPage />,
+  BiochemBundles: <FreeItemsAndGiftPacksPage />,
+  BiochemAssets: <BiochemMachinesPage />,
+  BiochemCosting: <BiochemCostingPage />,
+  IsmailHome: <FactoryManagerHomePage />,
+  LabPanel: <LabPanelPage />,
+  Licences: <LicencesPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */

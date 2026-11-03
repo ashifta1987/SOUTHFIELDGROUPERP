@@ -1,0 +1,66 @@
+{
+  "licences": {
+    "title": "Licences, certificates and documents",
+    "subtitle": "Every licence a company needs, with its number, dates and whether it is valid today · a missing or lapsed licence stops the step that depends on it · Admin only",
+    "add": "Add licence",
+    "addTitle": "Add a licence",
+    "editTitle": "Change a licence",
+    "editOne": "Edit {{kind}}",
+    "dialogHint": "Type the number and dates exactly as printed on the licence. A renewal is a new end date; the old values stay in the transaction log.",
+    "numberHelp": "As printed on the licence.",
+    "toHelp": "Leave empty if it has no expiry.",
+    "note": "Note (optional)",
+    "kpis": "Licences in numbers",
+    "kpi": {
+      "onFile": "On file",
+      "onFileSub": "Licences recorded for this company",
+      "valid": "Valid today",
+      "validSub": "Active and within dates",
+      "soon": "Expiring in 30 days",
+      "soonSub": "Renew before the end date",
+      "blocking": "Blocking production",
+      "blockingNone": "No process family is blocked"
+    },
+    "listTitle": "Licences of this company",
+    "emptyTitle": "No licence recorded yet",
+    "emptyBody": "Production of cosmetics and other licensed products is blocked until Admin records the licence here.",
+    "adminOnly": "Only Admin records licences. Ask Admin to add or renew one.",
+    "allBranches": "All branches",
+    "noExpiry": "No expiry",
+    "valid": "Valid",
+    "notValid": "Not valid today",
+    "expiresIn": "Expires in {{n}} days",
+    "col": {
+      "kind": "Licence",
+      "branch": "Branch",
+      "number": "Number",
+      "issuedBy": "Issued by",
+      "from": "Valid from",
+      "to": "Valid until",
+      "state": "State"
+    },
+    "status": {
+      "active": "Active",
+      "suspended": "Suspended",
+      "cancelled": "Cancelled"
+    },
+    "kind": {
+      "cosmetics_manufacturing": "Cosmetics manufacturing licence",
+      "drug_manufacturing": "Drug manufacturing licence",
+      "factory": "Factory licence",
+      "pollution_consent": "Pollution consent",
+      "fire": "Fire NOC",
+      "trade": "Trade licence",
+      "fssai": "FSSAI licence",
+      "legal_metrology": "Legal Metrology registration",
+      "other": "Other"
+    },
+    "howTitle": "How licences work",
+    "how": {
+      "block": "A process family names the licence it needs. Without a valid one, planning a batch and every production step of that family is refused.",
+      "paper": "Numbers and dates come from the original paper; nothing is filled in by the system.",
+      "renew": "On renewal, change the end date (or add the new licence). Old values are kept in the transaction log.",
+      "audit": "Who added or changed a licence, and when, is recorded and can't be edited."
+    }
+  }
+}

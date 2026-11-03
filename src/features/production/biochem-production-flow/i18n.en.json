@@ -1,0 +1,62 @@
+{
+  "biochemFlow": {
+    "title": "Production flow · Biochem",
+    "subtitle": "Who does each step of a batch and what must be true before the next one starts · the states and counts come from the database",
+    "who": "Who does what, in order",
+    "whoHint": "Choose a step for its details · green steps are the two QC gates",
+    "stepTitle": "Step · {{name}}",
+    "openScreen": "Open the screen →",
+    "states": "Batch states",
+    "statesNote": "No state can be skipped. Bulk failed and QC rejected end in close; a batch can be cancelled only before material goes to it. The person who made or packed a batch can't release it in QC.",
+    "gates": "QC gates: bulk test, finished-lot release",
+    "lane": {
+      "admin": "Admin",
+      "manager": "Production manager",
+      "stores": "Stores",
+      "staff": "Production staff",
+      "qc": "QC",
+      "packing": "Packing"
+    },
+    "k": {
+      "who": "Who",
+      "what": "What they do",
+      "after": "State after",
+      "must": "Must be true",
+      "rpc": "Database step",
+      "now": "Batches here now",
+      "nowValue": "{{n}} batch(es)"
+    },
+    "step": {
+      "masters": { "name": "Licence and masters", "what": "Record the licence, products and places.", "must": "The licence number and dates come from the original paper." },
+      "formula": { "name": "Formula approved", "what": "Write the formula and send it for approval; another person approves it.", "must": "Bulk by weight, packaging in Nos, QC limits; the writer can't approve." },
+      "plan": { "name": "Plan batch", "what": "Choose the product, the bulk to make and the places.", "must": "An approved formula in force on the date and a valid licence for the family." },
+      "reserve": { "name": "Reserve materials", "what": "Reserve the formula's bulk materials at the stores.", "must": "Enough released stock, net of other reservations." },
+      "weigh": { "name": "Weigh and check", "what": "Weigh each material; a second person checks it and it leaves the stores.", "must": "Released lots only; scale within calibration; the weigher can't check." },
+      "make": { "name": "Make", "what": "Start the batch and send the bulk sample with the bulk weight.", "must": "Every weighing checked." },
+      "bulk": { "name": "Bulk test", "what": "Test the bulk sample against the QC limits.", "must": "A pass outside the limits is refused; the instrument is calibrated." },
+      "pack": { "name": "Fill and pack", "what": "Issue packaging, record good and rejected packs; packs go on hold.", "must": "Packaging in whole Nos; the reconciliation is computed." },
+      "release": { "name": "Release finished lot", "what": "Test the finished lot, then release or reject it.", "must": "A passed bulk and finished test; never by anyone who made the batch." },
+      "close": { "name": "Close and cost", "what": "Close the batch; its cost sheet is fixed.", "must": "Packaging and bulk reconcile (or the batch can't close)." }
+    },
+    "ev": {
+      "title": "Latest state changes",
+      "when": "When",
+      "batch": "Batch",
+      "open": "Open",
+      "from": "From",
+      "to": "To",
+      "by": "By",
+      "note": "Note",
+      "empty": "No batch has moved yet."
+    },
+    "side": {
+      "title": "Side flows",
+      "receiving": { "title": "Receiving", "body": "Goods receipt with supplier lot and expiry → quarantine → incoming test → released lot. Nothing is weighed from quarantine." },
+      "rework": { "title": "Deviation and rework", "body": "A failed bulk or finished test ends in QC reject with a reason; rework runs as a new batch." },
+      "recall": { "title": "Complaint and recall", "body": "Each lot keeps its batch, materials and tests, so a complaint traces back to the materials and forward to customers." },
+      "licence": { "title": "Licence", "body": "A missing or lapsed licence blocks planning and every production step of the families that need it." },
+      "waste": { "title": "Waste", "body": "Bulk scrapped and packaging scrapped are recorded at packing and reconciled; a difference opens a Bug fixer item." },
+      "cost": { "title": "Cost per batch", "body": "Materials and packaging at lot rates, plus labour, machine and overhead at the rates Admin sets; missing rates are listed, never invented." }
+    }
+  }
+}

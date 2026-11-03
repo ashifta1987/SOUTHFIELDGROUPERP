@@ -1,0 +1,97 @@
+{
+  "biochemPacks": {
+    "title": "Free items and gift packs",
+    "subtitle": "Packs made of products plus free items, trays or cartons · each is on the pack's item list, so assembly takes it out of stock and its cost goes into the pack",
+    "add": "New pack",
+    "addTitle": "New pack",
+    "editTitle": "Change pack",
+    "dialogHint": "The pack is its own item (counted in packs). List what goes into one pack; tick the items given free.",
+    "packItem": "Pack item (the item sold)",
+    "packItemHelp": "Make the pack's own item on Product master first.",
+    "qtyHint": "Every item needs a quantity above zero.",
+    "openOne": "Open pack {{name}}",
+    "panelTitle": "Pack · {{name}}",
+    "listTitle": "Packs",
+    "emptyTitle": "No pack yet",
+    "emptyBody": "Add a free-item, gift or combo pack. It can be billed once Admin sets its GST treatment with the CA.",
+    "itemsCount": "{{n}} items · {{free}} free",
+    "cantBill": "Can't be billed yet · GST treatment not set",
+    "cantBillWhy": "A sales document with this pack is refused until Admin sets its GST treatment with the CA's advice.",
+    "setOn": "Set on {{date}} · CA note: {{note}}",
+    "kpis": "Packs in numbers",
+    "kpi": {
+      "packs": "Packs",
+      "packsSub": "Free-item, gift and combo packs",
+      "unset": "Can't be billed yet",
+      "unsetSub": "GST treatment not set",
+      "free": "Free items listed",
+      "freeSub": "Across all packs",
+      "assemblies": "Assembly runs",
+      "assembliesSub": "Latest 100"
+    },
+    "col": {
+      "pack": "Pack",
+      "product": "Pack item",
+      "kind": "Kind",
+      "items": "Items",
+      "gst": "GST treatment"
+    },
+    "kind": {
+      "free_item_pack": "Free item with product",
+      "gift_pack": "Gift pack",
+      "combo_pack": "Combo pack"
+    },
+    "items": {
+      "title": "Items in one pack",
+      "item": "Item",
+      "kind": "Kind",
+      "perPack": "Per pack",
+      "note": "Note",
+      "free": "Free item",
+      "product": "Product",
+      "empty": "No items yet.",
+      "itemN": "Item {{n}}",
+      "qtyN": "Item {{n}} quantity per pack",
+      "freeN": "Item {{n}} is free",
+      "noteN": "Item {{n}} note",
+      "removeN": "Remove item {{n}}",
+      "add": "Add item"
+    },
+    "gst": {
+      "title": "GST and the label",
+      "setTitle": "GST treatment (Admin, with the CA)",
+      "treatment": "Treatment agreed with the CA",
+      "note": "CA's advice (reference and date)",
+      "noteHelp": "At least five characters; kept with the pack and in the log.",
+      "save": "Set GST treatment",
+      "saved": "GST treatment set. The pack can now be billed.",
+      "adminOnly": "Only Admin sets the GST treatment, after the CA advises.",
+      "ca": "The rates and the treatment of each pack are confirmed by the CA (open question Q-23); the ERP never chooses one by itself."
+    },
+    "treatment": {
+      "free_with_sale_single_price": "Free with the sale, one price",
+      "gift_without_consideration": "Gift without consideration",
+      "mixed_supply": "Mixed supply",
+      "composite_supply": "Composite supply"
+    },
+    "treatmentHelp": {
+      "free_with_sale_single_price": "the free item is part of the sale; input tax credit stays (CBIC circular 92/11/2019).",
+      "gift_without_consideration": "given away on its own; no input tax credit on it (s.17(5)(h)).",
+      "mixed_supply": "different goods at one price, taxed at the highest rate among them (s.8).",
+      "composite_supply": "naturally bundled goods, taxed at the rate of the principal supply (s.8)."
+    },
+    "asm": {
+      "title": "Pack assembly runs",
+      "make": "Assemble packs",
+      "no": "Run",
+      "date": "Date",
+      "qty": "Packs",
+      "from": "Items from (place)",
+      "to": "Packs to (place)",
+      "unitCost": "Cost per pack",
+      "submit": "Assemble",
+      "done": "Assembled · {{no}}.",
+      "empty": "No assembly yet."
+    }
+  }
+}
