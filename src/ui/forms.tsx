@@ -76,8 +76,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
   const auto = useId()
   const cid = id ?? auto
   return (
-    <label htmlFor={cid} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: rest.disabled ? 'not-allowed' : 'pointer' }}>
-      <input ref={ref} id={cid} type="checkbox" style={{ width: 18, height: 18, marginTop: 2, accentColor: 'var(--sf-primary)', flex: 'none' }} {...rest} />
+    <label htmlFor={cid} style={{ display: 'flex', gap: 7, alignItems: 'flex-start', minHeight: 24, cursor: rest.disabled ? 'not-allowed' : 'pointer' }}>
+      <input ref={ref} id={cid} type="checkbox" style={{ width: 18, height: 18, margin: 3, accentColor: 'var(--sf-primary)', flex: 'none' }} {...rest} />
       <span style={{ display: 'flex', flexDirection: 'column' }}>
         <span style={{ fontWeight: 600, fontSize: 13 }}>{label}</span>
         {hint ? <span className="k">{hint}</span> : null}

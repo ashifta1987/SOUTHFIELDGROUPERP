@@ -56,8 +56,11 @@ export function useApiMutation<TArgs extends Record<string, unknown>, TResult = 
   return useMutation<TResult, RpcError, TArgs>({
     mutationFn: (args) => callApi<TResult>(fn, args),
     onSuccess: async () => {
-      await Promise.all(invalidate.map((key) => qc.invalidateQueries({ queryKey: key })))
-      await qc.invalidateQueries({ queryKey: ['api', 'me'] })
+      // A list whose first load is still in flight would otherwise keep that (pre-save) result: invalidating a query
+      // with no data yet joins the running fetch instead of starting a new one. Cancel first, then refetch.
+      const keys = [...invalidate, ['api', 'me']]
+      await Promise.all(keys.map((key) => qc.cancelQueries({ queryKey: key })))
+      await Promise.all(keys.map((key) => qc.invalidateQueries({ queryKey: key })))
     },
   })
 }

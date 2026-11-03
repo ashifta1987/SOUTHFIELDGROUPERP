@@ -16,7 +16,7 @@ Conventions:
 |---|---|---|---|---|---|---|
 | Login `Login` | `/sign-in` | `src/features/auth/SignInPage.tsx` | `auth.users`, `audit.user_log` | Supabase Auth (email+password+TOTP / phone+password); `api.log_user_event` (P1) | 0 | Phase 0 shell: UI built, empty states; data in Phase 1 (user log, lock-out, `api.me`) |
 | StaffSignIn `StaffSignIn` | `/staff/sign-in` | `src/features/auth/StaffSignInPage.tsx` | `auth.users`, `audit.user_log` | Supabase Auth phone+password; `api.log_user_event` (P1) | 0 | Phase 0 shell: UI built, empty states; data in Phase 1 |
-| InvestorSignIn `InvestorSignIn` | `/investor/sign-in` | `src/features/investor/InvestorSignInPage.tsx` | `auth.users`, `acct.partners` | Supabase Auth; `api.investor_me()` | 7 | missing (repo was empty) |
+| InvestorSignIn `InvestorSignIn` | `/investor/sign-in` | `src/features/investor/InvestorSignInPage.tsx` | `auth.users`, `acct.partners` | Supabase Auth; `api.investor_me()` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 
 ## Home
 
@@ -65,8 +65,8 @@ Conventions:
 | Machine assembly `Machines` | `/production/machine-assembly` | `src/features/production/MachineAssemblyPage.tsx` | `prod.assembly_orders`, `prod.assembly_boms`, `inv.stock_ledger` | `api.post_assembly` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
 | Injection production `Production` | `/production/injection-production` | `src/features/production/InjectionProductionPage.tsx` | `prod.injection_shifts`, `prod.shift_rejects`, `prod.downtime`, `prod.machines`, `prod.moulds` | `api.record_injection_shift` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
 | Quality `Quality` | `/production/quality` | `src/features/production/QualityPage.tsx` | `prod.quality_inspections` | `api.record_quality_inspection` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
-| Maintenance `Maintenance` | `/production/maintenance` | `src/features/production/MaintenancePage.tsx` | `prod.machine_checks`, `prod.repair_requests`, `prod.spares_issues` | `api.record_machine_check`, `api.raise_repair_request` | 7 | missing (repo was empty) |
-| Job work `JobWork` | `/production/job-work` | `src/features/production/JobWorkPage.tsx` | `prod.job_work_orders`, `sales.delivery_challans`, `inv.stock_ledger` | `api.issue_job_work_challan`, `api.receive_job_work` | 7 | missing (repo was empty) |
+| Maintenance `Maintenance` | `/production/maintenance` | `src/features/production/MaintenancePage.tsx` | `prod.machine_checks`, `prod.repair_requests`, `prod.spares_issues` | `api.record_machine_check`, `api.raise_repair_request` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| Job work `JobWork` | `/production/job-work` | `src/features/production/JobWorkPage.tsx` | `prod.job_work_orders`, `sales.delivery_challans`, `inv.stock_ledger` | `api.issue_job_work_challan`, `api.receive_job_work` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 | Mould costing `MouldCosting` | `/production/mould-costing` | `src/features/production/MouldCostingPage.tsx` | `prod.mould_costs`, `prod.mould_events` | `api.v_mould_cost` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
 | Component costing `ComponentCosting` | `/production/component-costing` | `src/features/production/ComponentCostingPage.tsx` | `prod.component_costs`, `prod.material_specs` | `api.v_component_cost` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
 | Assembled products `AssemblyCosting` | `/production/assembled-products` | `src/features/production/AssembledProductsPage.tsx` | `prod.assembly_boms`, `prod.component_costs` | `api.v_assembly_cost` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
@@ -135,11 +135,11 @@ Conventions:
 | Bank `BankReco` | `/accounts/bank` | `src/features/accounts/BankRecoPage.tsx` | `acct.bank_accounts`, `acct.bank_statements`, `acct.bank_statement_lines`, `acct.bank_matches` | `api.stage_bank_lines` (via Edge Fn), `api.match_bank_line` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Financials `Reports` | `/accounts/financials` | `src/features/accounts/FinancialsPage.tsx` | `acct.gl_entries`, `acct.accounts` | `api.trial_balance`, `api.profit_and_loss`, `api.balance_sheet`, `api.party_ledger`, `api.general_ledger`, `api.day_book` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | GST `GST` | `/accounts/gst` | `src/features/accounts/GstPage.tsx` | `acct.gst_workings`, `sales.invoices`, `purch.bills` | `api.build_gstr1`, `api.build_gstr3b`, `api.itc_match` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
-| Month-end close `MonthClose` | `/accounts/month-end-close` | `src/features/accounts/MonthClosePage.tsx` | `acct.close_checklists`, `acct.close_tasks`, `core.periods` | `api.complete_close_task`, `api.close_period` | 7 | missing (repo was empty) |
+| Month-end close `MonthClose` | `/accounts/month-end-close` | `src/features/accounts/MonthClosePage.tsx` | `acct.close_checklists`, `acct.close_tasks`, `core.periods` | `api.complete_close_task`, `api.close_period` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 | Cash flow and reminders `CashFlow` | `/accounts/cash-flow-and-reminders` | `src/features/accounts/CashFlowPage.tsx` | `acct.gl_entries`, `acct.bill_allocations` | `api.cash_flow_forecast` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
-| Directors and investment `Directors` | `/accounts/directors-and-investment` | `src/features/accounts/DirectorsPage.tsx` | `acct.partners`, `acct.director_loans`, `acct.director_declarations` | `api.record_director_loan` (s.185 check) | 7 | missing (repo was empty) |
-| Partners and profit sharing `ProfitSharing` | `/accounts/partners-and-profit-sharing` | `src/features/accounts/ProfitSharingPage.tsx` | `acct.profit_share_minutes`, `acct.profit_shares` | `api.compute_profit_share`, `api.post_profit_share` | 7 | missing (repo was empty) |
-| Partner requests `PartnerRequests` | `/accounts/partner-requests` | `src/features/accounts/PartnerRequestsPage.tsx` | `acct.partner_requests` | `api.decide_partner_request` | 7 | missing (repo was empty) |
+| Directors and investment `Directors` | `/accounts/directors-and-investment` | `src/features/accounts/DirectorsPage.tsx` | `acct.partners`, `acct.director_loans`, `acct.director_declarations` | `api.record_director_loan` (s.185 check) | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| Partners and profit sharing `ProfitSharing` | `/accounts/partners-and-profit-sharing` | `src/features/accounts/ProfitSharingPage.tsx` | `acct.profit_share_minutes`, `acct.profit_shares` | `api.compute_profit_share`, `api.post_profit_share` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| Partner requests `PartnerRequests` | `/accounts/partner-requests` | `src/features/accounts/PartnerRequestsPage.tsx` | `acct.partner_requests` | `api.decide_partner_request` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 | Schedule III statements `ScheduleIIIBiochem` | `/accounts/schedule-iii-statements` | `src/features/accounts/ScheduleIIIPage.tsx` | `acct.gl_entries`, `acct.schedule3_map` | `api.schedule3_statements(p_company_id, p_fy)` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Cash book (second view) `CashBookCheck` | `/accounts/cash-book/cash-book-check` | `src/features/accounts/CashBookCheckPage.tsx` | `acct.gl_entries`, `ops.import_rows`, `ops.bug_items` | `api.cash_book_check(p_company_id, p_from, p_to)` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
@@ -155,7 +155,7 @@ Conventions:
 | Numbering & IDs `Numbering` | `/admin/numbering-and-ids` | `src/features/admin/numbering/NumberingPage.tsx` | `core.doc_series`, `core.doc_series_counters` | `api.upsert_doc_series` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-numbering.spec.ts; pgTAP 04_numbering |
 | WhatsApp & email `WhatsApp` | `/admin/whatsapp-and-email` | `src/features/admin/WhatsAppPage.tsx` | `msg.channels`, `msg.templates`, `msg.contacts`, `msg.outbox`, `msg.inbound` | `api.upsert_template`, `api.set_reminder_schedule`, `api.reply_inbound` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Units `Units` | `/admin/units` | `src/features/admin/units/UnitsPage.tsx` | `core.branches`, `core.places` | `api.upsert_branch`, `api.upsert_place` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-units.spec.ts |
-| Asset register `AssetRegister` | `/admin/asset-register` | `src/features/admin/AssetRegisterPage.tsx` | `core.assets`, `core.asset_events`, `core.asset_documents` | `api.add_asset`, `api.record_asset_event`, `api.run_depreciation` | 7 | missing (repo was empty) |
+| Asset register `AssetRegister` | `/admin/asset-register` | `src/features/admin/AssetRegisterPage.tsx` | `core.assets`, `core.asset_events`, `core.asset_documents` | `api.add_asset`, `api.record_asset_event`, `api.run_depreciation` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 | Companies `Companies` | `/admin/companies` | `src/features/admin/companies/CompaniesPage.tsx` | `core.groups`, `core.companies` | `api.upsert_company` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-companies.spec.ts |
 | Branches and GSTINs `Branches` | `/admin/branches-and-gstins` | `src/features/admin/branches/BranchesPage.tsx` | `core.gstins`, `core.branches`, `acct.bank_accounts` | `api.upsert_gstin`, `api.upsert_branch` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-branches.spec.ts |
 | Forms and fields `FormFields` | `/admin/forms-and-fields` | `src/features/admin/form-fields/FormFieldsPage.tsx` | `core.forms`, `core.form_fields` | `api.upsert_form_field` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts |
@@ -167,7 +167,7 @@ Conventions:
 | Special permissions `SpecialAccess` | `/admin/special-permissions` | `src/features/admin/special-access/SpecialAccessPage.tsx` | `core.special_grants`, `core.special_grant_requests` | `api.grant_special_permission`, `api.revoke_special_permission`, `api.request_special_permission` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-special-access.spec.ts; pgTAP 03_grants |
 | Transaction log `TransactionLog` | `/admin/transaction-log` | `src/features/admin/transaction-log/TransactionLogPage.tsx` | `audit.document_versions`, `audit.row_history` | `api.v_document_history` | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-logs.spec.ts; pgTAP 01_audit |
 | Total workflow `ERPFlow` | `/admin/total-workflow` | `src/features/admin/erp-flow/ERPFlowPage.tsx` | `src/app/flows.ts`; `core.state_transitions` | — (config) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-explainers.spec.ts |
-| Licences and documents `Licences` | `/admin/licences-and-documents` | `src/features/admin/LicencesPage.tsx` | `core.licences`, `core.licence_documents` | `api.add_licence`, `api.renew_licence` | 7 | missing (repo was empty) |
+| Licences and documents `Licences` | `/admin/licences-and-documents` | `src/features/admin/LicencesPage.tsx` | `core.licences`, `core.licence_documents` | `api.add_licence`, `api.renew_licence` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 | *Settings* (no reference) | `/admin/settings` | `src/features/admin/settings/SettingsPage.tsx` | `core.settings` (effective-dated) | `api.set_setting` (Admin) | 1 | **Built (Phase 1)**, live data; tests: e2e/phase1-settings.spec.ts |
 
 ## Phone and tablet screens by job
@@ -219,14 +219,14 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| InvestorGroup `InvestorGroup` | `/investor/group` | `src/features/investor/InvestorGroupPage.tsx` | `api.v_investor_*` analytics views | `api.investor_group_summary` | 7 | missing (repo was empty) |
-| PartnerHome `PartnerHome` | `/investor/home` | `src/features/investor/PartnerHomePage.tsx` | `api.v_investor_today` | — | 7 | missing (repo was empty) |
-| PartnerPerformance `PartnerPerformance` | `/investor/performance` | `src/features/investor/PartnerPerformancePage.tsx` | `api.v_investor_performance` | — | 7 | missing (repo was empty) |
-| PartnerInvestment `PartnerInvestment` | `/investor/investment` | `src/features/investor/PartnerInvestmentPage.tsx` | `acct.partner_investments` | `api.v_my_investment` | 7 | missing (repo was empty) |
-| InvestorWorkingPartner `InvestorWorkingPartner` | `/investor/working-partner` | `src/features/investor/WorkingPartnerPage.tsx` | `api.v_investor_*` | — | 7 | missing (repo was empty) |
-| InvestorProjects `InvestorProjects` | `/investor/projects` | `src/features/investor/InvestorProjectsPage.tsx` | `acct.partner_projects` | `api.submit_partner_request('project')` | 7 | missing (repo was empty) |
-| InvestorWithdraw `InvestorWithdraw` | `/investor/withdraw` | `src/features/investor/InvestorWithdrawPage.tsx` | `acct.partner_requests` | `api.submit_partner_request('withdrawal')` | 7 | missing (repo was empty) |
-| InvestorLoan `InvestorLoan` | `/investor/loan` | `src/features/investor/InvestorLoanPage.tsx` | `acct.partner_requests`, `acct.director_declarations` | `api.submit_partner_request('loan')` | 7 | missing (repo was empty) |
+| InvestorGroup `InvestorGroup` | `/investor/group` | `src/features/investor/InvestorGroupPage.tsx` | `api.v_investor_*` analytics views | `api.investor_group_summary` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| PartnerHome `PartnerHome` | `/investor/home` | `src/features/investor/PartnerHomePage.tsx` | `api.v_investor_today` | — | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| PartnerPerformance `PartnerPerformance` | `/investor/performance` | `src/features/investor/PartnerPerformancePage.tsx` | `api.v_investor_performance` | — | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| PartnerInvestment `PartnerInvestment` | `/investor/investment` | `src/features/investor/PartnerInvestmentPage.tsx` | `acct.partner_investments` | `api.v_my_investment` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| InvestorWorkingPartner `InvestorWorkingPartner` | `/investor/working-partner` | `src/features/investor/WorkingPartnerPage.tsx` | `api.v_investor_*` | — | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| InvestorProjects `InvestorProjects` | `/investor/projects` | `src/features/investor/InvestorProjectsPage.tsx` | `acct.partner_projects` | `api.submit_partner_request('project')` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| InvestorWithdraw `InvestorWithdraw` | `/investor/withdraw` | `src/features/investor/InvestorWithdrawPage.tsx` | `acct.partner_requests` | `api.submit_partner_request('withdrawal')` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
+| InvestorLoan `InvestorLoan` | `/investor/loan` | `src/features/investor/InvestorLoanPage.tsx` | `acct.partner_requests`, `acct.director_declarations` | `api.submit_partner_request('loan')` | 7 | Built (Phase 7) — live data; see e2e/phase7-*.spec.ts |
 
 ## Shared components
 

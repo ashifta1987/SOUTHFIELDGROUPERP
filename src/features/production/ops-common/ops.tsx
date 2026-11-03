@@ -76,6 +76,7 @@ export function useOpsRights() {
 
 /** Query keys refreshed after any Phase 7 change. */
 export const OPS_REFRESH: string[][] = [
+  ['api', 'process_families'],
   ['api', 'v_job_work_orders'],
   ['api', 'v_job_work_lines'],
   ['api', 'v_job_work_receipts'],

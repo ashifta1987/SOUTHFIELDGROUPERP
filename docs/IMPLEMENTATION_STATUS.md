@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phases 4–6 complete on DEV. Phase 7 — Remaining operations: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
+| Current phase | **Phases 4–7 complete on DEV. Phase 8 — Integrations: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,17 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 7 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` / `API_DOCUMENTATION.md` ("Phase 7"); decisions D-P7-1..4 in `ERP_ARCHITECTURE.md` | Done |
+| 2 | Migrations `20261103007000…7400` on DEV: job work on challan (return by 1 year inputs / 3 years capital goods, balance per line, overdue), maintenance (repair requests, failed operator checks open urgent repairs, spares through the stock ledger, schedules, downtime), licences and documents (private `documents` bucket, renewals, reminders at 90/30/7 days once each, expired blocking licence stops production and packing), asset register with depreciation and disposals (refused until the CA's method/lives exist), partners, directors' loans and declarations (s.185 / s.186 checks as CA settings), profit-share minutes approved by a second Admin, partner requests decided only by Admin and never their own, investor portal (role with no write rights; own data only; figures exclude bills without GST), month-end close (doer ≠ checker; a closed month refuses every posting whatever grant; only Admin reopens with a reason) | Done |
+| 3 | Screens: Job work, Maintenance, Licences and documents, Asset register, Directors and investment, Partners and profit sharing, Partner requests, Month-end close; investor portal (`/investor/*`, separate sign-in, no links into the ERP, requests to Admin only) | Done, live data |
+| 4 | pgTAP **595/595**; Playwright full suite green after fixes (stale list after save fixed in the shared save hook; checkbox target size 24 px) | Done |
+
+Known Phase 7 gaps: job work for customers' material (we as job worker) and the ITC-04 file are not built; asset QR labels and Excel import, the director-account chart and the compliance calendar need data/CA input; investor role is marked MFA-required but MFA is not enforced yet (Phase 9); an over-limit withdrawal is refused when Admin decides, not when the investor sends it.
 
 ## Phase 6 result (03-11-2026)
 
@@ -266,6 +277,9 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 | Q-37 | Export invoices under LUT are stored as `without_gst` (Admin-only); should there be a separate zero-rated class visible to accounts? Export lines still pass the domestic MRP check. | Admin-only until decided. |
 | Q-38 | Schedule III mapping of account groups and how the CA confirms it (CA login is read-only). | Admin records the CA's confirmation with a note. |
 | Q-39 | Reminders cover GST bills only; should bills without GST get reminders through an Admin-only route? Message rates and monthly caps per company. | GST bills only; no caps or rates seeded. |
+| Q-40 | Month-end close: strict close only when every task is checked or carried (built), or auto-lock on the 10th with open items (`close.auto_lock`, off)? Second-Admin code on reopen? | Strict; auto-lock off; Admin reopens with a reason, optional relock after `close.reopen_hours`. |
+| Q-41 | CA settings: depreciation method, useful lives and residual % by asset kind; s.185 exception; s.186 limit; profit-share posting rules and dividend treatment (s.123); investor net-worth definition; whether investors see figures without GST. | Each refuses with a rule code until recorded; investors never see figures without GST. |
+| Q-42 | Licence owners (who receives the 90/30/7 reminders) and which licences block which processes. | Without an owner the reminder is an on-screen alert only; Admin marks blocking licences. |
 | Q-30 | Minimum cash/bank balance for the Cash flow "days below minimum" indicator. | No `cash.min_balance` setting created; the indicator stays hidden until set. |
 
 ## Translations awaiting native review

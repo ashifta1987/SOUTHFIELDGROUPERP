@@ -133,7 +133,7 @@ test.describe('Phase 5 · Biochem production', () => {
       await dlg.getByLabel('Number').fill(licNo)
       await dlg.getByLabel('Issued by').fill('E2E Test Authority')
       await dlg.getByRole('button', { name: 'Save' }).click()
-      await expect(page.getByRole('cell', { name: licNo })).toBeVisible({ timeout: 20_000 })
+      await expect(page.getByRole('cell', { name: licNo }).first()).toBeVisible({ timeout: 20_000 })
       await expect(page.getByTestId('lic-blocking')).toHaveText('0')
       await expectNoSeriousA11y(page)
       const [lic] = await api.view<{ id: string; is_valid: boolean }>('licences', `company_id=eq.${cid}&licence_no=eq.${licNo}&select=id,is_valid`)
