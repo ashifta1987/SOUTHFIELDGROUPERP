@@ -98,6 +98,18 @@ import { PadPrintingPage } from '@/features/production/pad-printing/PadPrintingP
 import { MouldManagerHomePage } from '@/features/me/mould-manager/MouldManagerHomePage'
 import { InjectionManagerHomePage } from '@/features/me/injection-manager/InjectionManagerHomePage'
 import { MachineCheckPage } from '@/features/me/machine-check/MachineCheckPage'
+import { QuotationsAndOrdersPage } from '@/features/sales/quotations-and-orders/QuotationsAndOrdersPage'
+import { CreditCustomersPage } from '@/features/sales/credit-customers/CreditCustomersPage'
+import { CustomerCarePage } from '@/features/sales/customer-care/CustomerCarePage'
+import { ShopsAndSupermarketsPage } from '@/features/sales/shops-and-supermarkets/ShopsAndSupermarketsPage'
+import { OwnShopsPage } from '@/features/sales/own-shops/OwnShopsPage'
+import { OnlineChannelsPage } from '@/features/sales/online-channels/OnlineChannelsPage'
+import { OnlineListingsPage } from '@/features/sales/online-listings/OnlineListingsPage'
+import { ExportOrdersPage } from '@/features/exports/export-orders/ExportOrdersPage'
+import { MixerGrinderCostingPage } from '@/features/exports/mixer-grinder-costing/MixerGrinderCostingPage'
+import { GstPage } from '@/features/accounts/gst/GstPage'
+import { FinancialsPage } from '@/features/accounts/financials/FinancialsPage'
+import { ScheduleIIIPage } from '@/features/accounts/schedule-iii/ScheduleIIIPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -196,6 +208,20 @@ const BUILT: Record<string, React.ReactNode> = {
   RaviHome: <MouldManagerHomePage />,
   KrishnaHome: <InjectionManagerHomePage />,
   OperatorCheck: <MachineCheckPage />,
+  // Phase 6 · sales desk and exports
+  SalesOrders: <QuotationsAndOrdersPage />,
+  CreditControl: <CreditCustomersPage />,
+  SalesControls: <CustomerCarePage />,
+  ShopSales: <ShopsAndSupermarketsPage />,
+  Outlets: <OwnShopsPage />,
+  OnlineSales: <OnlineChannelsPage />,
+  OnlineListings: <OnlineListingsPage />,
+  ExportOrders: <ExportOrdersPage />,
+  MixerCosting: <MixerGrinderCostingPage />,
+  // Phase 6 · accounts and GST
+  GST: <GstPage />,
+  Reports: <FinancialsPage />,
+  ScheduleIIIBiochem: <ScheduleIIIPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */

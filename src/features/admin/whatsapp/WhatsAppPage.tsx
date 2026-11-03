@@ -25,13 +25,14 @@ import {
   type Column,
 } from '@/ui'
 import { TableCard } from '@/features/admin/import-data/layout'
+import { CostsTab, InboxTasksTab, RemindersTab } from './Phase6Tabs'
 
 type Channel = ViewRow<'msg_channels'>
 type Template = ViewRow<'msg_templates'>
 type Outbox = ViewRow<'msg_outbox'>
 type Allow = ViewRow<'msg_allow_list'>
 type Inbound = ViewRow<'msg_inbound'>
-type TabKey = 'templates' | 'allow' | 'outbox' | 'inbound' | 'channels'
+type TabKey = 'templates' | 'allow' | 'outbox' | 'inbound' | 'tasks' | 'reminders' | 'costs' | 'channels'
 
 const MSG_RULES = new Set(['msg.not_consented', 'msg.bad_number', 'msg.staff_template_private', 'msg.template_params', 'msg.template_body', 'msg.template_missing'])
 
@@ -74,6 +75,7 @@ function outboxTone(status: string | null): { tone: 'success' | 'signal' | 'dang
  * of contacts who agreed to WhatsApp), the outbox with cancel, and received messages. Sending is off until the owner's
  * WhatsApp Business account is connected and the whatsapp-sender Edge Function is deployed: until then messages stay
  * queued (or skipped with a reason). Message rows never show their parameters, so no amounts, salary, KYC or bank details.
+ * Phase 6 adds the inbox tasks (payment proofs, replies), payment reminders (7/3/0/3/7/14 schedule) and cost caps.
  */
 export function WhatsAppPage() {
   const { t } = useTranslation()
@@ -142,6 +144,9 @@ export function WhatsAppPage() {
           { key: 'allow', label: t('whatsapp.tab.allow') },
           { key: 'outbox', label: t('whatsapp.tab.outbox') },
           { key: 'inbound', label: t('whatsapp.tab.inbound') },
+          { key: 'tasks', label: t('whatsapp.tab.tasks') },
+          { key: 'reminders', label: t('whatsapp.tab.reminders') },
+          { key: 'costs', label: t('whatsapp.tab.costs') },
           { key: 'channels', label: t('whatsapp.tab.channels') },
         ]}
       />
@@ -150,6 +155,9 @@ export function WhatsAppPage() {
         {tab === 'allow' ? <AllowTab canEdit={isAdmin} /> : null}
         {tab === 'outbox' ? <OutboxTab canEdit={isAdmin} /> : null}
         {tab === 'inbound' ? <InboundTab /> : null}
+        {tab === 'tasks' ? <InboxTasksTab companies={rowsOf(companies)} isAdmin={isAdmin} readOnly={readOnly} /> : null}
+        {tab === 'reminders' ? <RemindersTab companies={rowsOf(companies)} /> : null}
+        {tab === 'costs' ? <CostsTab companies={rowsOf(companies)} isAdmin={isAdmin} /> : null}
         {tab === 'channels' ? <ChannelsTab canEdit={isAdmin} channels={chList} loading={channels.isLoading} companies={rowsOf(companies)} /> : null}
       </div>
     </>

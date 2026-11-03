@@ -1,0 +1,30 @@
+{
+  "mixerCosting": {
+    "title": "Mixer grinder costing",
+    "subtitle": "Cost and FOB price per piece for each export model, and the plan for one container",
+    "notBuilt": "Not built yet",
+    "notBuiltBody": "There are no costing tables for the export models in the database yet, so no figures are shown here. Nothing on this screen is typed in or copied from a sheet: every figure will come from the books, the bills and the assembly records.",
+    "when": "Comes after the owner confirms the models and the costing method",
+    "needsTitle": "What this screen will need",
+    "needs": {
+      "bom": { "title": "Bill of materials per model.", "body": "Each model's parts and quantities, from the approved assembly BOM." },
+      "rates": { "title": "Part rates from purchase bills.", "body": "The latest posted bill rate of each part, before and with GST." },
+      "freight": { "title": "Inward freight and loading.", "body": "Spread over the pieces of each purchase, so each part's rate carries its share." },
+      "labour": { "title": "Labour per piece.", "body": "From staff duties in the assembly unit and the pieces assembled each month." },
+      "overheads": { "title": "Factory cost.", "body": "Power, water and other overheads of the assembly unit, per piece." },
+      "fob": { "title": "FOB build-up.", "body": "Parts + factory cost + labour + factory profit + transport + free spares, per piece and model." },
+      "container": { "title": "Container plan.", "body": "Cartons × pieces for one container, free spares, and the purchase requests per supplier it creates." },
+      "checks": { "title": "Checks.", "body": "Lines that look counted twice or out of line with the bills are listed for the owner to confirm." }
+    },
+    "ownerTitle": "Waiting for the owner",
+    "owner": {
+      "models": "Which export models are costed, and their approved BOMs.",
+      "sheets": "Whether the existing costing sheets are imported as history or only used as a check.",
+      "overheads": "How factory overheads are spread over the assembly unit.",
+      "profit": "The factory profit and free-spares percentages to apply."
+    },
+    "usedTitle": "Where the figures will come from",
+    "usedBody": "These screens already hold the records the costing will use.",
+    "links": { "machines": "Machine assembly", "assembled": "Assembled products", "components": "Component costing", "exports": "Export orders" }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "onlineChannels": {
+    "title": "Online channels",
+    "subtitle": "Own website and marketplaces · orders, payouts, fees and profit for each channel and each company",
+    "notConnected": "No store is connected yet. Orders will arrive automatically once the store connection (Phase 8) is set up; until then an order can be entered here and becomes a sales order.",
+    "names": { "shopify": "Shopify (own website)", "amazon": "Amazon", "flipkart": "Flipkart", "jiomart": "JioMart", "meesho": "Meesho" },
+    "channelsTitle": "Channels",
+    "noChannels": "No channel set up yet",
+    "noChannelsBody": "Admin sets up each channel with its GSTIN, the marketplace's buyer account and the stock place.",
+    "col": { "channel": "Channel", "tcs": "GST TCS", "listed": "Listed items", "orders": "Orders", "date": "Order date", "external": "Channel order number", "shipState": "Ship-to state", "order": "Sales order" },
+    "setupTitle": "Set up a channel",
+    "noSettings": "Admin sets up channels.",
+    "f": {
+      "gstin": "Sells from GSTIN",
+      "party": "Marketplace buyer account",
+      "place": "Ships from (stock place)",
+      "tcs": "GST TCS applies (marketplace)",
+      "state": "Ship-to state code",
+      "stateHelp": "Two digits, e.g. 32 for Kerala. It decides the place of supply.",
+      "price": "Price incl. GST ₹",
+      "priceHelp": "The price the buyer paid, including GST. The server works out the rate before tax."
+    },
+    "save": "Save channel",
+    "saved": "Channel saved.",
+    "setupRule": "The marketplace is a buyer account in your books: each order adds to what it owes you, and each payout clears it.",
+    "ordersTitle": "Online orders",
+    "noOrders": "No online orders yet.",
+    "ingestTitle": "Enter an online order",
+    "noCreate": "You do not have the right to take orders.",
+    "ingest": "Bring in order",
+    "ingested": "Order brought in as sales order {{no}}.",
+    "duplicate": "This channel order was already brought in; nothing changed.",
+    "booksTitle": "From a marketplace order to the money in your bank",
+    "books": {
+      "value": { "line": "Order value, including GST", "books": "Sale invoice in your name and GSTIN; output GST on it" },
+      "fees": { "line": "Commission and fixed fees", "books": "Expense: channel fees, by channel" },
+      "shipping": { "line": "Shipping and collection fees", "books": "Expense: channel shipping, by channel" },
+      "feeGst": { "line": "GST on those fees", "books": "Input GST credit, from the channel's monthly tax invoice" },
+      "tcs": { "line": "GST TCS", "books": "TCS receivable; credited to your GST cash ledger once the channel files it" },
+      "tds": { "line": "Income-tax TDS", "books": "TDS receivable; checked against Form 26AS" },
+      "returns": { "line": "Returns and RTO, plus claims", "books": "Credit note against the sale; returned stock back in after checking" },
+      "payout": { "line": "Payout to your bank", "books": "Matched to the bank credit; clears the channel's balance" }
+    },
+    "booksNote": "TCS and TDS rates are not set in the app; the CA confirms them before settlements are posted.",
+    "profitTitle": "Profit by channel",
+    "profitEmpty": "Fills from settlements and ad invoices",
+    "profitBody": "Settlement reports and ad invoices arrive with the store connection in Phase 8; nothing is shown until then."
+  }
+}

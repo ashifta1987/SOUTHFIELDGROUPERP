@@ -1,0 +1,73 @@
+{
+  "scheduleIII": {
+    "title": "Financial statements · Schedule III",
+    "draft": "Draft",
+    "subtitle": "{{company}} · Companies Act 2013, Schedule III, Division I · balances at {{date}} · before audit, depreciation and tax · amounts in ₹",
+    "asAt": "As at",
+    "noCompany": "No company yet. Add one under Admin → Companies.",
+    "checkLabel": "Balance check",
+    "assets": "Assets",
+    "equityLiabilities": "Equity and liabilities",
+    "balanced": "Balanced · assets equal equity and liabilities",
+    "difference": "Difference ₹{{amount}} · check the books before sharing",
+    "caConfirmed": "Mapping confirmed by the CA",
+    "caNotConfirmed": "Mapping not yet confirmed by the CA",
+    "side": {
+      "equity_liabilities": "I. Equity and liabilities",
+      "assets": "II. Assets"
+    },
+    "total": "Total",
+    "bsTitle": "Balance sheet as at {{date}}",
+    "plTitle": "Statement of profit and loss · {{from}} to {{to}}",
+    "profit": "Profit for the period",
+    "broughtForward": "Profit of earlier periods (in reserves and surplus)",
+    "plNote": "Profit of this and earlier periods is carried to reserves and surplus. Depreciation and tax are shown only once they are booked.",
+    "unmappedTitle": "Groups not yet mapped",
+    "unmappedBody": "These account groups have no Schedule III line yet. Their balances stay on their natural side (shown as “not yet mapped”) so the sheet still balances. Map them below.",
+    "col": {
+      "group": "Account group",
+      "nature": "Nature",
+      "balance": "Balance (Dr +)",
+      "line": "Schedule III line",
+      "ca": "CA"
+    },
+    "nature": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "equity": "Equity",
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "mapTitle": "Mapping · account groups to Schedule III lines",
+    "mapNote": "{{mapped}} of {{total}} groups mapped. A group's sub-groups follow it unless they have their own line.",
+    "mapConfirmed": "The CA has confirmed the current mapping.",
+    "mapNotConfirmed": "Changing a line clears the CA's confirmation; record it again once the CA agrees.",
+    "adminOnly": "Only Admin changes the mapping. Ask Admin if a line looks wrong.",
+    "lineFor": "Line for {{group}}",
+    "notMapped": "Not mapped",
+    "confirmed": "Confirmed",
+    "toConfirm": "To confirm",
+    "noGroups": "No account groups yet.",
+    "noGroupsBody": "Groups come from the Tally import or Admin → Tally books → Chart of accounts.",
+    "confirmButton": "Record CA confirmation",
+    "confirmTitle": "Record the CA's confirmation",
+    "confirmEffect_one": "Marks the mapping of {{count}} group as confirmed by the CA, with your note. It is logged.",
+    "confirmEffect_other": "Marks the mapping of {{count}} groups as confirmed by the CA, with your note. It is logged.",
+    "confirmSubmit": "Record confirmation",
+    "caNote": "CA's note (who confirmed it and how)",
+    "caNoteHelp": "The CA's own login is read-only, so Admin records the confirmation with the CA's note (at least 5 characters).",
+    "viewTitle": "The sign-in decides the view",
+    "viewAdmin": "Admin: every transaction, with GST and without GST, each bill without GST marked. These statements and the returns are made from all of them.",
+    "viewOthers": "Everyone else: transactions with GST only, in every list, report and export.",
+    "viewCa": "The CA: every transaction, read-only, to prepare and audit the accounts.",
+    "gstOnly": "You are seeing the statements built from GST transactions only.",
+    "caTitle": "For the CA to settle before the statements are final",
+    "caBody": "Depreciation and income tax are not booked, so profit will come down. Opening balances, loans to directors, cash in hand and anything shown as “not yet mapped” are reviewed with the CA before the statements are shared.",
+    "tbLink": "Open the trial balance →",
+    "rules": {
+      "group": "That account group was not found. Reload the page and try again.",
+      "line": "That Schedule III line is not known. Choose a line from the list.",
+      "note": "Write the CA's note: who confirmed the mapping and how (at least 5 characters)."
+    }
+  }
+}

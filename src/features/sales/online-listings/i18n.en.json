@@ -1,0 +1,22 @@
+{
+  "onlineListings": {
+    "title": "Online store listings",
+    "subtitle": "What each store shows for each product, built from the product master · Admin publishes",
+    "listTitle": "Products and stores",
+    "empty": "No product is listed in a store yet",
+    "emptyBody": "Admin adds a listing for a channel; the server shows what stops it going live.",
+    "col": { "item": "Item", "channel": "Store", "title": "Listing title", "price": "Price ₹", "stops": "What stops it", "published": "Published" },
+    "blockers": { "barcode": "Barcode", "mrp": "MRP", "price_above_mrp": "Price above MRP", "price": "Price", "not_active": "Item not active" },
+    "formTitle": "Add or publish a listing",
+    "adminOnly": "Admin publishes listings. You can see them here.",
+    "noChannel": "No store channel yet",
+    "noChannelBody": "Set up a channel on Online channels first.",
+    "f": { "price": "Store price incl. GST ₹", "publish": "Publish now" },
+    "publish": "Publish",
+    "saveDraft": "Save listing",
+    "listed": "Listed: the item is live on the store.",
+    "savedBlocked": "Saved, not listed. Still needed: {{list}}.",
+    "savedReady": "Saved and ready to publish.",
+    "rule": "An item goes live only with a barcode, an MRP, a price not above the MRP, and an active item. The server checks each of these."
+  }
+}

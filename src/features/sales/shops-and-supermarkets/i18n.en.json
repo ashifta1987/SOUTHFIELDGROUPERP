@@ -1,0 +1,42 @@
+{
+  "shopSales": {
+    "title": "Shops and supermarkets",
+    "subtitle": "Who buys the retail range, how they pay, and what they still owe · from the books",
+    "recordCollection": "Record a collection",
+    "newInvoice": "New invoice to a shop",
+    "buyersTitle": "Shops, supermarkets and distributors",
+    "noBuyers": "No shop or supermarket customers yet",
+    "noBuyersBody": "Customers of type retail shop, supermarket chain, wholesale or distributor show here. Add them on Sales → Customers.",
+    "types": { "retail_shop": "Retail shop", "supermarket_chain": "Supermarket chain", "wholesale": "Wholesale", "distributor": "Distributor", "none": "—" },
+    "col": {
+      "buyer": "Buyer",
+      "type": "Type",
+      "paidBy": "Paid by",
+      "payments": "Payments",
+      "receivedFy": "Received this year ₹",
+      "lastPaid": "Last paid",
+      "date": "Date",
+      "receipt": "Receipt",
+      "amount": "₹",
+      "staff": "Staff",
+      "bill": "Bill",
+      "due": "Due",
+      "overdue": "Days overdue",
+      "open": "Still owed ₹"
+    },
+    "modes": { "cash": "Cash", "bank": "Bank transfer", "upi": "UPI", "cheque": "Cheque", "card": "Card" },
+    "month": "Month",
+    "receiptsTitle": "Who paid this month",
+    "noReceipts": "No receipts in this month.",
+    "owedTitle": "What the shops still owe",
+    "noOwed": "Nothing owed by these buyers.",
+    "staffTitle": "Collections by staff",
+    "noCollections": "No collections by staff yet",
+    "noCollectionsBody": "The salesman records each collection on his phone; the shop gets a WhatsApp receipt.",
+    "counterTitle": "Own shop counters",
+    "counterBody": "Counter billing at the own shops: bill at MRP, the bill goes by WhatsApp or print.",
+    "counterClose": "At closing: bills = UPI + cash + card. Any gap shows before the staff leave.",
+    "openShops": "Open own shops",
+    "chequeRule": "Cheques: received → deposited → cleared or bounced. A bounced cheque puts the debt back and triggers a credit review."
+  }
+}

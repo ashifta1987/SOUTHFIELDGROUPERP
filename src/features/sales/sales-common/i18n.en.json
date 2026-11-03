@@ -1,0 +1,178 @@
+{
+  "salesCommon": {
+    "readOnly": "Read-only view: you can look, not change.",
+    "noCompany": "No company yet. Admin adds companies on Admin → Companies.",
+    "serverSays": "The server says: {{detail}}",
+    "choose": "Choose",
+    "md": {
+      "rule": "Only the MD gives an exception, never the person who took the order. It names the amount and ends by itself; it is logged.",
+      "amount": "Exception amount ₹",
+      "until": "Valid until",
+      "reason": "Reason and compensating checks",
+      "grant": "Grant MD exception",
+      "granted": "MD exception recorded. A held order can now be released by someone other than its creator.",
+      "grantedReleased": "MD exception recorded and the order now fits: it is confirmed."
+    },
+    "exposure": {
+      "status": "Credit status",
+      "limit": "Approved limit",
+      "receivables": "Unpaid bills",
+      "openOrders": "Orders already approved, not billed",
+      "exception": "Live MD exceptions",
+      "available": "Available now",
+      "extra": "This order",
+      "blocked": "Blocked · MD exception needed",
+      "fits": "Within the limit",
+      "gstOnly": "Figures are GST bills only. The decision always uses the full exposure.",
+      "hiddenItems": "Some items are not shown in your view. The decision uses the full exposure, so the customer may be blocked even when the figures look fine.",
+      "rule": "Only cleared payments, allocated advances and posted credit notes free up credit. The server checks again at release, dispatch and billing."
+    },
+    "line": {
+      "item": "Item {{n}}",
+      "qty": "Quantity {{n}}",
+      "rate": "Rate ₹",
+      "discount": "Discount ₹ {{n}}",
+      "remove": "Remove line {{n}}",
+      "removeShort": "Remove",
+      "add": "Add line",
+      "enterHint": "Enter in the last box adds a line. Tax and totals come from the server."
+    },
+    "status": {
+      "pending_credit": "Held · credit",
+      "pending_approval": "Held · approvals",
+      "confirmed": "Confirmed",
+      "part_dispatched": "Part dispatched",
+      "dispatched": "Dispatched",
+      "closed": "Closed",
+      "cancelled": "Cancelled",
+      "in_progress": "In progress",
+      "active": "Active",
+      "rejected": "Rejected",
+      "none": "No credit",
+      "hold": "On hold",
+      "review": "Under review",
+      "logged": "Logged",
+      "on_hold": "Batch on hold",
+      "investigating": "Investigating",
+      "resolved": "Resolved",
+      "released": "Released",
+      "submitted": "Waiting for approvals",
+      "approved": "Approved",
+      "matches": "Matches list",
+      "mismatch": "Does not match",
+      "pending": "Not checked",
+      "shipped": "Shipped",
+      "listed": "Listed",
+      "draft": "Not listed",
+      "not_connected": "Not connected",
+      "connected": "Connected",
+      "open": "Open",
+      "answered": "Answered",
+      "verified": "Verified",
+      "inactive": "Inactive",
+      "blocked": "Blocked",
+      "posted": "Posted"
+    },
+    "rules": {
+      "order": {
+        "channel": "That sales channel is not known.",
+        "payment": "Payment is credit, cash or advance.",
+        "product": "Every line needs an item.",
+        "no_rate": "Give a rate, or choose a price list that has this item.",
+        "no_price_list": "This item is not on the customer's price list. Ask the office.",
+        "price_locked": "Prices come from the price list and cannot be changed here.",
+        "discount_over_authority": "This discount is above your authority. Ask the sales manager.",
+        "kyc_cash_only": "The customer's KYC is not complete: cash or advance orders only.",
+        "private_label_missing": "Link the approved private-label request.",
+        "private_label_pending": "The private-label approvals are not complete.",
+        "missing": "That order was not found.",
+        "state": "That order is not in a state for this step.",
+        "not_confirmed": "The order is not confirmed yet."
+      },
+      "credit": {
+        "over_limit": "Still over the credit limit. An MD exception by another person is needed.",
+        "exception_until": "An MD exception needs an end time in the future.",
+        "exception_amount": "The exception amount must be above zero.",
+        "application_open": "An application for this customer is already in progress.",
+        "limit_amount": "Ask for a limit above zero.",
+        "missing": "That application was not found.",
+        "state": "This application is closed.",
+        "wrong_stage": "This application is waiting for another stage.",
+        "decision": "Approve or reject.",
+        "same_person": "You already decided an earlier stage of this application. Another person decides this one.",
+        "kyc_not_verified": "Verify the customer's KYC before the credit file is verified.",
+        "review_date": "The MD sets a review date in the future.",
+        "terms_required": "Choose the credit terms.",
+        "status": "Credit status is active, hold or review.",
+        "no_approval": "Credit becomes active only through an approved application."
+      },
+      "complaint": {
+        "lot": "That batch is not of this company.",
+        "description": "Describe the complaint.",
+        "missing": "That complaint was not found.",
+        "closed": "This complaint is closed.",
+        "status": "Status is investigating, resolved or rejected.",
+        "not_alone": "The person who logged a complaint cannot close it. Someone else closes it.",
+        "hold_open": "QC must decide the batch hold first."
+      },
+      "coverage": { "tier": "Set up this tier first." },
+      "private_label": {
+        "brand": "Give the brand name.",
+        "missing": "That request was not found.",
+        "stage": "The stage is sales, quality or MD.",
+        "state": "This request is already decided.",
+        "same_person": "Each approval comes from a different person."
+      },
+      "shop": {
+        "missing": "That shop was not found or is not active.",
+        "no_customer": "Choose the customer, or set the shop's walk-in customer.",
+        "branch": "Choose a shop branch of this company.",
+        "place": "Choose a stock place of this shop.",
+        "day_closed": "This day is already closed for the shop."
+      },
+      "export": {
+        "missing": "That export order was not found.",
+        "not_overseas": "An export order is for an overseas buyer.",
+        "fx_rate": "Enter the exchange rate.",
+        "container_no": "The container number or its check digit is wrong (4 letters, 7 digits).",
+        "container_missing": "That container was not found.",
+        "lut_expired": "Record a valid LUT for this date on the export order."
+      },
+      "listing": {
+        "channel": "That channel was not found.",
+        "blocked": "This item cannot be listed yet."
+      },
+      "online": { "unknown_item": "An item in the order is not in the item master." },
+      "query": {
+        "status": "Status is open, in progress, answered or closed.",
+        "missing": "That query was not found.",
+        "document": "That document is not of this customer."
+      },
+      "promise": { "date": "The promised date cannot be in the past." },
+      "lot": { "missing": "That batch was not found." },
+      "party": {
+        "not_linked": "This customer is not linked to the company.",
+        "missing": "Choose an active customer."
+      },
+      "sod": { "own_request": "Someone else must approve or release what you asked for or entered." },
+      "stock": {
+        "lot_on_hold": "A batch on QC hold cannot be sold.",
+        "insufficient": "Not enough stock at this place."
+      },
+      "qc": {
+        "already_on_hold": "This batch is already on hold.",
+        "hold_missing": "That hold was not found.",
+        "hold_closed": "This hold is already decided.",
+        "decision": "Release or reject."
+      },
+      "gst": { "without_admin_only": "An export under LUT (without GST) is posted by Admin only." },
+      "rights": {
+        "reason_required": "Give a reason (at least five letters).",
+        "missing": "You do not have the right for this. Ask Admin."
+      },
+      "price": { "above_mrp": "A price including tax is above the item's MRP." },
+      "money": { "account": "Set the shop's cash or bank account first." },
+      "date": { "future": "The date is in the future." }
+    }
+  }
+}
