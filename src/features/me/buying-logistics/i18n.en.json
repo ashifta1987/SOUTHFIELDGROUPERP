@@ -1,0 +1,36 @@
+{
+  "buyingHome": {
+    "title": "Buying, logistics and petty cash",
+    "sub": "Buying · logistics · petty cash · {{code}}",
+    "toBuy": "To buy",
+    "approved": "{{n}} approved requests",
+    "waiting": "{{n}} requests waiting for approval",
+    "orders": "{{draft}} draft orders · {{open}} open orders",
+    "late": "{{n}} orders past their delivery date",
+    "priceUp": "{{n}} items dearer this month",
+    "requests": "Requests",
+    "ordersBtn": "Orders",
+    "bills": "Bills to confirm",
+    "photo": "Photo a bill",
+    "check": "Check bills",
+    "goods": "Goods in",
+    "receipts": "{{n}} goods receipts today",
+    "quarantine": "{{n}} lots waiting for the incoming test",
+    "reorder": "{{n}} items below reorder level",
+    "cash": "Petty cash",
+    "cashEntry": "Cash entry",
+    "cashNote": "Each spend needs a photo of the bill. Over the daily cash limit to one person shows a warning.",
+    "logistics": "Logistics today",
+    "inTransit": "{{n}} in transit",
+    "toCarry": "{{n}} transfers waiting for you to take over",
+    "dispatch": "Dispatch board",
+    "msme": "MSME bills",
+    "msmeLine": "{{overdue}} past the legal due date · {{soon}} due soon",
+    "tasks": "Needs you",
+    "severity": {
+      "high": "Now",
+      "medium": "Today",
+      "low": "Soon"
+    }
+  }
+}

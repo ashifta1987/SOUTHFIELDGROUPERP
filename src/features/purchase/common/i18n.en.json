@@ -1,0 +1,112 @@
+{
+  "purchaseCommon": {
+    "serverSays": "({{detail}})",
+    "status": {
+      "draft": "Draft",
+      "submitted": "Waiting approval",
+      "approved": "Approved",
+      "refused": "Refused",
+      "ordered": "Ordered",
+      "closed": "Closed",
+      "cancelled": "Cancelled",
+      "open": "Open",
+      "received": "Received",
+      "selected": "Selected",
+      "rejected": "Rejected",
+      "issued": "Issued",
+      "confirmed": "Confirmed",
+      "part_received": "Part received",
+      "posted": "Posted",
+      "uploaded": "Uploaded",
+      "read": "Fields typed",
+      "matched": "Matched",
+      "mismatch": "Does not match",
+      "drafted": "Bill drafted",
+      "quarantine": "QC hold",
+      "available": "In stock",
+      "hold": "On hold",
+      "queued": "WhatsApp queued",
+      "skipped": "WhatsApp skipped",
+      "sent": "WhatsApp sent",
+      "failed": "WhatsApp failed"
+    },
+    "rules": {
+      "purchase": {
+        "department": "Choose your department.",
+        "direct_needs_approval": "Without a purchase order the receipt is a direct purchase, and only someone who can approve purchases (Admin) can post it.",
+        "grn_line_not_on_order": "Every line of the receipt must be a line of the chosen order.",
+        "grn_missing": "That goods receipt is not in this company.",
+        "grn_wrong_supplier": "The goods are from another supplier than the order.",
+        "order_missing": "That purchase order is not in this company.",
+        "order_state": "The order is not in a state that allows this.",
+        "over_limit": "This request is above your approval limit, so it goes to Admin.",
+        "over_receipt": "More is received than was ordered. Receive only what the order allows.",
+        "price_increase": "Some lines are dearer than the last purchase. Check them, tick “I accept the price increase”, then issue again.",
+        "quotation_missing": "That quotation was not found.",
+        "request_locked": "Only a draft request can be changed.",
+        "request_missing": "That request was not found.",
+        "request_not_approved": "The request must be approved before asking suppliers for quotes.",
+        "request_not_yours": "Only the person who made the request can change it.",
+        "request_state": "Only a request sent for approval can be decided.",
+        "rfq_closed": "This request for quotation is closed: a quotation has already been chosen.",
+        "rfq_line_missing": "That line is not on this request for quotation.",
+        "rfq_missing": "That request for quotation was not found."
+      },
+      "capture": {
+        "locked": "This bill photo is already used for a bill.",
+        "missing": "That bill photo was not found.",
+        "needs_admin": "The bill does not match the order and the goods received. Only Admin can turn it into a bill.",
+        "photo": "Take or upload the photo first.",
+        "photo_path": "The photo must be stored under this company’s folder.",
+        "state": "Do the earlier step first: type the fields, then match, then make the bill."
+      },
+      "sod": {
+        "own_request": "You made this request, so you cannot approve it. Another approver must decide it.",
+        "own_order": "You drafted this order, so you cannot issue it. Another approver must issue it.",
+        "own_count": "Someone who did not count must approve the differences.",
+        "tester_receiver": "The person who received the goods cannot test them.",
+        "releaser_receiver": "The person who received the goods cannot release them.",
+        "not_picker": "Only the person who picked confirms the handover.",
+        "picker_carrier": "The carrier confirms on their own login, not the picker.",
+        "picker_receiver": "The picker cannot receive the same transfer.",
+        "picker_close": "The picker or carrier cannot close the transfer.",
+        "witness_required": "A second authorised person must witness this receipt.",
+        "write_off": "A shortage is never written off by the picker, the carrier or the receiver."
+      },
+      "msme": {
+        "terms_over_45": "An MSME supplier must be paid within 45 days at most (MSMED Act, section 15). Shorten the payment terms."
+      },
+      "stock": {
+        "place_other_company": "Choose a store of this company.",
+        "qty": "Every line needs a quantity above zero.",
+        "insufficient": "There is not enough stock for this.",
+        "lot_mismatch": "That lot is not of this item and company."
+      },
+      "qc": {
+        "not_in_quarantine": "This lot is not waiting for a test."
+      },
+      "party": {
+        "missing": "Choose the supplier."
+      },
+      "product": {
+        "missing": "Choose the item."
+      },
+      "doc": {
+        "no_lines": "Add at least one line.",
+        "qty": "Every line needs a quantity above zero.",
+        "rate": "Enter the quoted rate for every line.",
+        "discount": "A discount cannot be more than the line value."
+      },
+      "org": {
+        "gstin_other_company": "Choose a GSTIN of this company."
+      },
+      "date": {
+        "future": "The date cannot be in the future."
+      },
+      "period": {
+        "no_fy": "No financial year is open for this date. Admin opens it on Numbering & IDs.",
+        "closed": "That month is closed. Ask Admin."
+      }
+    }
+  }
+}

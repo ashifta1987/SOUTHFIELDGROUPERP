@@ -50,6 +50,8 @@ export function SalesRegisterPage({ variant }: { variant: 'admin' | 'accountant'
         .select('*')
         .eq('company_id', companyId ?? '')
         .eq('status', 'posted')
+        // Delivery challans (branch stock transfers on the same GSTIN) move goods but are not sales.
+        .neq('doc_type', 'delivery_challan')
         .gte('doc_date', range?.from ?? '')
         .lte('doc_date', range?.to ?? '')
         .order('doc_date', { ascending: false })

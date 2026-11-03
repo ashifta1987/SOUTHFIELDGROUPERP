@@ -1,0 +1,53 @@
+{
+  "priceChanges": {
+    "title": "Price changes",
+    "subtitle": "Every purchase rate compared with the last one for the same item · before GST, per unit",
+    "kind": "Kind of item",
+    "allKinds": "All kinds of item",
+    "kinds": {
+      "raw_material": "Raw material",
+      "packaging": "Packaging",
+      "component": "Component",
+      "consumable": "Consumable",
+      "perfumery": "Perfumery",
+      "spares": "Spares",
+      "finished": "Finished goods",
+      "other": "Other"
+    },
+    "download": "Download",
+    "noCompany": "No company yet. Admin adds companies on Admin → Companies.",
+    "chartTitle": "{{name}}, ₹ per {{uom}} before GST",
+    "chartEmptyTitle": "Rates over time",
+    "chartEmpty": "No bill rates yet. Rates appear once purchase bills are posted.",
+    "chartSummary": "Bill rates of {{name}}: {{points}}",
+    "fromBills": "From your bills",
+    "chart": "Chart",
+    "chartAria": "Show the chart for {{name}}",
+    "effect": {
+      "title": "Effect on your costs",
+      "body": "Cost sheets arrive with production in Phase 5. Then every rate change shows its effect on each product's cost and lists the cost sheets that fall below their target margin."
+    },
+    "alerts": {
+      "title": "Alerts",
+      "pct": "An order more than {{pct}}% above the last rate is flagged and needs the approver to accept it.",
+      "unset": "No alert threshold is set (Settings → purchase.price_alert_pct), so every increase on an order is flagged and needs the approver to accept it.",
+      "monthly": "A monthly WhatsApp report to the owner with the largest increases arrives with the owner's WhatsApp account."
+    },
+    "tableTitle": "Latest rate against previous",
+    "sorted": "sorted by change",
+    "perUom": "per {{uom}}",
+    "cols": {
+      "item": "Item",
+      "group": "Group",
+      "latest": "Latest",
+      "rate": "Rate ₹",
+      "previous": "Previous",
+      "change": "Change",
+      "actions": "Actions"
+    },
+    "firstBill": "First bill",
+    "emptyTitle": "No purchase bills yet",
+    "emptyBody": "Each posted supplier bill adds its rates here.",
+    "footnote": "Items with only one bill so far show “First bill”."
+  }
+}

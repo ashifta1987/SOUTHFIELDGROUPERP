@@ -1,0 +1,108 @@
+{
+  "purchaseRequests": {
+    "title": "Purchase requests",
+    "subtitle": "Request → approval → supplier quotes → purchase order → goods receipt",
+    "tabs": "Requests",
+    "tabNew": "New request",
+    "tabWaiting": "Waiting approval · {{n}}",
+    "tabApproved": "Approved · {{n}}",
+    "tabOrdered": "Ordered · {{n}}",
+    "noCompany": "No company yet. Admin adds companies on Admin → Companies.",
+    "departments": "Departments",
+    "openCount": "{{n}} open",
+    "readOnly": "Read-only access: requests can be seen but not made.",
+    "noRight": "You don't have the right to make purchase requests. Ask Admin.",
+    "myDrafts": "Your drafts",
+    "edit": "Edit",
+    "editAria": "Edit draft {{no}}",
+    "open": "Open",
+    "openAria": "Open request {{no}}",
+    "sent": "Sent for approval as {{no}}.",
+    "savedDraft": "Saved as draft {{no}}.",
+    "cols": {
+      "no": "Request",
+      "date": "Date",
+      "department": "Department",
+      "by": "Requested by",
+      "neededBy": "Needed by",
+      "lines": "Items",
+      "estimate": "Estimate ₹",
+      "actions": "Actions"
+    },
+    "form": {
+      "title": "New purchase request",
+      "titleEdit": "Draft purchase request",
+      "department": "Department",
+      "yourDepartment": "Your department",
+      "noDepartments": "No departments are set up yet; type yours (Admin adds them on Admin → Branches).",
+      "forJob": "For job (optional)",
+      "neededBy": "Needed by",
+      "lines": "Items asked for",
+      "item": "Item",
+      "otherItem": "Other item (describe)",
+      "describe": "Describe the item",
+      "qty": "Quantity",
+      "estRate": "Est. rate ₹",
+      "inStock": "In stock",
+      "onOrder": "On order",
+      "lastRate": "Last rate",
+      "supplier": "Suggested supplier",
+      "anySupplier": "Any supplier",
+      "remove": "Remove",
+      "addItem": "+ Add item",
+      "keyboard": "Enter on the last rate adds a line.",
+      "reason": "Reason",
+      "rule": "Goes to an approver for this company; above an approval limit (when Admin sets one) it goes to Admin. You cannot approve your own request.",
+      "saveDraft": "Save draft",
+      "send": "Send for approval"
+    },
+    "aria": {
+      "item": "Item, line {{n}}",
+      "description": "Description, line {{n}}",
+      "qty": "Quantity, line {{n}}",
+      "estRate": "Estimated rate, line {{n}}",
+      "supplier": "Suggested supplier, line {{n}}",
+      "remove": "Remove line {{n}}"
+    },
+    "err": {
+      "department": "Choose your department.",
+      "line": "Line {{n}}: choose or describe the item and give a quantity (up to 3 decimals).",
+      "noLines": "Add at least one item."
+    },
+    "lastBills": {
+      "title": "Last two bills for this item",
+      "pick": "Choose an item to see what was paid on its last two bills.",
+      "none": "No bill for this item yet."
+    },
+    "alsoFrom": {
+      "title": "Requests also start from",
+      "bom": "Mould or machine parts short against the bill of materials",
+      "reorder": "Items below reorder level",
+      "maintenance": "Maintenance jobs that need spares"
+    },
+    "list": {
+      "waiting": "Waiting approval",
+      "approved": "Approved · ready for quotes",
+      "ordered": "Ordered"
+    },
+    "empty": {
+      "waiting": "Nothing is waiting for approval.",
+      "approved": "No approved request is waiting for quotes.",
+      "ordered": "No request has become an order yet."
+    },
+    "detail": {
+      "title": "Request {{no}}",
+      "meta": "{{department}} · {{by}} · {{date}}",
+      "decided": "Decided by {{by}} on {{date}}",
+      "approve": "Approve",
+      "refuse": "Refuse",
+      "refuseTitle": "Refuse request {{no}}",
+      "noteShort": "Give the reason (at least 5 characters).",
+      "approved": "Request {{no}} approved.",
+      "refused": "Request {{no}} refused.",
+      "noApprove": "Waiting for an approver. You don't have the right to approve purchases.",
+      "askQuotes": "Ask suppliers for quotes",
+      "openOrder": "Open the purchase order"
+    }
+  }
+}

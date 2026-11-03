@@ -62,6 +62,13 @@ import { StaffAdvancePage } from '@/features/staff/advance/StaffAdvancePage'
 import { StaffDetailsPage } from '@/features/staff/details/StaffDetailsPage'
 import { StaffPayslipPage } from '@/features/staff/payslip/StaffPayslipPage'
 import { WhatsAppPage } from '@/features/admin/whatsapp/WhatsAppPage'
+import { PurchaseRequestPage } from '@/features/purchase/requests/PurchaseRequestPage'
+import { PurchaseOrdersPage } from '@/features/purchase/orders/PurchaseOrdersPage'
+import { GoodsReceiptPage } from '@/features/purchase/goods-receipt/GoodsReceiptPage'
+import { BillReviewPage } from '@/features/purchase/bill-review/BillReviewPage'
+import { PriceChangesPage } from '@/features/purchase/price-changes/PriceChangesPage'
+import { BillPhotoPage } from '@/features/me/bill-photo/BillPhotoPage'
+import { BuyingLogisticsPage } from '@/features/me/buying-logistics/BuyingLogisticsPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -121,6 +128,13 @@ const BUILT: Record<string, React.ReactNode> = {
   StaffPayslip: <StaffPayslipPage />,
   StaffPayslipHasanan: <StaffPayslipPage />,
   WhatsApp: <WhatsAppPage />,
+  // Phase 4 · purchase
+  PurchaseRequest: <PurchaseRequestPage />,
+  GoodsReceipt: <GoodsReceiptPage />,
+  BillReview: <BillReviewPage />,
+  PriceChanges: <PriceChangesPage />,
+  BillCapture: <BillPhotoPage />,
+  RafeeqHome: <BuyingLogisticsPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */
@@ -128,6 +142,7 @@ const BUILT_ROUTES: Record<string, React.ReactNode> = {
   '/admin/settings': <SettingsPage />,
   '/sales/receipts': <ReceiptsPage />,
   '/purchase/bills-and-payments': <BillsPage />,
+  '/purchase/purchase-orders': <PurchaseOrdersPage />,
 }
 
 const SPECIAL = new Set(['Login', 'StaffSignIn'])

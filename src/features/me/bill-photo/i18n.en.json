@@ -1,0 +1,24 @@
+{
+  "billPhoto": {
+    "title": "Photo of a bill or challan",
+    "page": "Page 1",
+    "close": "Close",
+    "noCompany": "No company yet. Admin adds companies on Admin → Companies.",
+    "noRightTitle": "No right to send bills",
+    "noRight": "You don't have the right to send supplier bills. Ask Admin.",
+    "readOnly": "Read-only access: bills can be seen but not sent.",
+    "supplierBill": "Supplier bill",
+    "take": "Take a photo of the bill",
+    "retake": "Take the photo again",
+    "frameHint": "Tap to take the photo",
+    "frameNote": "Whole bill inside the frame · flat · good light",
+    "previewAlt": "The bill photo to send",
+    "gallery": "Gallery / PDF",
+    "send": "Send for checking",
+    "offline": "No network. Send the photo when you are back online.",
+    "uploadFailed": "Could not upload the photo. Nothing was saved; try again.",
+    "done": "Sent. The bill waits on Bill photo capture to be checked and matched.",
+    "check": "Check bills →",
+    "footnote": "Photos go to a private store in India, kept with the bill. Reading the photo automatically arrives once the AI provider is chosen."
+  }
+}

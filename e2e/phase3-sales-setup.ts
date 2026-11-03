@@ -179,13 +179,15 @@ export async function ensureSalesSetup(page: Page): Promise<SalesSetup> {
     ['E2ESALEA', 'E2E Test Sales Product A'],
     ['E2ESALEB', 'E2E Test Sales Product B'],
   ] as const) {
-    let [p] = await api.view<Row & { mrp: number | null; company_ids: string[] | null }>('products', `code=eq.${code}&select=id,mrp,company_ids`)
+    let [p] = await api.view<Row & { mrp: number | null; company_ids: string[] | null; status?: string }>('products', `code=eq.${code}&select=id,mrp,company_ids,status`)
     if (!p) {
       const res = await api.rpc<{ id: string }>('upsert_product', { p: { code, name, hsn_code: HSN, uom: 'NOS', kind: 'finished', status: 'active', company_ids: [companyId], force: true } })
       p = { id: res.id, mrp: null, company_ids: [companyId] }
     } else if (!(p.company_ids ?? []).includes(companyId)) {
       await api.rpc('upsert_product', { p: { id: p.id, company_ids: [...(p.company_ids ?? []), companyId] } })
     }
+    // A test item set inactive elsewhere (e.g. a clean-up) is switched back on for this spec.
+    if (p.status && p.status !== 'active') await api.rpc('upsert_product', { p: { id: p.id, status: 'active' } })
     if (p.mrp === null) await api.rpc('set_product_mrp', { p_product_id: p.id, p_mrp: 500, p_effective_from: `${startYear}-04-01` })
     products.push({ id: p.id, code, name })
   }
