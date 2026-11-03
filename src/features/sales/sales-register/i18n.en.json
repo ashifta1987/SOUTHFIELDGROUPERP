@@ -1,0 +1,50 @@
+{
+  "salesRegister": {
+    "title": "Sales register · {{month}}",
+    "subtitleAdmin": "Every posted bill of the month, with GST and without GST, because your sign-in sees all transactions.",
+    "subtitleAccountant": "Posted GST documents of the month, as the accountant sees them.",
+    "export": "Export",
+    "newBill": "New bill",
+    "month": "Month",
+    "noCompanyTitle": "No company yet",
+    "noCompanyBody": "Admin adds the company first on Companies.",
+    "tableTitle": "Posted bills",
+    "count_one": "{{count}} bill",
+    "count_other": "{{count}} bills",
+    "emptyTitle": "No posted bills in this month",
+    "emptyBody": "Bills appear here once they are posted on Invoices. Pick another month or company above.",
+    "withGst": "With GST",
+    "creditNote": "Credit note",
+    "settled": "Settled",
+    "openShort": "Open",
+    "footer_one": "Total of {{count}} bill (credit notes netted)",
+    "footer_other": "Total of {{count}} bills (credit notes netted)",
+    "cols": {
+      "date": "Date",
+      "no": "Bill",
+      "customer": "Customer",
+      "gstin": "GSTIN",
+      "kind": "Kind",
+      "taxable": "Taxable ₹",
+      "tax": "Tax ₹",
+      "total": "Total ₹",
+      "open": "Settled / open"
+    },
+    "kpi": {
+      "label": "Month totals",
+      "all": "All bills · {{count}}",
+      "with": "With GST · {{count}}",
+      "without": "Without GST · {{count}}"
+    },
+    "withoutByCustomer": "Without GST, by customer",
+    "noneWithout": "No bills without GST this month.",
+    "sameForAccountant": "The same register for the accountant",
+    "sameForAccountantBody": "Other sign-ins see only the bills with GST, and nothing shows that others are missing. Nobody switches anything: the database decides per sign-in.",
+    "whoSees": {
+      "title": "The sign-in decides what each person sees",
+      "admin": "Admin sees every transaction; bills without GST carry the amber mark and are entered only by Admin with a reason the law allows. The CA sees every transaction, read-only, for the dates Admin sets. Everyone else sees transactions with GST only.",
+      "accountant": "This register shows the GST documents your sign-in can see. What each sign-in sees is decided by the database for that sign-in, not by a filter on this screen.",
+      "statements": "Balance sheet, profit and loss, and the GST and income-tax returns are prepared by Admin and the CA."
+    }
+  }
+}

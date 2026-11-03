@@ -1,0 +1,19 @@
+{
+  "docPreview": {
+    "title": "Preview, download and send",
+    "subtitle": "The preview is exactly what prints on A4 · every figure is the posted document from the books.",
+    "kindsLabel": "Document kind",
+    "otherKinds": "Quotation, proforma, sales order, purchase order and payslip layouts arrive with their phases.",
+    "emptyTitle": "No posted document of this kind",
+    "emptyBody": "Post one on Invoices; it appears here with its A4 layout.",
+    "pickTitle": "Document",
+    "document": "Posted document",
+    "noneOfKind": "None posted yet",
+    "sendTitle": "Send or save",
+    "download": "Download PDF",
+    "print": "Print",
+    "email": "Email",
+    "downloadHelp": "Download PDF opens the print window: choose “Save as PDF”. Drafts are previewed on the Invoices screen with a DRAFT mark and are never sent.",
+    "waTitle": "WhatsApp"
+  }
+}

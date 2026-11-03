@@ -159,6 +159,14 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"duties": {
+                  Row: {
+                    "company_id": string,"company_name": string,"duty": string,"duty_date": string,"id": string,"person_id": string,"person_name": string,"place_id": string | null,"place_name": string | null,"shift": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"error_log": {
                   Row: {
                     "at": string,"message": string,"ref": string,"route": string | null,"rpc": string | null,"rule_code": string | null,"user_id": string | null
@@ -870,6 +878,14 @@ export type Database = {
 "help_page":
 { Args: { "p_language": string,"p_slug": string }; Returns: Json
                            },
+"home_summary":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"hours_by_company":
+{ Args: { "p_month": string }; Returns: {
+              "company_id": string,"company_name": string,"days": number,"ot_hours": number,"pay_company_id": string,"person_id": string,"person_name": string
+            }[]
+                           },
 "import_approve":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
@@ -987,6 +1003,9 @@ export type Database = {
                            },
 "set_allow_list":
 { Args: { "p_client_request_id": string,"p_note": string,"p_number": string,"p_remove": boolean }; Returns: Json
+                           },
+"set_duties":
+{ Args: { "p_client_request_id": string,"p_date": string,"p_entries": Json }; Returns: Json
                            },
 "set_party_kyc":
 { Args: { "p_client_request_id": string,"p_note": string,"p_party_id": string,"p_status": string }; Returns: Json

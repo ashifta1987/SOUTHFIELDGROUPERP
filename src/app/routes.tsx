@@ -34,6 +34,33 @@ import { BiochemProductsPage } from '@/features/sales/biochem-products/BiochemPr
 import { PriceListPage } from '@/features/sales/price-lists/PriceListPage'
 import { CustomerKycPage } from '@/features/sales/customer-kyc/CustomerKycPage'
 import { SuppliersPage } from '@/features/purchase/suppliers/SuppliersPage'
+import { InvoicePage } from '@/features/sales/invoice/InvoicePage'
+import { SalesRegisterPage } from '@/features/sales/sales-register/SalesRegisterPage'
+import { DocPreviewPage } from '@/features/admin/document-templates/DocPreviewPage'
+import { ReceiptsPage } from '@/features/sales/receipts/ReceiptsPage'
+import { CashBookPage } from '@/features/accounts/cash-book/CashBookPage'
+import { CashBookCheckPage } from '@/features/accounts/cash-book-check/CashBookCheckPage'
+import { BankPage } from '@/features/accounts/bank/BankPage'
+import { CashFlowPage } from '@/features/accounts/cash-flow/CashFlowPage'
+import { BillsPage } from '@/features/purchase/bills/BillsPage'
+import { CashEntryPage } from '@/features/me/cash-entry/CashEntryPage'
+import { EmployeesPage } from '@/features/hr/employees/EmployeesPage'
+import { AddStaffPage } from '@/features/hr/add-staff/AddStaffPage'
+import { AttendancePage } from '@/features/hr/attendance/AttendancePage'
+import { WorkerHoursPage } from '@/features/hr/worker-hours/WorkerHoursPage'
+import { StaffDutiesPage } from '@/features/hr/duties/StaffDutiesPage'
+import { StaffRotationPage } from '@/features/hr/rotation/StaffRotationPage'
+import { RequestsPage } from '@/features/hr/requests/RequestsPage'
+import { AllowancesPage } from '@/features/hr/allowances/AllowancesPage'
+import { CashGivenPage } from '@/features/hr/cash-given/CashGivenPage'
+import { PayrollPage } from '@/features/hr/payroll/PayrollPage'
+import { PayrollTrendPage } from '@/features/hr/payroll-trend/PayrollTrendPage'
+import { StaffWorkflowPage } from '@/features/hr/staff-workflow/StaffWorkflowPage'
+import { StaffLeavePage } from '@/features/staff/leave/StaffLeavePage'
+import { StaffAdvancePage } from '@/features/staff/advance/StaffAdvancePage'
+import { StaffDetailsPage } from '@/features/staff/details/StaffDetailsPage'
+import { StaffPayslipPage } from '@/features/staff/payslip/StaffPayslipPage'
+import { WhatsAppPage } from '@/features/admin/whatsapp/WhatsAppPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -64,11 +91,42 @@ const BUILT: Record<string, React.ReactNode> = {
   PriceList: <PriceListPage />,
   CustomerKYC: <CustomerKycPage />,
   SupplierKYC: <SuppliersPage />,
+  // Phase 3
+  Invoice: <InvoicePage />,
+  SalesRegister: <SalesRegisterPage variant="admin" />,
+  CompanyPortal: <SalesRegisterPage variant="accountant" />,
+  DocPreview: <DocPreviewPage />,
+  CashBook: <CashBookPage />,
+  CashBookCheck: <CashBookCheckPage />,
+  BankReco: <BankPage />,
+  CashFlow: <CashFlowPage />,
+  CashEntry: <CashEntryPage />,
+  StaffKYC: <EmployeesPage />,
+  AddStaff: <AddStaffPage />,
+  Attendance: <AttendancePage />,
+  WorkerHours: <WorkerHoursPage />,
+  StaffDuties: <StaffDutiesPage />,
+  StaffRotation: <StaffRotationPage />,
+  Requests: <RequestsPage />,
+  Allowances: <AllowancesPage />,
+  CashGiven: <CashGivenPage />,
+  Payroll: <PayrollPage variant="all" />,
+  PayrollBiochem: <PayrollPage variant="company" />,
+  PayrollBiochemTrend: <PayrollTrendPage />,
+  StaffWorkflow: <StaffWorkflowPage />,
+  StaffLeave: <StaffLeavePage />,
+  StaffAdvance: <StaffAdvancePage />,
+  StaffDetails: <StaffDetailsPage />,
+  StaffPayslip: <StaffPayslipPage />,
+  StaffPayslipHasanan: <StaffPayslipPage />,
+  WhatsApp: <WhatsAppPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */
 const BUILT_ROUTES: Record<string, React.ReactNode> = {
   '/admin/settings': <SettingsPage />,
+  '/sales/receipts': <ReceiptsPage />,
+  '/purchase/bills-and-payments': <BillsPage />,
 }
 
 const SPECIAL = new Set(['Login', 'StaffSignIn'])

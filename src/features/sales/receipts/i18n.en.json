@@ -1,0 +1,85 @@
+{
+  "receipts": {
+    "title": "Receipts",
+    "subtitle": "Money received from customers, set against their open bills. The rest stays on account.",
+    "noCompanyTitle": "No company yet",
+    "noCompanyBody": "Admin adds the company first on Companies.",
+    "noRight": "Recording receipts needs the “Cash book · create” or “Receipts and payments · create” right. Ask Admin.",
+    "modes": {
+      "cash": "Cash",
+      "bank": "Bank transfer",
+      "upi": "UPI",
+      "cheque": "Cheque",
+      "card": "Card",
+      "adjustment": "Adjustment"
+    },
+    "entry": {
+      "title": "Record a receipt",
+      "findCustomer": "Find customer",
+      "findHint": "Name or GSTIN",
+      "customer": "Customer",
+      "chooseCustomer": "Choose a customer",
+      "noCustomers": "No customers for this company yet",
+      "date": "Date",
+      "mode": "Received by",
+      "cashAccount": "Cash account",
+      "bankAccount": "Bank account",
+      "noAccount": "No account of this kind yet · Admin adds it on Bank",
+      "amount": "Amount",
+      "narration": "Narration",
+      "cashRule": "Cash from one person in a day is limited by the Income-tax rule; the server refuses a receipt that reaches the limit set on Settings.",
+      "takeByBank": "Take it by bank instead",
+      "post": "Post receipt",
+      "done": "Receipt {{no}} posted.",
+      "donePart": "Receipt {{no}} posted. ₹{{rest}} stays on account."
+    },
+    "bills": {
+      "title": "Open bills of this customer",
+      "autoFill": "Fill oldest first",
+      "chooseFirst": "Choose a customer to see their open bills.",
+      "emptyTitle": "No open bills",
+      "emptyBody": "Everything is settled; the whole amount will stay on account.",
+      "ref": "Bill",
+      "date": "Date",
+      "due": "Due",
+      "overdue": "Overdue",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "notDue": "Not due",
+      "amount": "Amount ₹",
+      "open": "Open ₹",
+      "allocate": "Allocate ₹",
+      "allocateAria": "Allocate to bill {{ref}}",
+      "allocated": "Allocated",
+      "onAccount": "On account"
+    },
+    "err": {
+      "party": "Choose the customer.",
+      "noCash": "There is no cash account yet.",
+      "noBank": "There is no bank account yet.",
+      "amount": "Enter the amount in rupees, up to 2 decimals.",
+      "allocFormat": "Allocations are rupees with up to 2 decimals.",
+      "allocOver": "The allocations add up to more than the amount.",
+      "reason": "Write a reason of at least 5 characters."
+    },
+    "list": {
+      "title": "Receipts",
+      "date": "Date",
+      "no": "No.",
+      "customer": "Customer",
+      "mode": "Mode",
+      "amount": "Amount ₹",
+      "by": "Entered by",
+      "reversed": "Reversed",
+      "actions": "Actions",
+      "reverse": "Reverse",
+      "reverseAria": "Reverse receipt {{no}}",
+      "emptyTitle": "No receipts yet",
+      "emptyBody": "Receipts recorded above appear here."
+    },
+    "reverseDlg": {
+      "title": "Reverse receipt {{no}}?",
+      "effect": "A reversal entry for ₹{{amount}} is posted and the bills it settled are open again. The receipt is never edited or deleted."
+    }
+  }
+}
