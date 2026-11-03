@@ -4,6 +4,8 @@ import AxeBuilder from '@axe-core/playwright'
 export const creds = {
   admin: { email: process.env.E2E_ADMIN_EMAIL ?? '', password: process.env.E2E_ADMIN_PASSWORD ?? '' },
   staff: { email: process.env.E2E_STAFF_EMAIL ?? '', password: process.env.E2E_STAFF_PASSWORD ?? '' },
+  /** Optional third synthetic login (segregation of duties needing three people, e.g. stock transfers). */
+  third: { email: process.env.E2E_THIRD_EMAIL ?? '', password: process.env.E2E_THIRD_PASSWORD ?? '' },
 }
 export const hasCreds = Boolean(creds.admin.email && creds.admin.password)
 

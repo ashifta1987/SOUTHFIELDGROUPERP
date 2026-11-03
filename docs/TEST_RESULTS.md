@@ -50,3 +50,12 @@ Notes: pgTAP runs through `scripts/pgtap.mjs` against the DEV project because Do
 | pgTAP (DEV, rolled back) | `pnpm db:test` | **155 passed, 0 failed** — adds `07_documents` (GST by place of supply, rate from HSN, no taxable sale without GST, Admin-only without GST, MRP, gap-free numbers, balanced GL, idempotent posting), `08_money_payroll` (cash limits, allocations, closed period, OT, preparer cannot approve payroll, own payslip only), `09_money_screens` (8), `10_hr_screens` (20), `11_staff_help` (25). `05_masters` plan count corrected (15). |
 | End to end + axe | `npx playwright test --workers=1` | **46 passed**, 5 skipped (screenshot specs). New: `phase3-invoice` (2), `phase3-money` (3), `phase3-payroll` (3), `phase3-staff`, `phase3-help`, `phase3-whatsapp` — each asserts DB state and runs axe. `phase0` assertions relaxed so they hold once DEV has figures; `phase2-import` waited on the always-visible intro text and is now tied to the success message. |
 
+## Phase 4 — 03-11-2026
+
+| Check | Command | Result |
+|---|---|---|
+| Lint / types | `pnpm lint`, `npx tsc -b` | Pass |
+| pgTAP (DEV, rolled back) | `pnpm db:test` | **250 passed, 0 failed** — adds `12_inventory` (50: last unit, append-only ledger, negative stock allowance, 9-state transfer, balance rule, picker cannot close, sellable buckets, challan vs IGST invoice, blind counts, regrind, RLS) and `13_purchase` (45: request approval by another, RFQ/quotes, drafter cannot issue PO, one `po_issued` outbox row for consented suppliers only and none on retry, GRN → quarantine → test by non-receiver → release, exact 3-way match, MSME dues, payment advice, price history, RLS) |
+| Concurrency (two real connections) | `node scripts/concurrency-check.mjs` | Pass — of two simultaneous issues of the last unit exactly one commits, the other is refused `stock.insufficient` after waiting on the lock; balance 0; one ledger row (2 rounds) |
+| End to end + axe | `npx playwright test --workers=1` | **48 passed**, 7 skipped (screenshot specs). New: `phase4-purchase`, `phase4-inventory` (three logins for segregation of duties) |
+

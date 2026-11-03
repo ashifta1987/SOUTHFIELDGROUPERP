@@ -69,6 +69,12 @@ import { BillReviewPage } from '@/features/purchase/bill-review/BillReviewPage'
 import { PriceChangesPage } from '@/features/purchase/price-changes/PriceChangesPage'
 import { BillPhotoPage } from '@/features/me/bill-photo/BillPhotoPage'
 import { BuyingLogisticsPage } from '@/features/me/buying-logistics/BuyingLogisticsPage'
+import { RawMaterialPage } from '@/features/inventory/raw-material/RawMaterialPage'
+import { ComponentStockPage } from '@/features/inventory/component-stock/ComponentStockPage'
+import { StockMovementsPage } from '@/features/inventory/stock-movements/StockMovementsPage'
+import { ScrapPage } from '@/features/inventory/scrap/ScrapPage'
+import { WarehousePage } from '@/features/inventory/warehouse/WarehousePage'
+import { StockTransfersPage } from '@/features/inventory/stock-transfers/StockTransfersPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -135,6 +141,13 @@ const BUILT: Record<string, React.ReactNode> = {
   PriceChanges: <PriceChangesPage />,
   BillCapture: <BillPhotoPage />,
   RafeeqHome: <BuyingLogisticsPage />,
+  // Phase 4 · inventory
+  RawMaterial: <RawMaterialPage />,
+  ComponentStock: <ComponentStockPage />,
+  StockMovement: <StockMovementsPage />,
+  Scrap: <ScrapPage />,
+  Warehouse: <WarehousePage />,
+  StockTransfer: <StockTransfersPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */

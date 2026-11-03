@@ -49,12 +49,12 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Goods receipt `GoodsReceipt` | `/purchase/goods-receipt` | `src/features/purchase/GoodsReceiptPage.tsx` | `purch.goods_receipts`, `purch.grn_lines`, `inv.stock_ledger`, `inv.lots` | `api.post_goods_receipt` | 4 | missing (repo was empty) |
+| Goods receipt `GoodsReceipt` | `/purchase/goods-receipt` | `src/features/purchase/GoodsReceiptPage.tsx` | `purch.goods_receipts`, `purch.grn_lines`, `inv.stock_ledger`, `inv.lots` | `api.post_goods_receipt` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 | Suppliers `SupplierKYC` | `/purchase/suppliers` | `src/features/purchase/suppliers/SuppliersPage.tsx` | `master.parties`, `master.party_bank_accounts`, `master.bank_change_requests`, `master.supplier_material_approvals` | `api.upsert_supplier`, `api.request_bank_change`, `api.approve_bank_change` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-suppliers.spec.ts; pgTAP 05_masters |
-| Purchase requests `PurchaseRequest` | `/purchase/purchase-requests` | `src/features/purchase/PurchaseRequestsPage.tsx` | `purch.requests`, `purch.request_lines` | `api.create_purchase_request`, `api.approve_purchase_request` | 4 | missing (repo was empty) |
-| Bill photo capture `BillReview` | `/purchase/bill-photo-capture` | `src/features/purchase/BillReviewPage.tsx` | `purch.bill_captures`, `purch.bills`, `purch.orders`, `purch.goods_receipts` | `api.match_bill_to_po_grn`, `api.post_purchase_bill` | 4 | missing (repo was empty) |
-| Price changes `PriceChanges` | `/purchase/price-changes` | `src/features/purchase/PriceChangesPage.tsx` | `purch.price_history` | `api.v_price_changes` | 4 | missing (repo was empty) |
-| *Purchase orders* (no reference) | `/purchase/purchase-orders` | `src/features/purchase/PurchaseOrdersPage.tsx` | `purch.rfqs`, `purch.quotations`, `purch.orders`, `purch.order_lines` | `api.create_rfq`, `api.record_quotation`, `api.issue_purchase_order` | 4 | missing (repo was empty) — build from §UX-7 patterns |
+| Purchase requests `PurchaseRequest` | `/purchase/purchase-requests` | `src/features/purchase/PurchaseRequestsPage.tsx` | `purch.requests`, `purch.request_lines` | `api.create_purchase_request`, `api.approve_purchase_request` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Bill photo capture `BillReview` | `/purchase/bill-photo-capture` | `src/features/purchase/BillReviewPage.tsx` | `purch.bill_captures`, `purch.bills`, `purch.orders`, `purch.goods_receipts` | `api.match_bill_to_po_grn`, `api.post_purchase_bill` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Price changes `PriceChanges` | `/purchase/price-changes` | `src/features/purchase/PriceChangesPage.tsx` | `purch.price_history` | `api.v_price_changes` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| *Purchase orders* (no reference) | `/purchase/purchase-orders` | `src/features/purchase/PurchaseOrdersPage.tsx` | `purch.rfqs`, `purch.quotations`, `purch.orders`, `purch.order_lines` | `api.create_rfq`, `api.record_quotation`, `api.issue_purchase_order` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 | *Bills & payments* (no reference) | `/purchase/bills-and-payments` | `src/features/purchase/BillsPaymentsPage.tsx` | `purch.bills`, `purch.payments`, `purch.payment_allocations`, `acct.tds_entries` | `api.post_purchase_bill`, `api.check_cash_limit`, `api.post_payment`, `api.approve_payment` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Production
@@ -85,13 +85,13 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Raw material `RawMaterial` | `/inventory/raw-material` | `src/features/inventory/RawMaterialPage.tsx` | `api.v_stock_balances` over `inv.stock_ledger`, `inv.reorder_levels` | `api.issue_stock` | 4 | missing (repo was empty) |
-| Component stock `ComponentStock` | `/inventory/component-stock` | `src/features/inventory/ComponentStockPage.tsx` | `api.v_stock_balances` | `api.issue_stock` | 4 | missing (repo was empty) |
-| Stock movements `StockMovement` | `/inventory/stock-movements` | `src/features/inventory/StockMovementsPage.tsx` | `inv.stock_ledger` | `api.issue_stock`, `api.return_stock` | 4 | missing (repo was empty) |
-| Scrap and regrind `Scrap` | `/inventory/scrap-and-regrind` | `src/features/inventory/ScrapPage.tsx` | `prod.regrind_entries`, `inv.stock_ledger`, `sales.invoices` | `api.record_regrind`, `api.post_scrap_sale` | 4 | missing (repo was empty) |
+| Raw material `RawMaterial` | `/inventory/raw-material` | `src/features/inventory/RawMaterialPage.tsx` | `api.v_stock_balances` over `inv.stock_ledger`, `inv.reorder_levels` | `api.issue_stock` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Component stock `ComponentStock` | `/inventory/component-stock` | `src/features/inventory/ComponentStockPage.tsx` | `api.v_stock_balances` | `api.issue_stock` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Stock movements `StockMovement` | `/inventory/stock-movements` | `src/features/inventory/StockMovementsPage.tsx` | `inv.stock_ledger` | `api.issue_stock`, `api.return_stock` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Scrap and regrind `Scrap` | `/inventory/scrap-and-regrind` | `src/features/inventory/ScrapPage.tsx` | `prod.regrind_entries`, `inv.stock_ledger`, `sales.invoices` | `api.record_regrind`, `api.post_scrap_sale` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 | Product master `ProductMaster` | `/inventory/product-master` | `src/features/inventory/product-master/ProductMasterPage.tsx` | `master.products`, `master.product_groups`, `master.product_families`, `master.uoms`, `master.hsn_codes` | `api.upsert_product` (Admin) | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-products.spec.ts |
-| Warehouse `Warehouse` | `/inventory/warehouse` | `src/features/inventory/WarehousePage.tsx` | `core.state_transitions`, `inv.stock_ledger` | `api.release_from_quarantine` | 4 | missing (repo was empty) |
-| Stock transfers `StockTransfer` | `/inventory/stock-transfers` | `src/features/inventory/StockTransfersPage.tsx` | `inv.transfers`, `inv.transfer_lines`, `inv.transfer_events`, `inv.stock_ledger` | `api.request_transfer` … `api.close_transfer`, `api.write_off_transfer_shortage` | 4 | missing (repo was empty) |
+| Warehouse `Warehouse` | `/inventory/warehouse` | `src/features/inventory/WarehousePage.tsx` | `core.state_transitions`, `inv.stock_ledger` | `api.release_from_quarantine` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
+| Stock transfers `StockTransfer` | `/inventory/stock-transfers` | `src/features/inventory/StockTransfersPage.tsx` | `inv.transfers`, `inv.transfer_lines`, `inv.transfer_events`, `inv.stock_ledger` | `api.request_transfer` … `api.close_transfer`, `api.write_off_transfer_shortage` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 
 ## Logistics
 
@@ -174,10 +174,10 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| BillCapture `BillCapture` | `/me/bill-photo` | `src/features/me/BillCapturePage.tsx` | `purch.bill_captures`, storage `bills` | `bill-photo-reader` Edge Fn | 4 | missing (repo was empty) |
+| BillCapture `BillCapture` | `/me/bill-photo` | `src/features/me/BillCapturePage.tsx` | `purch.bill_captures`, storage `bills` | `bill-photo-reader` Edge Fn | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 | RaviHome `RaviHome` | `/me/mould-manager` | `src/features/me/MouldManagerHomePage.tsx` | `prod.moulds`, `prod.mould_events` | `api.v_my_moulds` | 5 | missing (repo was empty) |
 | KrishnaHome `KrishnaHome` | `/me/injection-manager` | `src/features/me/InjectionManagerHomePage.tsx` | `prod.injection_shifts`, `prod.machines` | `api.record_injection_shift` | 5 | missing (repo was empty) |
-| RafeeqHome `RafeeqHome` | `/me/buying-logistics` | `src/features/me/BuyingLogisticsHomePage.tsx` | `purch.requests`, `purch.orders`, `acct.vouchers` | `api.v_my_buying_tasks` | 4 | missing (repo was empty) |
+| RafeeqHome `RafeeqHome` | `/me/buying-logistics` | `src/features/me/BuyingLogisticsHomePage.tsx` | `purch.requests`, `purch.orders`, `acct.vouchers` | `api.v_my_buying_tasks` | 4 | Built (Phase 4) — live data; see e2e/phase4-*.spec.ts |
 | OperatorCheck `OperatorCheck` | `/me/machine-check` | `src/features/me/MachineCheckPage.tsx` | `prod.machine_checks` | `api.record_machine_check` | 5 | missing (repo was empty) |
 | IsmailHome `IsmailHome` | `/me/factory-manager` | `src/features/me/FactoryManagerHomePage.tsx` | `prod.injection_shifts`, `prod.quality_inspections` | `api.v_factory_today` | 5 | missing (repo was empty) |
 | CashEntry `CashEntry` | `/me/cash-entry` | `src/features/me/CashEntryPage.tsx` | `acct.vouchers`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_payment` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |

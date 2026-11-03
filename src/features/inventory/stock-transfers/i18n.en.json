@@ -1,0 +1,248 @@
+{
+  "stockTransfers": {
+    "title": "Stock transfers · two people at each end",
+    "subtitle": "Between the factory, office and shops · goods are in transit until someone else counts them in, so nothing goes missing between places",
+    "tabs": "Transfers",
+    "tabOpen": "Open",
+    "tabAll": "All",
+    "tabNew": "New transfer",
+    "readOnly": "Read-only access: you can follow transfers but not act on them.",
+    "choose": "Choose…",
+    "challan": "Delivery challan",
+    "taxInvoice": "Tax invoice (IGST)",
+    "open": "Open",
+    "openAria": "Open transfer {{no}}",
+    "openTitle": "Open transfers",
+    "allTitle": "All transfers",
+    "emptyTitle": "No transfers yet",
+    "emptyBody": "A shop, the office or the factory asks for stock with “New transfer”; another person approves it.",
+    "newTitle": "Ask for a transfer",
+    "from": "From place",
+    "to": "To place",
+    "neededBy": "Needed by",
+    "note": "Note",
+    "sameBranchNote": "Same branch, same GSTIN: a delivery challan is made when the goods leave.",
+    "gstNote": "Same GSTIN: a delivery challan is made at dispatch. Another GSTIN: a posted tax invoice with IGST to that GSTIN is needed before the goods leave.",
+    "linesTitle": "Items to move",
+    "addLine": "Add line",
+    "request": "Send request",
+    "err": {
+      "from": "Choose where the stock comes from.",
+      "to": "Choose where it goes.",
+      "line": "Line {{n}}: choose the item and enter a quantity above zero.",
+      "noLines": "Add at least one item."
+    },
+    "aria": {
+      "item": "Item, line {{n}}",
+      "qty": "Quantity, line {{n}}",
+      "note": "Note, line {{n}}",
+      "approve": "Approved quantity, {{item}}",
+      "lot": "Lot to pick, {{item}}",
+      "pick": "Picked quantity, {{item}}",
+      "good": "Good quantity counted, {{item}}",
+      "damaged": "Damaged quantity counted, {{item}}",
+      "foundGood": "Found good, {{item}}",
+      "foundDamaged": "Found damaged, {{item}}",
+      "returned": "Returned to sender, {{item}}",
+      "lost": "Shortage to write off, {{item}}"
+    },
+    "col": {
+      "no": "Transfer",
+      "date": "Date",
+      "route": "From → to",
+      "status": "Status",
+      "gst": "GST document",
+      "dispatched": "Dispatched",
+      "inTransit": "In transit",
+      "requestedBy": "Asked by",
+      "open": "Open",
+      "item": "Item",
+      "qty": "Quantity",
+      "note": "Note",
+      "lot": "Lot",
+      "requested": "Asked",
+      "approved": "Approved",
+      "picked": "Picked",
+      "accepted": "Accepted",
+      "quarantined": "Damaged, QC hold",
+      "returned": "Returned",
+      "lost": "Written off",
+      "when": "When",
+      "action": "Step",
+      "by": "By"
+    },
+    "stateWho": {
+      "requested": "Shop or office",
+      "approved": "Another person",
+      "reserved": "Factory custodian",
+      "picked": "Picker",
+      "handed_over": "Picker, then carrier",
+      "in_transit": "Stock sits in transit",
+      "received": "Receiver counts blind",
+      "reconciled": "Differences settled",
+      "closed": "Every unit accounted for"
+    },
+    "events": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "reserved": "Stock reserved",
+      "picked": "Picked",
+      "handed_over": "Picker handed over",
+      "dispatched": "Carrier took over · dispatched",
+      "received": "Counted in",
+      "reconcile": "Reconciled",
+      "write_off": "Shortage written off",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "detail": {
+      "missing": "That transfer was not found in this company.",
+      "back": "Back to the list",
+      "title": "{{no}} · {{from}} → {{to}}",
+      "challanMade": "Delivery challan {{no}}, same GSTIN: goods are not sold.",
+      "challanAtDispatch": "Same GSTIN: a delivery challan is made when the carrier takes the goods.",
+      "invoiceLinked": "Tax invoice {{no}} linked (another GSTIN, IGST).",
+      "invoiceNeeded": "Another GSTIN ({{gstin}}): the goods leave only with a posted tax invoice with IGST to that GSTIN.",
+      "states": "The states of a transfer",
+      "cancelled": "Cancelled: {{reason}}",
+      "people": {
+        "requested": "Asked by {{name}}",
+        "approved": "approved by {{name}}",
+        "picked": "picked by {{name}}",
+        "carried": "carried by {{name}}",
+        "received": "received by {{name}}"
+      },
+      "lines": "Lines asked for",
+      "items": "Items sent, by lot",
+      "noItems": "Nothing picked yet.",
+      "hidden": "Hidden (blind count)",
+      "history": "History of this transfer"
+    },
+    "balance": {
+      "title": "Balance rule",
+      "dispatched": "Dispatched from {{from}}",
+      "accepted": "Accepted into {{to}} stock",
+      "quarantined": "Damaged, into QC hold",
+      "returned": "Returned to {{from}}",
+      "lost": "Approved loss (written off)",
+      "inTransit": "Still in transit, owner: the carrier",
+      "accounted": "Accounted for",
+      "balanced": "Balanced",
+      "unbalanced": "Not balanced",
+      "stillOpen": "{{qty}} still in transit",
+      "canClose": "Ready to close",
+      "rule": "Dispatched = accepted + quarantined + returned + approved loss + still in transit. The transfer stays open until the last unit is found, returned or written off by someone other than the picker, the carrier or the receiver.",
+      "blind": "Blind count: what was sent is hidden from the receiving side until the goods are counted in."
+    },
+    "act": {
+      "title": "Next step · {{state}}",
+      "noRight": "You don't have the right for this step. Ask Admin.",
+      "noCloseRight": "Closing needs the close right (factory manager or finance).",
+      "moved": "Transfer {{no}} is now {{status}}.",
+      "approveNote": "Another person approves: never the one who asked. Change a quantity if less can be sent.",
+      "approveQty": "Quantities to approve",
+      "note": "Note",
+      "approve": "Approve transfer",
+      "reserveNote": "The factory custodian reserves released stock for the approved quantities, so nobody else can use it meanwhile.",
+      "reserve": "Reserve stock",
+      "pickNote": "The picker picks only approved quantities of released lots, earliest expiry first.",
+      "pickTitle": "Lots picked",
+      "approvedQty": "(approved {{qty}} {{uom}})",
+      "noLots": "No lot numbers (counted in one figure)",
+      "pick": "Confirm pick",
+      "pickerNote": "The picker confirms the handover on their own login.",
+      "pickerHandOver": "Confirm handover (picker)",
+      "carrierNoteChallan": "The carrier takes over on their own login, never the picker's. The stock leaves this place and sits in transit; the delivery challan is made now.",
+      "carrierNoteInvoice": "The carrier takes over on their own login. Link the posted tax invoice to {{gstin}} with IGST; without it the goods cannot leave.",
+      "vehicle": "Vehicle no.",
+      "carrierName": "Carrier",
+      "invoice": "Posted tax invoice",
+      "noInvoices": "No posted tax invoices from this GSTIN",
+      "carrierHandOver": "Take over and dispatch (carrier)",
+      "dispatched": "Transfer {{no}} is in transit. Document {{doc}}.",
+      "receiveNote": "Count what arrived without the expected quantity. Good goes into stock, damaged into QC hold; anything not counted stays in transit. The picker can never receive.",
+      "receiveTitle": "Blind count",
+      "good": "Good",
+      "damaged": "Damaged",
+      "witness": "Witness (if you carried the goods)",
+      "witnessHelp": "Needed only when the carrier also receives: a second person on their own login.",
+      "noWitness": "No witness",
+      "witnessNone": "If you carried these goods, a second authorised person must receive them, or Admin records the receipt with a witness.",
+      "receive": "Record receipt",
+      "received": "Transfer {{no}} counted in. Still in transit: {{left}}.",
+      "reconcileNote": "Settle what is still in transit: goods found later go into stock or QC hold, goods sent back go into QC hold at the sender. A shortage is written off only with the finance right, never by the picker, the carrier or the receiver.",
+      "reconcileTitle": "Settle differences",
+      "foundGood": "Found good",
+      "foundDamaged": "Found damaged",
+      "returnedQty": "Returned",
+      "lostQty": "Write off",
+      "reconcileReason": "Note or reason for the write-off",
+      "reconcile": "Settle differences",
+      "stillLeft": "Saved. Still in transit: {{left}}.",
+      "writeOff": "Write off shortage",
+      "writtenOff": "Written off {{qty}}. Still in transit: {{left}}.",
+      "reconciledNote": "Every unit is accounted for.",
+      "closeNote": "Close when nothing is in transit. Never by the picker or the carrier.",
+      "close": "Close transfer",
+      "closedNote": "Closed: every unit accounted for.",
+      "cancelledNote": "This transfer was cancelled before the goods left.",
+      "cancelReason": "Reason for cancelling",
+      "cancel": "Cancel transfer"
+    },
+    "who": {
+      "title": "Who confirms what",
+      "picker": {
+        "title": "Picker",
+        "body": "Picks only approved quantities of released stock, lot by lot; sees no prices."
+      },
+      "custodian": {
+        "title": "Factory custodian",
+        "body": "Checks the request against released stock and expiry and reserves it."
+      },
+      "handover": {
+        "title": "Handover",
+        "body": "Picker and carrier each confirm on their own login; shared logins are not allowed."
+      },
+      "receiver": {
+        "title": "Receiver",
+        "body": "Counts with the expected quantity hidden, then records good and damaged by lot."
+      },
+      "same": {
+        "title": "Same person carrying and receiving",
+        "body": "A second authorised person must witness the receipt; one login can never close both ends."
+      },
+      "writeOff": {
+        "title": "Shortage write-off",
+        "body": "Never by the picker, the carrier or the receiver; finance reviews it."
+      }
+    },
+    "alerts": {
+      "title": "Alerts and GST",
+      "rule": "Rule",
+      "late": {
+        "title": "Late arrival",
+        "body": "A transfer still in transit shows how many days it has been open."
+      },
+      "difference": {
+        "title": "Open difference",
+        "body": "A transfer with goods still in transit cannot be closed."
+      },
+      "extra": {
+        "title": "Extra goods received",
+        "body": "Not added at the receiver; the sending place checks and makes an extra dispatch."
+      },
+      "same": {
+        "title": "Same GSTIN",
+        "body": "Delivery challan, not a tax invoice."
+      },
+      "other": {
+        "title": "Another GSTIN",
+        "body": "Tax invoice with IGST to the receiving GSTIN, and an e-way bill where the value calls for one."
+      },
+      "sellable": {
+        "title": "Sellable stock",
+        "body": "Company stock includes transit; sellable stock leaves out transit, QC hold and holds."
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phase 4 — Inventory and purchase: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
+| Current phase | **Phase 4 — Inventory and purchase: complete on DEV. Phase 5 — Production: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,17 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 4 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` / `API_DOCUMENTATION.md` ("Phase 4") | Done |
+| 2 | Migrations `20261103004000…4500` on DEV: lots and status buckets (available, quarantine, hold, in transit, rejected), append-only stock ledger with locked balances (no negative stock unless a logged allowance), reorder levels, reservations, blind cycle counts posted by someone else, issues/returns, regrind and scrap sales; transfers through 9 states with the balance rule (dispatched = accepted + quarantined + returned + approved loss + in transit), picker/carrier cannot close, blind receive (quantities hidden from the receiver in every view), delivery challan for same-GSTIN moves and IGST invoice link for another GSTIN; purchase requests → RFQ → quotations → PO (drafter cannot issue; price rise must be accepted) → GRN into QC hold → incoming test by someone other than the receiver → release; bill photo capture → 3-way match → purchase bill; price history; MSME due dates; WhatsApp "PO issued" and "payment advice" outbox rows (consented contacts only) | Done |
+| 3 | Screens: Purchase requests, Purchase orders (with RFQ/quotes), Goods receipt, Bill photo capture (review), Price changes, Bill photo (phone), Buying & logistics (phone), Raw material, Component stock, Stock movements, Scrap and regrind, Warehouse (tasks, QC, counts, set-up), Stock transfers | Done, live data |
+| 4 | pgTAP **250/250**; two-connection race (`scripts/concurrency-check.mjs`): exactly one of two parallel issues of the last unit commits; Playwright **48 passed** | Done |
+
+Known Phase 4 gaps: bill photo reading (OCR/AI) not wired — fields are typed; e-way bill at dispatch is Phase 8; request attachments and scrap-sale slip photos not uploaded; shortage write-off and the other-GSTIN invoice link are built but not covered by e2e (the write-off role needs MFA); phone bill photo has one page and no document-kind tabs; price changes filter by item kind (no department on items).
 
 ## Phase 3 result (03-11-2026)
 
@@ -216,6 +227,10 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 | Q-27 | Confirm the cash limits as configured: receipt of ₹2,00,000 or more from one person in a day refused (s.269ST); cash payment over ₹10,000 to one person in a day warned (s.40A(3)). | Seeded as settings `cash.receipt_block_amount` / `cash.payment_warn_amount`; change only via Settings. |
 | Q-28 | Overtime multiplier (seeded 2× as in the prompt) and whether paid leave counts as payable days. | OT from `payroll.ot_multiplier`; `prepare_payroll` falls back to 2 if the setting is missing; leave is treated as unpaid until decided. |
 | Q-29 | Advance recovery cap (% of monthly pay) and advance approval thresholds (who may approve how much). | Not enforced; nobody approves their own request; Admin decides. |
+| Q-31 | 3-way match tolerances (`purchase.match_qty_tolerance_pct`, `purchase.match_rate_tolerance_pct`), over-receipt % (`purchase.grn_over_receipt_pct`) and price alert % (`purchase.price_alert_pct`). | Unset → exact match, no over-receipt, every price rise must be accepted by the issuer. |
+| Q-32 | MSME bills with no agreed credit days: s.15 MSMED gives 15 days; Phase 3 bill drafts default to 45. `msme.warn_days` unset. | Dues view uses 15 days when no days are agreed, agreed days capped at 45. |
+| Q-33 | Negative stock: who may allow it and for how long; stock valuation method (Q-25). | Only Admin, with a reason and an end date, every use logged; weighted average. |
+| Q-34 | QC: may the tester also release (neither may be the receiver)? Approval limits for purchase requests. | Tester may release; any `purchase.approve` holder approves any amount (nobody their own). |
 | Q-30 | Minimum cash/bank balance for the Cash flow "days below minimum" indicator. | No `cash.min_balance` setting created; the indicator stays hidden until set. |
 
 ## Translations awaiting native review
