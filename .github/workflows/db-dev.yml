@@ -17,7 +17,7 @@ jobs:
       DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
       SUPABASE_REF: ${{ secrets.DEV_SUPABASE_REF || 'fxwoabbwzcifxzqsmrie' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Check secret
         id: s
         run: echo "ok=${{ env.DB_PASSWORD != '' }}" >> "$GITHUB_OUTPUT"
