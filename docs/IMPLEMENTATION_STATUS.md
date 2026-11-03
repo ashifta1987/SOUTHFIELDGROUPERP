@@ -42,6 +42,8 @@ Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty
 
 Verification: pgTAP **695/695** (26 files), Vitest 69/69, `tsc -b`, lint and build pass, Playwright (list pages, Phase 0, Phase 8) green. See `docs/TEST_RESULTS.md`.
 
+DEV was reset on 03-11-2026 at the owner's request ("delete the test data, I will upload Tally backup for testing"): all synthetic data, test users and uploaded test files were removed, configuration and the 4 test logins were kept. E2E tests recreate their own synthetic data. See `docs/DEV_RESET.md`.
+
 Known Phase 9 gaps:
 - There is no TOTP enrolment screen. Enrol through Supabase before turning on enforcement.
 - The app ships as one 2.8 MB minified JS chunk (about 0.7 MB gzip). Route-level code splitting is still to do.
