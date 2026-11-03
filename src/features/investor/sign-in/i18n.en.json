@@ -1,0 +1,17 @@
+{
+  "investorSignIn": {
+    "title": "Investor portal",
+    "sub": "For legal partners, investment partners (or both) and working partners. Your staff app is separate.",
+    "who": "WhatsApp number or email",
+    "whoPlaceholder": "10-digit number or email",
+    "whoError": "Enter a 10-digit Indian mobile number or an email address.",
+    "password": "Investor password",
+    "appCode": "Code from your authenticator app",
+    "verify": "Verify and open",
+    "codeTitle": "Code on WhatsApp, every time",
+    "codeValid": "5 min",
+    "codeLater": "The WhatsApp code starts when the company's WhatsApp sending is set up.",
+    "foot1": "Separate password from the staff app, even on the same number.",
+    "foot2": "Shows only the companies you share in. Read-only."
+  }
+}

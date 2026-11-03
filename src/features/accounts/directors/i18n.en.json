@@ -1,0 +1,86 @@
+{
+  "directors": {
+    "title": "Directors and investment",
+    "subtitle": "Who runs each company, the money directors put in or took out, and loans given and taken · Admin and finance only",
+    "noView": "Directors and investment need the partners right. Ask Admin.",
+    "shareRegister": "Share register",
+    "recordMoney": "Record money in or out",
+    "choose": "Choose",
+    "note": "Note (optional)",
+    "company": "Company",
+    "cin": "CIN",
+    "pan": "PAN",
+    "notRecorded": "Not recorded (Companies)",
+    "directors": "Directors",
+    "noDirectors": "No director recorded. Add them on Partners with Director ticked.",
+    "shareholders": "Shareholders",
+    "holders": "{{n}} legal partners holding {{pct}} %",
+    "partnersLink": "Partners",
+    "pending": {
+      "title": "Approved loans to record",
+      "record": "Record",
+      "recordOne": "Record loan {{no}}",
+      "kind": {
+        "loan_to_partner": "loan to the partner",
+        "loan_from_partner": "loan from the partner"
+      }
+    },
+    "loan": {
+      "title": "Loans with directors and partners",
+      "party": "Party",
+      "direction": "Given or taken",
+      "movement": "Movement",
+      "amount": "Amount ₹",
+      "outstanding": "Outstanding after",
+      "on": "Date",
+      "voucher": "Voucher",
+      "basis": "Legal basis",
+      "section": "Companies Act s.{{s}}",
+      "declared": "Declaration on file",
+      "none": "No loan recorded.",
+      "note": "Each loan posts to the partner's loan account and the bank. Loans to directors (s.185) and other loans (s.186 limit) are checked by the server before anything posts.",
+      "dir": {
+        "given": "Given",
+        "taken": "Taken"
+      },
+      "mov": {
+        "advance": "Money out or in",
+        "repayment": "Repayment"
+      }
+    },
+    "loanDlg": {
+      "title": "Record money in or out",
+      "hint": "Money lent to or by a director or partner. The server runs the Companies Act checks and refuses the entry until the CA's settings or the director's declaration are on file.",
+      "submit": "Record",
+      "partner": "Director or partner",
+      "bank": "Bank account"
+    },
+    "dec": {
+      "title": "Declarations on file",
+      "add": "Record declaration",
+      "addTitle": "Record a director's declaration",
+      "hint": "Type the date exactly as on the signed declaration.",
+      "director": "Director",
+      "kind": "Declaration",
+      "on": "Declared on",
+      "to": "Valid until",
+      "toLabel": "Valid until (optional)",
+      "noEnd": "No end date",
+      "current": "In force",
+      "lapsed": "Lapsed",
+      "none": "No declaration recorded.",
+      "kinds": {
+        "not_borrowed": "Money lent is not borrowed",
+        "interest_disclosure": "Interest in other companies",
+        "other": "Other"
+      }
+    },
+    "remind": {
+      "title": "Reminders for directors",
+      "one": "Money a director lends a private company comes with the director's written note that it is not borrowed money.",
+      "two": "Each director's interest in other companies and trusts is noted every year and when it changes, so related-party deals show up.",
+      "three": "Loans to other companies, trusts or people are checked against the Companies Act limits before they are paid.",
+      "ca": "Confirm the details with your CA."
+    }
+  }
+}

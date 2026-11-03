@@ -1,0 +1,143 @@
+{
+  "profitSharing": {
+    "title": "Partners and profit sharing",
+    "subtitle": "Each company has its own partners and share % · incentives agreed in the minutes are taken from net profit first · Admin only",
+    "noView": "Partners and profit sharing need the partners right. Ask Admin.",
+    "requests": "Partner requests",
+    "add": "Add partner",
+    "choose": "Choose",
+    "note": "Note (optional)",
+    "notSet": "Not set",
+    "inactive": "Inactive",
+    "portal": "Investor portal",
+    "noPortal": "Not set up",
+    "none": "No partner recorded for this company yet.",
+    "editOne": "Edit {{name}}",
+    "partnersTitle": "Partners of this company",
+    "totalPct": "Share % of active partners: {{pct}}",
+    "partnersNote": "Legal partners hold the shares on the register; investment partners have money on the investment sheet. One person can be both. Share % must add up to 100 before profit can be shared.",
+    "col": {
+      "partner": "Partner",
+      "roles": "Role · can be both",
+      "shares": "Shares",
+      "pct": "Share %",
+      "capital": "Share money ₹",
+      "investment": "Investment ₹",
+      "current": "Current account ₹",
+      "app": "Partner app"
+    },
+    "role": {
+      "legal": "Legal partner",
+      "investment": "Investment partner",
+      "working": "Working partner",
+      "director": "Director"
+    },
+    "form": {
+      "addTitle": "Add a partner",
+      "editTitle": "Change a partner",
+      "hint": "Shares and share % come from the share register and the signed minutes; the server refuses a total above 100 %. Accounts are the partner's ledgers in this company's books.",
+      "name": "Name",
+      "portal": "Investor portal sign-in (optional)",
+      "noPortal": "No portal sign-in",
+      "portalHelp": "The person must hold the investor role for this company (Users & rights).",
+      "din": "DIN (directors, 8 digits)",
+      "language": "Language",
+      "capital": "Capital account",
+      "current": "Current account",
+      "loan": "Loan account",
+      "is_legal_partner": "Legal partner (holds shares)",
+      "is_investment_partner": "Investment partner",
+      "is_working_partner": "Working partner",
+      "is_director": "Director",
+      "director_interested": "A director is interested in this partner (s.185)"
+    },
+    "min": {
+      "title": "How the profit is shared · by the signed minutes",
+      "add": "Record minutes",
+      "addTitle": "Record the profit-sharing minutes",
+      "addHint": "Enter the meeting date, the minutes reference and each incentive as a % of net profit. Another Admin approves the minutes before profit is shared.",
+      "ref": "Minutes reference",
+      "on": "Meeting date",
+      "fy": "Financial year",
+      "incentives": "Incentives",
+      "noIncentives": "No incentives",
+      "who": "Entered → approved by",
+      "actions": "Actions",
+      "approve": "Approve",
+      "approveOne": "Approve minutes {{ref}}",
+      "compute": "Work out the share",
+      "computeOne": "Work out the share for {{ref}}",
+      "none": "No minutes recorded yet.",
+      "incPartner": "Incentive {{n}} · partner",
+      "incPct": "Incentive {{n}} · % of net profit",
+      "addIncentive": "Add incentive",
+      "status": {
+        "draft": "To approve",
+        "approved": "Approved",
+        "superseded": "Superseded"
+      }
+    },
+    "run": {
+      "title": "Worked-out shares",
+      "net": "Net profit",
+      "incentives": "Incentives",
+      "distributable": "For shareholders",
+      "lines": "Each partner",
+      "post": "Post",
+      "postOne": "Post the share for {{ref}}",
+      "none": "Nothing worked out yet.",
+      "status": {
+        "computed": "To post",
+        "posted": "Posted",
+        "superseded": "Superseded"
+      }
+    },
+    "inv": {
+      "title": "Investments recorded",
+      "add": "Record investment",
+      "addTitle": "Record an investment",
+      "hint": "A memo of money a partner put in; the CA restates the capital accounts at cut-over. A project investment needs the project and the signed agreement.",
+      "kind": "Kind",
+      "amount": "Amount ₹",
+      "on": "Invested on",
+      "agreement": "Agreement reference",
+      "none": "No investment recorded yet.",
+      "kinds": {
+        "share_capital": "Share capital",
+        "capital_account": "Capital account",
+        "project": "Project",
+        "other": "Other"
+      }
+    },
+    "proj": {
+      "title": "Projects",
+      "add": "Add project",
+      "addTitle": "Add a project",
+      "editTitle": "Change a project",
+      "editOne": "Edit {{name}}",
+      "name": "Project",
+      "started": "Started on",
+      "summary": "Summary",
+      "visible": "Shown to investors",
+      "visibleHint": "Partners of this company see the name, status and summary in their portal.",
+      "none": "No project yet.",
+      "status": {
+        "idea": "Idea",
+        "being_built": "Being built",
+        "running": "Running",
+        "closed": "Closed"
+      }
+    },
+    "law": {
+      "title": "In a private limited company",
+      "one": "Profit reaches shareholders as dividend, in proportion to the shares they hold. A ratio different from the shareholding needs the shares held in that ratio or a separate class of shares.",
+      "two": "Incentives are paid as remuneration to the partners who do that work, before the profit for shareholders is worked out.",
+      "three": "Set the ratios with your CA or company secretary before the first payout."
+    },
+    "sees": {
+      "title": "What each partner sees",
+      "one": "The investor portal is a separate app with its own sign-in. Partners see the companies they share in: money in, shareholding and their requests.",
+      "two": "Analytics only: no buyer names, invoices or documents. Figures exclude bills without GST unless Admin records that policy."
+    }
+  }
+}

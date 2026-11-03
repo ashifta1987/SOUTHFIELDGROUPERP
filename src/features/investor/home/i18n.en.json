@@ -1,0 +1,27 @@
+{
+  "partnerHome": {
+    "holding": "in {{company}}:",
+    "moneyIn": "Money in · {{company}}",
+    "last12": "last 12 months",
+    "receipts": "{{n}} receipts from buyers in 12 months (bills without GST not counted)",
+    "receiptsShort": "{{n}} receipts",
+    "byMonth": "Money in by month",
+    "thisMonth": "This month · {{month}}",
+    "noMoney": "No money in from buyers recorded in the last 12 months.",
+    "noMoneyMonth": "No receipts posted this month yet.",
+    "mode": {
+      "cash": "Cash",
+      "bank": "Bank transfer",
+      "upi": "UPI",
+      "cheque": "Cheque",
+      "card": "Card",
+      "other": "Other"
+    },
+    "openRequests": "My open requests",
+    "seeRequests": "See my requests",
+    "profitShare": "Profit share · {{company}}",
+    "whenClosed": "posted after the year's books are closed",
+    "wholeGroup": "My whole group view",
+    "workingPartner": "Working partner view"
+  }
+}

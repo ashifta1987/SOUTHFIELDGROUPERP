@@ -73,12 +73,14 @@ test.describe('signed in as Admin', () => {
     await expect(page.getByRole('dialog', { name: 'Southfield Help' })).toBeVisible()
   })
 
-  test('a planned screen says when it arrives (never a dead page)', async ({ page }) => {
+  test('an unknown address shows a page, never a dead screen', async ({ page }) => {
+    // Every screen in the inventory is built now (Phases 0–7); an address outside it shows the designed not-found page.
     await signInWithEmail(page, creds.admin)
     await expect(page.getByRole('heading', { level: 1, name: 'Today' })).toBeVisible()
-    await page.goto('/accounts/gst')
-    await expect(page.getByRole('heading', { level: 1, name: 'GST' })).toBeVisible()
-    await expect(page.getByText('This screen arrives in phase 6')).toBeVisible()
+    await page.goto('/no-such-screen')
+    await expect(page.getByRole('heading', { level: 1, name: 'Page not found' })).toBeVisible()
+    await expect(page.getByText('There is no screen at this address.')).toBeVisible()
+    await expectNoSeriousA11y(page)
   })
 
   test('below 1280 px the sidebar is a drawer', async ({ page }) => {

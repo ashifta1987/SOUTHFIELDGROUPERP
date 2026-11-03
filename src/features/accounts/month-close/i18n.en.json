@@ -1,0 +1,110 @@
+{
+  "monthClose": {
+    "title": "Month-end close",
+    "subtitle": "Each month's checklist is done by one person and checked by another, then the month is locked · nothing can be posted into a locked month",
+    "reopen": "Reopen a month · Admin",
+    "month": "Month",
+    "noPeriods": "No financial year is open for this company",
+    "noPeriodsBody": "Admin opens the financial year on Numbering & IDs; its twelve months then appear here.",
+    "pstatus": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "tstatus": {
+      "open": "Open",
+      "done": "Done · to check",
+      "checked": "Checked",
+      "carried": "Moved on"
+    },
+    "reopenedChip": "Reopened",
+    "banner": {
+      "dueLabel": "{{month}} checklist due on",
+      "noChecklist": "No checklist yet",
+      "left": "Time left",
+      "days": "{{n}} days",
+      "open": "Open items",
+      "closedLabel": "{{month}}",
+      "closed": "Closed",
+      "closedBy": "by {{who}} on {{when}}",
+      "body": "Every task is done by one person and checked by another, or moved to next month with a reason. Then the month is closed and nothing dated in it can be posted.",
+      "reopened": "Reopened by Admin on {{when}}: {{reason}}"
+    },
+    "checklist": "{{month}} checklist",
+    "addTask": "Add task",
+    "closeMonth": "Close the month",
+    "closeTitle": "Close {{month}}?",
+    "closeEffect": "Locks {{month}}. No entry dated in it can be added, edited or cancelled by anyone, under any right, until Admin reopens it with a reason.",
+    "noChecklist": "No checklist for this month yet",
+    "noChecklistBody": "Open the checklist to list the standard month-end tasks. Each task then needs a doer and a different checker.",
+    "noChecklistClosed": "This month was closed without a checklist on this screen.",
+    "needRight": "Opening the checklist needs the month-end close right. Ask Admin.",
+    "openChecklist": "Open checklist",
+    "openTitle": "Open the {{month}} checklist",
+    "openHint": "The standard tasks are added from Settings. Choose who does and who checks them, or leave both to any finance manager; the doer and the checker must be different people.",
+    "who": "Does: {{doer}} · checks: {{checker}}",
+    "anyManager": "any finance manager",
+    "doneOn": "Done on {{when}}",
+    "doneByMe": "Done by you on {{when}} · someone else checks it",
+    "checkedOn": "Checked on {{when}}",
+    "checkNote": "Sent back: {{note}}",
+    "carryNote": "Moved to next month: {{note}}",
+    "act": {
+      "done": "Mark done",
+      "doneOne": "Mark done: {{title}}",
+      "check": "Check",
+      "checkOne": "Check: {{title}}",
+      "return": "Send back",
+      "returnOne": "Send back: {{title}}",
+      "carry": "Move to next month",
+      "carryOne": "Move to next month: {{title}}",
+      "assign": "Assign",
+      "assignOne": "Assign: {{title}}"
+    },
+    "area": {
+      "bank": "Bank",
+      "bills": "Bills",
+      "payroll": "Payroll",
+      "exports": "Exports",
+      "stock": "Stock",
+      "depreciation": "Asset register",
+      "review": "Review",
+      "cash": "Cash book",
+      "gst": "GST"
+    },
+    "return": {
+      "title": "Send back: {{title}}",
+      "hint": "Say what needs fixing. The task goes back to open for the doer.",
+      "submit": "Send back",
+      "note": "What needs fixing"
+    },
+    "carry": {
+      "title": "Move to next month: {{title}}",
+      "hint": "The task is added to next month's checklist and this one is marked as moved.",
+      "submit": "Move to next month",
+      "note": "Why it moves"
+    },
+    "assign": {
+      "title": "Assign: {{title}}",
+      "hint": "The doer and the checker must be different people.",
+      "doer": "Does it",
+      "checker": "Checks it"
+    },
+    "add": {
+      "title": "Add a task",
+      "name": "Task"
+    },
+    "months": "Months of this company",
+    "reopenTitle": "Reopen a closed month",
+    "reopenHint": "Only Admin can reopen a month. The reason goes to the user log, and the month can be set to lock again after a number of hours (Settings).",
+    "reopenSubmit": "Reopen month",
+    "reason": "Reason (at least 10 characters)",
+    "noClosed": "No month of this company is closed.",
+    "after": {
+      "title": "After the lock",
+      "one": "No one can add, edit or cancel an entry dated in a locked month, whatever right or special permission they hold.",
+      "two": "A late bill goes into the open month, with the original bill date kept for GST.",
+      "three": "Admin can reopen a month with a reason; it is logged and can lock again automatically after the hours in Settings.",
+      "four": "Every close, reopen and relock is kept in the month's history and the user log."
+    }
+  }
+}

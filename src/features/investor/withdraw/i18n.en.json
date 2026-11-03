@@ -1,0 +1,28 @@
+{
+  "investorWithdraw": {
+    "title": "Request a withdrawal",
+    "whatTitle": "What I can draw",
+    "whenDue": "when due",
+    "afterClose": "after the year's close",
+    "whenDeclared": "when declared",
+    "byAgreement": "as agreed",
+    "formTitle": "Withdrawal request",
+    "drawFrom": "Draw from",
+    "from": {
+      "land_rent": "Land rent due",
+      "incentive": "Incentive due",
+      "dividend": "Dividend declared",
+      "investment": "Money on the investment sheet"
+    },
+    "amount": "Amount ₹",
+    "amountFormat": "Enter the amount in rupees, e.g. 25000.",
+    "payTo": "Pay to",
+    "bankOnFile": "Bank on file",
+    "note": "Note for Admin",
+    "optional": "Optional",
+    "rule1": "The amount can't be more than what the company owes you on your account. Admin approves, the company pays from its bank, and you hear on WhatsApp.",
+    "rule2": "Shares can't be drawn as cash. To leave, shares are transferred or bought back under company law.",
+    "mine": "My requests",
+    "noneYet": "My requests: none yet"
+  }
+}

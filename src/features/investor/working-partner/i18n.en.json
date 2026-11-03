@@ -1,0 +1,12 @@
+{
+  "workingPartner": {
+    "language": "Language",
+    "role": "Working partner · {{company}}",
+    "notWorking": "This page is for working partners.",
+    "notWorkingNext": "Your partner record does not mark you as a working partner. Ask Admin if that is wrong.",
+    "myShare": "My profit share",
+    "none": "Share % is fixed in the partners' minutes; nothing has been posted yet.",
+    "how": "Seen after the section's books are closed · paid with salary as a bonus.",
+    "staffApp": "Attendance, duty and payslips are only in the staff app."
+  }
+}

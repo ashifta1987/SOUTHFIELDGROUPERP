@@ -144,6 +144,17 @@ export function rightsAllow(rights: string[], right: string): boolean {
   return Boolean(action && rights.includes(`*.${action}`))
 }
 
+/**
+ * Investor-portal user (Phase 7, §19): every role api.me() returns is `investor`; before a company role exists, the
+ * server-set `app_metadata.role` decides. Such users see only the portal; routing only — RLS and RPCs are the security.
+ */
+export function isInvestorOnly(user: User | null | undefined, profile: Profile | null | undefined): boolean {
+  if (!user) return false
+  const roles = profile?.fromServer ? profile.roles : []
+  if (roles.length) return roles.every((r) => r.role === 'investor')
+  return (user.app_metadata as Record<string, unknown> | undefined)?.role === 'investor'
+}
+
 interface AuthState {
   loading: boolean
   session: Session | null

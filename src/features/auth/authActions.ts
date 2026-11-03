@@ -50,9 +50,10 @@ export async function verifyTotp(code: string): Promise<{ ok: boolean; errorKey?
   return { ok: true }
 }
 
-/** Where a signed-in user lands: staff and field roles go to their phone app, everyone else to Home. */
+/** Where a signed-in user lands: staff and field roles go to their phone app, investors to their portal, everyone else to Home. */
 export function landingFor(role: string | undefined): string {
   const phoneRoles = new Set(['staff', 'factory_staff', 'machine_operator', 'driver', 'salesman', 'shop_staff'])
+  if (role === 'investor') return '/investor/home'
   return role && phoneRoles.has(role) ? '/staff/home' : '/'
 }
 

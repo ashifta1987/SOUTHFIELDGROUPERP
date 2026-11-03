@@ -1,0 +1,125 @@
+{
+  "jobWork": {
+    "title": "Job work",
+    "subtitle": "Goods sent out on challan, not invoice · return deadlines tracked",
+    "modes": "Job work direction",
+    "sentOut": "Sent out",
+    "customerIn": "Customer material in",
+    "customerTitle": "Customer material in is not built yet",
+    "customerBody": "Receiving a customer's own material for job work is not part of this phase. It is listed as an open question for the owner.",
+    "new": "New job-work challan",
+    "openOne": "Open job work {{no}}",
+    "listTitle": "Challans sent to job workers",
+    "emptyTitle": "No goods sent for job work yet",
+    "emptyBody": "Use New job-work challan to send inputs, capital goods or mould parts to a job worker. The stock stays ours at the job worker's place.",
+    "noLimit": "No limit",
+    "col": {
+      "challan": "Challan",
+      "worker": "Job worker · process",
+      "goods": "Goods sent",
+      "sent": "Sent",
+      "back": "Back",
+      "returnBy": "Return by",
+      "item": "Item",
+      "lot": "Lot",
+      "settled": "Back or used",
+      "balance": "Still out",
+      "receivedOn": "Received",
+      "kind": "What came back",
+      "qty": "Qty back",
+      "inputUsed": "Input settled",
+      "to": "Into",
+      "ref": "Their challan",
+      "by": "By"
+    },
+    "kind": {
+      "inputs": "Inputs",
+      "capital_goods": "Capital goods",
+      "moulds_tools": "Moulds and tools"
+    },
+    "backKind": {
+      "returned": "Returned unprocessed",
+      "finished": "Finished (processed)",
+      "scrap": "Scrap",
+      "loss": "Process loss"
+    },
+    "status": {
+      "sent": "Sent",
+      "part_received": "Part received",
+      "received": "All back",
+      "cancelled": "Cancelled"
+    },
+    "state": {
+      "returned": "Returned",
+      "overdue": "Overdue by {{n}} days",
+      "dueIn": "Due in {{n}} days",
+      "stillOut": "{{qty}} still out",
+      "atWorker": "At job worker"
+    },
+    "banner": {
+      "due": "{{no}} is due back in {{n}} days.",
+      "overdue": "{{no}} is {{n}} days past its return date.",
+      "body": "{{qty}} of {{goods}} still at {{who}}. Inputs not returned within the limit are treated as supplied and GST becomes payable."
+    },
+    "limits": {
+      "title": "Return limits",
+      "moulds": "Moulds, dies, jigs, fixtures, tools",
+      "years_one": "{{count}} year",
+      "years_other": "{{count}} years",
+      "notSet": "Not set",
+      "note": "From Settings (jobwork.return_years), confirmed by the CA. A challan not back by its limit opens a Bug fixer item for the CA."
+    },
+    "itc": {
+      "title": "ITC-04 · {{period}}",
+      "h1": "Apr–Sep {{y}}",
+      "h2": "Oct {{y}}–Mar {{y2}}",
+      "counts": "{{sent}} challans sent · {{back}} with goods back · {{workers}} job workers",
+      "export": "Export ITC-04 data"
+    },
+    "detail": {
+      "title": "Job work {{no}}",
+      "receive": "Record goods back",
+      "challanNo": "Delivery challan",
+      "from": "Sent from",
+      "lines": "Goods on this challan",
+      "receipts": "Goods back",
+      "noReceipts": "Nothing back yet."
+    },
+    "new_": {
+      "title": "New job-work challan",
+      "hint": "The goods leave on a delivery challan (goods not sold) from the sending branch's challan series. They stay in our stock at the job worker's place until they come back.",
+      "submit": "Issue challan",
+      "fill": "Choose the job worker and the place, and add at least one item with a quantity above zero.",
+      "worker": "Job worker",
+      "choose": "Choose",
+      "process": "Process",
+      "processHelp": "What the job worker will do, e.g. machining or plating.",
+      "kind": "Kind of goods",
+      "from": "Send from",
+      "sentOn": "Sent on",
+      "goods": "Goods sent",
+      "item": "Item {{n}}",
+      "qty": "Quantity {{n}}",
+      "remove": "Remove item {{n}}",
+      "removeShort": "Remove",
+      "addLine": "Add item",
+      "note": "Note (optional)"
+    },
+    "back": {
+      "title": "Goods back on {{no}}",
+      "hint": "Enter only the lines that came back. Each line can never settle more than is still with the job worker; the server refuses it.",
+      "submit": "Record goods back",
+      "fill": "Enter a quantity above zero on at least one line.",
+      "on": "Received on",
+      "ref": "Job worker's challan (optional)",
+      "to": "Receive into",
+      "line": "Line {{n}} · {{item}} · {{bal}} {{uom}} still out",
+      "kind": "What came back, line {{n}}",
+      "qty": "Quantity back, line {{n}}",
+      "input": "Sent goods used, line {{n}}",
+      "inputHelp": "Needed when the finished item differs from what was sent.",
+      "item": "Item back, line {{n}}",
+      "sameItem": "Same item as sent"
+    }
+  }
+}

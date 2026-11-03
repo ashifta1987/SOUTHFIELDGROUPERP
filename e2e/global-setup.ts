@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto'
 import { existsSync, readFileSync } from 'node:fs'
 
 /**
- * Before every run: end any time-limited roles left on the synthetic staff / third logins by an interrupted spec
+ * Before every run: end any time-limited roles left on the synthetic staff / third / investor logins by an interrupted spec
  * (specs give them company roles for an hour and remove them in `finally`; a crash can skip that). A leftover role
  * changes where the staff user lands after sign-in and breaks unrelated specs. Uses the synthetic admin login and
  * the normal `remove_role` RPC — no service key.
@@ -35,7 +35,7 @@ export default async function globalSetup(): Promise<void> {
   const r = await fetch(`${url}/rest/v1/rpc/list_users`, { method: 'POST', headers, body: '{}' })
   if (!r.ok) return
   const users = (await r.json()) as { sign_in_email: string | null; roles: { id: string; role: string; valid_to: string | null }[] }[]
-  const targets = new Set([e.E2E_STAFF_EMAIL, e.E2E_THIRD_EMAIL].filter(Boolean))
+  const targets = new Set([e.E2E_STAFF_EMAIL, e.E2E_THIRD_EMAIL, e.E2E_INVESTOR_EMAIL].filter(Boolean))
   for (const u of users) {
     if (!u.sign_in_email || !targets.has(u.sign_in_email)) continue
     for (const role of u.roles ?? []) {

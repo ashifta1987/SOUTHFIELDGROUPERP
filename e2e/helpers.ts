@@ -6,6 +6,8 @@ export const creds = {
   staff: { email: process.env.E2E_STAFF_EMAIL ?? '', password: process.env.E2E_STAFF_PASSWORD ?? '' },
   /** Optional third synthetic login (segregation of duties needing three people, e.g. stock transfers). */
   third: { email: process.env.E2E_THIRD_EMAIL ?? '', password: process.env.E2E_THIRD_PASSWORD ?? '' },
+  /** Synthetic investor-portal login (app_metadata role investor; specs link it to a partner in a synthetic company). */
+  investor: { email: process.env.E2E_INVESTOR_EMAIL ?? '', password: process.env.E2E_INVESTOR_PASSWORD ?? '' },
 }
 export const hasCreds = Boolean(creds.admin.email && creds.admin.password)
 

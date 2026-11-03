@@ -119,6 +119,14 @@ import { FieldTodayPage } from '@/features/field/today/FieldTodayPage'
 import { FIELD_ROUTES } from '@/features/field/routes'
 import { DriverTripPage } from '@/features/driver/trip/DriverTripPage'
 import { DriverPodPage } from '@/features/driver/pod/DriverPodPage'
+import { JobWorkPage } from '@/features/production/job-work/JobWorkPage'
+import { MaintenancePage } from '@/features/production/maintenance/MaintenancePage'
+import { AssetRegisterPage } from '@/features/admin/asset-register/AssetRegisterPage'
+import { DirectorsPage } from '@/features/accounts/directors/DirectorsPage'
+import { ProfitSharingPage } from '@/features/accounts/profit-sharing/ProfitSharingPage'
+import { PartnerRequestsPage } from '@/features/accounts/partner-requests/PartnerRequestsPage'
+import { MonthClosePage } from '@/features/accounts/month-close/MonthClosePage'
+import { INVESTOR_ROUTES, InvestorShell, InvestorSignInPage } from '@/features/investor/routes'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -240,6 +248,14 @@ const BUILT: Record<string, React.ReactNode> = {
   SalesmanApp: <FieldTodayPage />,
   DriverTrip: <DriverTripPage />,
   DriverPOD: <DriverPodPage />,
+  // Phase 7 · operations and accounts
+  JobWork: <JobWorkPage />,
+  Maintenance: <MaintenancePage />,
+  AssetRegister: <AssetRegisterPage />,
+  Directors: <DirectorsPage />,
+  ProfitSharing: <ProfitSharingPage />,
+  PartnerRequests: <PartnerRequestsPage />,
+  MonthClose: <MonthClosePage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */
@@ -269,6 +285,7 @@ const otherPhone: RouteObject[] = []
 
 for (const s of SCREENS) {
   if (SPECIAL.has(s.file)) continue
+  if (s.route.startsWith('/investor')) continue // Phase 7: investor portal has its own shell (INVESTOR_ROUTES)
   const element = BUILT[s.file] ?? (s.device === 'desktop' ? <PlannedPage /> : <PlannedPhonePage />)
   const route: RouteObject = s.route === '/' ? { index: true, element } : { path: s.route.slice(1), element }
   if (s.device === 'desktop' && !s.route.startsWith('/investor')) desktop.push(route)
@@ -297,7 +314,16 @@ desktop.push({ path: '*', element: <NotFoundPage /> })
 export const router = createBrowserRouter([
   { path: '/sign-in', element: <SignInPage /> },
   { path: '/staff/sign-in', element: <StaffSignInPage /> },
-  { path: '/investor/sign-in', element: <PhoneOnlyShell />, children: [{ index: true, element: <PlannedPhonePage /> }] },
+  { path: '/investor/sign-in', element: <InvestorSignInPage /> },
+  {
+    path: '/investor',
+    element: (
+      <RequireAuth signInPath="/investor/sign-in" portal="investor">
+        <InvestorShell />
+      </RequireAuth>
+    ),
+    children: INVESTOR_ROUTES,
+  },
   {
     path: '/staff',
     element: (

@@ -1,0 +1,18 @@
+{
+  "investorProjects": {
+    "title": "Projects",
+    "sub": "Besides daily business · what Admin shares with partners",
+    "empty": "No projects shared with partners yet.",
+    "emptyNext": "Admin chooses which projects partners see. They will appear here.",
+    "since": "Since",
+    "status": {
+      "idea": "Idea",
+      "being_built": "Being built",
+      "running": "Running",
+      "closed": "Closed"
+    },
+    "interested": "I'm interested",
+    "mine": "My project requests",
+    "noneYet": "My project requests: none yet"
+  }
+}

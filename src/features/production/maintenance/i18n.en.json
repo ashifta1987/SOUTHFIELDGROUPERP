@@ -1,0 +1,159 @@
+{
+  "maintenance": {
+    "title": "Machine care and maintenance",
+    "subtitle": "Machines · daily operator checks, repair requests, spares and oil",
+    "addMachine": "Add machine",
+    "report": "Report breakdown",
+    "choose": "Choose",
+    "note": "Note (optional)",
+    "kpis": "Maintenance in numbers",
+    "kpi": {
+      "checked": "Machines checked today",
+      "checkedSub": "of all machines",
+      "open": "Open repair requests",
+      "openSub": "machines and moulds",
+      "hours": "Breakdown hours",
+      "hoursSub": "this month",
+      "overdue": "Services overdue",
+      "overdueSub": "planned care past its date",
+      "spend": "Maintenance spend",
+      "spendSub": "this month, ₹ (spares and repairs)"
+    },
+    "requests": "Requests",
+    "requestsSub": "from operator checks and staff · each with the machine or mould",
+    "col": {
+      "new": "New",
+      "assigned": "Assigned",
+      "waiting_parts": "Waiting for parts",
+      "done": "Done · machine running"
+    },
+    "colSub": {
+      "new": "from a ✗ on a daily check, or raised here",
+      "assigned": "fitter or outside service named",
+      "waiting_parts": "spares or a purchase request awaited",
+      "done": "this month · hours down and cost recorded"
+    },
+    "priority": {
+      "urgent": "Urgent",
+      "normal": "Normal",
+      "low": "Low"
+    },
+    "breakdownChip": "Down {{h}} h",
+    "status": {
+      "new": "New",
+      "assigned": "Assigned",
+      "waiting_parts": "Waiting for parts",
+      "done": "Done",
+      "cancelled": "Cancelled"
+    },
+    "source": {
+      "operator_check": "Operator's daily check",
+      "manual": "Raised by staff",
+      "breakdown": "Breakdown",
+      "preventive": "Planned care"
+    },
+    "daily": {
+      "title": "Daily check",
+      "count": "{{n}} of {{of}} machines checked today.",
+      "body": "Operators tick the same points every day on their phone. A ✗ opens an urgent repair request here.",
+      "open": "Open the operator machine check →"
+    },
+    "spares": {
+      "title": "Spares and oil issued",
+      "buy": "Request to buy →",
+      "none": "No spares issued yet."
+    },
+    "planned": {
+      "title": "Planned care",
+      "daily": "Daily: the operator's check.",
+      "schedules": "Weekly, monthly or by hours: the services listed under Planned care schedules, each with its next due date.",
+      "moulds": "Moulds: service by shot count, done by the mould department."
+    },
+    "sch": {
+      "title": "Planned care schedules",
+      "add": "Add schedule",
+      "addTitle": "Add a planned service",
+      "machine": "Machine",
+      "service": "Service",
+      "every": "Every",
+      "days": "{{n}} days",
+      "last": "Last done",
+      "next": "Next due",
+      "overdue": "Overdue · {{date}}",
+      "done": "Record done",
+      "doneOne": "Record {{title}} done on {{code}}",
+      "doneTitle": "{{title}} done on {{code}}",
+      "doneOn": "Done on",
+      "cost": "Cost, ₹ (optional)",
+      "intervalLabel": "How often, in days",
+      "firstDue": "First due on (optional)",
+      "firstDueHelp": "Empty: today plus the interval.",
+      "emptyTitle": "No planned services yet",
+      "emptyBody": "Add the regular services (greasing, oil and filter change, heater check) so each machine shows its next due date."
+    },
+    "raise": {
+      "title": "Report a breakdown or repair",
+      "hint": "A breakdown puts the machine on repair until the request is closed; the downtime runs from the time it broke down.",
+      "submit": "Raise repair request",
+      "machine": "Machine",
+      "priority": "Priority",
+      "what": "What is wrong",
+      "description": "Details (optional)",
+      "breakdown": "The machine has stopped (breakdown)",
+      "breakdownHint": "Counts downtime from the time below until it runs again.",
+      "at": "Broke down at"
+    },
+    "det": {
+      "title": "Repair request {{no}}",
+      "assign": "Assign",
+      "waiting": "Waiting for parts",
+      "spares": "Issue spares",
+      "close": "Done · running again",
+      "cancel": "Cancel request",
+      "cancelTitle": "Cancel this repair request?",
+      "cancelEffect": "Cancels {{no}}. The history stays; nothing is deleted.",
+      "machine": "Machine",
+      "what": "What is wrong",
+      "source": "Raised from",
+      "brokeAt": "Broke down",
+      "restoredAt": "Running again",
+      "downtime": "Downtime",
+      "hours": "{{h}} hours",
+      "live": "(still down)",
+      "assigned": "Assigned to",
+      "resolution": "What was done",
+      "sparesTitle": "Spares and oil issued",
+      "noSpares": "No spares issued for this request.",
+      "doc": "Issue",
+      "item": "Item",
+      "qty": "Qty",
+      "value": "Value",
+      "on": "Issued"
+    },
+    "assign": {
+      "title": "Assign the repair",
+      "fitter": "Fitter",
+      "vendor": "Outside service (optional)"
+    },
+    "spares_": {
+      "title": "Issue spares for {{no}}",
+      "hint": "The spares leave the chosen stores through the stock ledger; the server refuses more than is in stock.",
+      "submit": "Issue spares",
+      "fill": "Choose the stores and add at least one item with a quantity above zero.",
+      "from": "From stores",
+      "on": "Issued on",
+      "item": "Item {{n}}",
+      "qty": "Quantity {{n}}",
+      "add": "Add item"
+    },
+    "close": {
+      "title": "Close {{no}}",
+      "hint": "The server works out the downtime from the breakdown time to the time it runs again, and puts the machine back to active.",
+      "submit": "Close request",
+      "resolution": "What was done",
+      "restoredAt": "Running again at",
+      "labour": "Labour cost, ₹ (optional)",
+      "outside": "Outside service cost, ₹ (optional)"
+    }
+  }
+}

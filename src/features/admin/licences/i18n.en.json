@@ -1,27 +1,45 @@
 {
   "licences": {
     "title": "Licences, certificates and documents",
-    "subtitle": "Every licence a company needs, with its number, dates and whether it is valid today · a missing or lapsed licence stops the step that depends on it · Admin only",
+    "subtitle": "Every licence and registration a company needs, with its portal, number, expiry and the papers behind it · reminders before anything lapses · Admin only",
     "add": "Add licence",
     "addTitle": "Add a licence",
     "editTitle": "Change a licence",
     "editOne": "Edit {{kind}}",
-    "dialogHint": "Type the number and dates exactly as printed on the licence. A renewal is a new end date; the old values stay in the transaction log.",
+    "openOne": "Open {{name}} {{no}}",
+    "dialogHint": "Type the number and dates exactly as printed on the licence. For a renewal use Renew on the licence, so the old dates stay in its history.",
     "numberHelp": "As printed on the licence.",
     "toHelp": "Leave empty if it has no expiry.",
     "note": "Note (optional)",
+    "portal": "Portal",
+    "noOwner": "No owner",
+    "blocksNothing": "Nothing",
+    "runReminders": "Send reminders now",
+    "ranReminders": "Reminder run done: {{n}} sent to owners, {{s}} recorded as covered by a nearer one, {{e}} lapsed licences sent to the Bug fixer.",
     "kpis": "Licences in numbers",
     "kpi": {
       "onFile": "On file",
       "onFileSub": "Licences recorded for this company",
-      "valid": "Valid today",
-      "validSub": "Active and within dates",
-      "soon": "Expiring in 30 days",
-      "soonSub": "Renew before the end date",
-      "blocking": "Blocking production",
-      "blockingNone": "No process family is blocked"
+      "toAct": "To renew or check",
+      "toActSub": "Expiring, lapsed or renewal due",
+      "blocking": "Blocking work today",
+      "blockingNone": "Nothing is blocked",
+      "reminders": "Reminders",
+      "remindersSub": "days before expiry, to the licence owner",
+      "remindersUnset": "Reminder days are not set (Settings)"
+    },
+    "groups": "Licence groups",
+    "group": {
+      "all": "All",
+      "company": "Company and tax",
+      "products": "Making and selling the products",
+      "factory": "Factory, safety and environment",
+      "people": "People",
+      "quality": "Quality certificates",
+      "other": "Other"
     },
     "listTitle": "Licences of this company",
+    "footnote": "Every number, date and certificate is entered from the original papers. A lapsed licence that a step depends on stops that step, for example packing or production when Admin marks it as blocking.",
     "emptyTitle": "No licence recorded yet",
     "emptyBody": "Production of cosmetics and other licensed products is blocked until Admin records the licence here.",
     "adminOnly": "Only Admin records licences. Ask Admin to add or renew one.",
@@ -31,13 +49,43 @@
     "notValid": "Not valid today",
     "expiresIn": "Expires in {{n}} days",
     "col": {
-      "kind": "Licence",
+      "kind": "Licence or certificate",
       "branch": "Branch",
       "number": "Number",
       "issuedBy": "Issued by",
+      "authority": "Authority · portal",
       "from": "Valid from",
       "to": "Valid until",
-      "state": "State"
+      "owner": "Owner",
+      "state": "State",
+      "docs": "Papers"
+    },
+    "f": {
+      "title": "Title (optional)",
+      "titleHelp": "e.g. the state or the product line it covers.",
+      "portal": "Portal link (optional)",
+      "ownerHelp": "Gets the reminders before expiry.",
+      "renewal": "Renewal",
+      "appliedOn": "Renewal applied on",
+      "blocks": "When this licence lapses, stop",
+      "blocksHelp": "Leave both empty if a lapse should only warn."
+    },
+    "block": {
+      "production": "Production",
+      "packing": "Packing"
+    },
+    "renewal": {
+      "ok": "In order",
+      "renewal_due": "Renewal due",
+      "applied": "Renewal applied",
+      "renewed": "Renewed",
+      "lapsed": "Lapsed"
+    },
+    "state": {
+      "valid": "Valid",
+      "expired": "Expired",
+      "blocking": "Blocking",
+      "no_expiry": "No expiry"
     },
     "status": {
       "active": "Active",
@@ -53,14 +101,98 @@
       "trade": "Trade licence",
       "fssai": "FSSAI licence",
       "legal_metrology": "Legal Metrology registration",
+      "other": "Other",
+      "gst_registration": "GST registration",
+      "company_registration": "Company registration and annual filings",
+      "pan_tan": "PAN and TAN",
+      "udyam": "Udyam (MSME)",
+      "iec": "Import Export Code",
+      "lut": "LUT for exports",
+      "epf": "PF registration",
+      "esi": "ESI registration",
+      "shops_establishment": "Shops and establishment",
+      "trademark": "Trade mark",
+      "iso": "ISO certificate",
+      "bis": "BIS certification",
+      "weighing_verification": "Weighing machine verification and stamp",
+      "spirit_permit": "Spirit permit"
+    },
+    "docKind": {
+      "licence_copy": "Licence copy",
+      "application": "Application",
+      "renewal_receipt": "Renewal receipt",
+      "inspection": "Inspection report",
       "other": "Other"
     },
-    "howTitle": "How licences work",
+    "remStatus": {
+      "queued": "Sent to the owner",
+      "skipped": "Not sent (no consent or number)",
+      "alert_only": "Shown in the app",
+      "superseded": "Covered by a nearer reminder"
+    },
+    "detail": {
+      "title": "{{name}} · papers and history",
+      "addDoc": "Add document",
+      "renew": "Renew",
+      "docs": "Papers",
+      "noDocs": "No paper uploaded yet.",
+      "renewals": "Renewals",
+      "noRenewals": "Not renewed yet.",
+      "reminders": "Reminders",
+      "noReminders": "No reminder has been due yet."
+    },
+    "doc": {
+      "title": "Add a document",
+      "hint": "The file goes to this company's private licences folder. Only people who can see the company can open it.",
+      "submit": "Upload",
+      "needFile": "Choose the file first.",
+      "kind": "Kind of paper",
+      "validTo": "Valid until (optional)",
+      "by": "Uploaded",
+      "openOne": "Open {{kind}} uploaded {{date}}"
+    },
+    "renew": {
+      "title": "Renew the licence",
+      "hint": "Enter the renewed licence exactly as printed. The old number and dates stay in the renewal history.",
+      "submit": "Record renewal",
+      "number": "Licence number after renewal",
+      "from": "New valid from",
+      "to": "New valid until",
+      "file": "Renewed licence copy (optional)"
+    },
+    "ren": {
+      "at": "Renewed",
+      "old": "Before",
+      "new": "After",
+      "by": "By"
+    },
+    "rem": {
+      "days": "Days before",
+      "due": "Due on",
+      "run": "Run on"
+    },
+    "folders": {
+      "title": "Document folders · this company",
+      "licences": "Licences",
+      "licencesSub": "Every licence above, with renewals",
+      "files": "{{n}} files",
+      "machines": "Machines",
+      "machinesSub": "Bills, warranties, service and calibration papers, on Asset register",
+      "others": "Other papers",
+      "othersSub": "Company papers, contracts and insurance folders are not built yet"
+    },
     "how": {
-      "block": "A process family names the licence it needs. Without a valid one, planning a batch and every production step of that family is refused.",
-      "paper": "Numbers and dates come from the original paper; nothing is filled in by the system.",
-      "renew": "On renewal, change the end date (or add the new licence). Old values are kept in the transaction log.",
-      "audit": "Who added or changed a licence, and when, is recorded and can't be edited."
+      "title": "How the folder works",
+      "oneHead": "One place, each company",
+      "one": "Each document sits under its company and folder, with its number, issue date and expiry.",
+      "remHead": "Reminders",
+      "rem": "The licence owner gets a reminder at each of the reminder days before expiry, once each.",
+      "linkHead": "Linked to the work",
+      "link": "A licence a step needs is checked at that step: no production or packing on a lapsed blocking licence.",
+      "whoHead": "Who sees what",
+      "who": "Admin and the CA see everything; others see only the company they work for.",
+      "lostHead": "Nothing lost",
+      "lost": "Old values are kept when a licence is renewed; every change is in the transaction log."
     }
   }
 }

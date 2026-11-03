@@ -1,0 +1,22 @@
+{
+  "investorLoan": {
+    "title": "Loan request",
+    "accounts": "My accounts with the companies",
+    "accountsNote": "My loan account balance in each company's books today. Admin records loans; this page only sends requests.",
+    "formTitle": "Loan request",
+    "direction": "I want to",
+    "borrow": "Borrow",
+    "lend": "Lend",
+    "amount": "Amount ₹",
+    "amountFormat": "Enter the amount in rupees, e.g. 100000.",
+    "repayOver": "Repay over",
+    "choose": "Choose",
+    "months": "{{n}} months",
+    "repayFrom": "Repay from",
+    "purpose": "Purpose",
+    "purposeHint": "What it is for",
+    "rule": "Loans to directors have Companies Act limits, so Admin checks with the CA first. Money lent to a company needs your declaration that it isn't borrowed.",
+    "mine": "My loan requests",
+    "noneYet": "My loan requests: none yet"
+  }
+}

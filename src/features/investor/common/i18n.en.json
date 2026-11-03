@@ -1,0 +1,69 @@
+{
+  "investor": {
+    "badge": "INVESTOR",
+    "who": "{{name}} · Investor",
+    "signOut": "Sign out of the investor portal",
+    "nav": {
+      "label": "Investor portal",
+      "group": "Group",
+      "today": "Today",
+      "performance": "Performance",
+      "investment": "Investment",
+      "projects": "Projects",
+      "requests": "Requests",
+      "withdraw": "Withdraw",
+      "loan": "Loan"
+    },
+    "requestsNav": "Request type",
+    "loadFailed": "These figures could not be loaded.",
+    "loadFailedNext": "Check your signal and open the page again. If it keeps failing, ask Admin.",
+    "notLinked": "Your sign-in is not linked to a partner record yet.",
+    "notLinkedNext": "Admin links your investor sign-in to your partner record in each company. Until then there is nothing to show.",
+    "errorNext": "Admin decides every request; ask Admin if this is unclear.",
+    "role": {
+      "legal": "Legal partner",
+      "investment": "Investment partner",
+      "working": "Working partner",
+      "director": "Director"
+    },
+    "kind": {
+      "withdraw": "Withdrawal",
+      "loan_to_partner": "Loan to me",
+      "loan_from_partner": "Loan from me",
+      "info": "Question",
+      "project_offer": "Project interest"
+    },
+    "source": {
+      "land_rent": "Land rent",
+      "incentive": "Incentive",
+      "dividend": "Dividend",
+      "investment": "Investment sheet"
+    },
+    "repayFrom": {
+      "land_rent": "Land rent",
+      "incentive": "Incentives",
+      "bank": "Bank transfer"
+    },
+    "status": {
+      "submitted": "With Admin",
+      "rejected": "Rejected",
+      "paid": "Paid",
+      "withdrawn": "Taken back"
+    },
+    "repayMonths": "repay over {{n}} months",
+    "sentOn": "Sent {{date}}",
+    "decidedOn": "decided {{date}}",
+    "decidedAmount": "approved for",
+    "adminNote": "Admin: {{note}}",
+    "takeBack": "Take back",
+    "loan": {
+      "none": "No loan account",
+      "iOwe": "I owe {{amount}}",
+      "owedToMe": "Owed to me {{amount}}"
+    },
+    "company": "Company",
+    "send": "Send to Admin",
+    "sent": "Sent to Admin as {{doc}}. You will see the decision here.",
+    "readOnly": "Analytics only. Nothing here changes the company's books; requests go to Admin."
+  }
+}

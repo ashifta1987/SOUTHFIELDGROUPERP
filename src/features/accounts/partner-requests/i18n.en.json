@@ -1,0 +1,119 @@
+{
+  "partnerRequests": {
+    "title": "Partner requests",
+    "subtitle": "Withdrawals, loans and project offers sent from the investor portal · Admin approves · nobody approves their own",
+    "noView": "Partner requests need the partners right. Ask Admin.",
+    "record": "Record a request",
+    "filters": "Kinds of request",
+    "filter": {
+      "all": "All",
+      "withdraw": "Withdrawals",
+      "loans": "Loans",
+      "project": "Project offers",
+      "info": "Questions"
+    },
+    "emptyTitle": "No partner requests yet",
+    "emptyBody": "Requests arrive once partners sign in to the investor portal, or when Admin records one on a partner's behalf. Each card shows what the partner asked for beside what is due to them, with Approve, Change amount and Reject.",
+    "kind": {
+      "withdraw": "Withdrawal",
+      "loan_to_partner": "Loan to the partner",
+      "loan_from_partner": "Loan from the partner",
+      "info": "Question",
+      "project_offer": "Project offer"
+    },
+    "source": {
+      "land_rent": "Land rent",
+      "incentive": "Incentive",
+      "dividend": "Dividend",
+      "investment": "Investment"
+    },
+    "repayFrom": {
+      "land_rent": "Land rent",
+      "incentive": "Incentive",
+      "bank": "Bank"
+    },
+    "status": {
+      "submitted": "Waiting for Admin",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "paid": "Paid",
+      "withdrawn": "Withdrawn"
+    },
+    "f": {
+      "amount": "Amount, ₹",
+      "source": "Draw from",
+      "repay": "Repayment",
+      "repayValue": "{{n}} months, from {{from}}",
+      "purpose": "Purpose or note",
+      "due": "Company owes the partner",
+      "asked": "Asked by",
+      "decided": "Decided",
+      "checks": "Checks recorded"
+    },
+    "approve": "Approve",
+    "reject": "Reject",
+    "approveOne": "Approve {{no}}",
+    "rejectOne": "Reject {{no}}",
+    "pay": "Pay from bank",
+    "payOne": "Pay {{no}} from bank",
+    "payTitle": "Pay {{no}}",
+    "payHint": "Posts a payment: the partner's current account is debited and the bank credited. The server checks the account still covers it.",
+    "recordLoan": "Record the loan on Directors and investment →",
+    "bank": "Bank account",
+    "paidOn": "Paid on",
+    "choose": "Choose",
+    "decide": {
+      "approveTitle": "Approve {{no}}",
+      "rejectTitle": "Reject {{no}}",
+      "approveHint": "The server checks what is due to the partner and the Companies Act rules before approving.",
+      "loanHint": "A loan to a partner needs the board resolution reference (and the CA's check) in the note. Loans to directors are restricted by Companies Act s.185; other loans are checked against the s.186 limit the CA records.",
+      "rejectHint": "Say why. The partner sees the reason in their portal.",
+      "amount": "Change amount to (optional)",
+      "amountHelp": "Empty: the amount asked for.",
+      "note": "Note (board resolution reference for loans)",
+      "reason": "Reason for rejecting"
+    },
+    "submit": {
+      "title": "Record a request for a partner",
+      "hint": "For a partner who asked in person or in writing. Another Admin must decide it: nobody decides a request they recorded.",
+      "submit": "Record request",
+      "partner": "Partner",
+      "kind": "Request",
+      "months": "Repay over, months",
+      "repayFrom": "Repay from",
+      "project": "Project",
+      "noProject": "Describe it below",
+      "question": "Question"
+    },
+    "draw": {
+      "title": "What each partner can draw",
+      "partner": "Partner",
+      "share": "Share %",
+      "current": "Current account (company owes)",
+      "loan": "Loan account",
+      "declaration": "Director's declaration",
+      "onFile": "On file",
+      "missing": "Missing",
+      "noAccount": "Not set",
+      "none": "No partner recorded for this company.",
+      "note": "Balances come from the books (credit = the company owes the partner). Accounts are set on Partners and profit sharing."
+    },
+    "checks": {
+      "title": "Checks before approving",
+      "withdrawHead": "Withdrawal",
+      "withdraw": "Not more than the company owes the partner on their current account.",
+      "loanToHead": "Loan to a partner",
+      "loanTo": "Loans to directors, and to firms or relatives they are interested in, have Companies Act limits. CA check and board approval first.",
+      "loanFromHead": "Loan from a partner",
+      "loanFrom": "A director's written declaration that the money is not borrowed; recorded in their loan account.",
+      "projectHead": "Project offer",
+      "project": "Recorded as an offer; it becomes an investment only when Admin confirms it with the agreement."
+    },
+    "after": {
+      "title": "After approval",
+      "one": "The company pays from its bank; the entry posts to the bank and the partner's account.",
+      "two": "The partner hears on WhatsApp (if they agreed to it), and the result shows in their portal.",
+      "three": "Every request, approval and change of amount goes to the user log."
+    }
+  }
+}

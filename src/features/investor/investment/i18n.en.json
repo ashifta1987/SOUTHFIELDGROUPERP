@@ -1,0 +1,26 @@
+{
+  "partnerInvestment": {
+    "title": "My investment",
+    "sub": "{{name}} · {{count}} companies",
+    "totals": "My totals",
+    "shareCapital": "Share capital",
+    "shareCapitalSub": "as legal partner",
+    "currentValue": "Current value",
+    "currentValueSub": "book value of my shares",
+    "investment": "Investment",
+    "investmentSub": "capital accounts and other",
+    "sharesHeld": "Shares held",
+    "money": "Share money · investment",
+    "loan": "My loan account",
+    "netWorthTitle": "Company net worth",
+    "netWorth": "= Net worth, book",
+    "valueOfMine": "Value of my shares",
+    "profitShares": "Profit shares posted to me",
+    "noProfitShares": "None yet. Profit shares are posted after the year's books are closed and the minutes are approved.",
+    "kind": {
+      "share": "share",
+      "incentive": "incentive"
+    },
+    "note": "Book values from the company's books, before audit, depreciation and tax."
+  }
+}
