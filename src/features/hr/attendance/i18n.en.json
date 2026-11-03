@@ -1,1 +1,41 @@
-{}
+{
+  "attendance": {
+    "title": "Attendance · {{month}}",
+    "subtitle": "{{days}} days this month · one mark per person per day · overtime is paid in payroll at ×{{ot}} as set in Settings",
+    "otNotSet": "(not set)",
+    "toPayroll": "Payroll",
+    "noCompany": "No company to mark attendance for yet.",
+    "dayTitle": "Mark a day",
+    "date": "Date",
+    "dayHelp": "Choose a status for each person; hours and overtime hours are optional. An approved payroll month is locked.",
+    "noStaffTitle": "No staff paid by this company",
+    "noStaffBody": "Add staff with this company as “Payslip from” to mark their attendance here.",
+    "addStaff": "Add staff member",
+    "dayCaption": "Attendance for {{date}}",
+    "col": {
+      "staff": "Staff",
+      "status": "Status",
+      "hours": "Hours",
+      "ot": "Overtime hours",
+      "worker": "Staff",
+      "present": "Present",
+      "leave": "Leave",
+      "otTotal": "OT hours"
+    },
+    "statusFor": "Status, {{name}}",
+    "hoursFor": "Hours, {{name}}",
+    "otFor": "Overtime hours, {{name}}",
+    "notMarked": "Not marked",
+    "allPresent": "Mark the rest present",
+    "save": "Save attendance",
+    "saved": "Saved {{n}} marks for {{date}}",
+    "errHours": "Hours for {{name}} must be a number like 8 or 7.5.",
+    "errNone": "Choose a status for at least one person.",
+    "gridTitle": "{{month}} · by day",
+    "gridCaption": "Attendance by day, {{month}}",
+    "gridEmpty": "Nothing marked this month yet.",
+    "otShort": "{{h}} h overtime",
+    "presentHalf": "{{p}} + {{h}} half",
+    "gridNote": "P present · A absent · H half day · L leave · WO weekly off · “+” means overtime that day. Sundays are shaded. Approved leave requests are marked L automatically."
+  }
+}

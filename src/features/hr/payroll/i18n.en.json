@@ -1,1 +1,62 @@
-{}
+{
+  "payroll": {
+    "title": "Payroll · {{month}}",
+    "titleCompany": "Payroll · {{company}}, {{month}}",
+    "subtitle": "One salary sheet per payslip company · worked out by the server from attendance, salary, allowances and advances · overtime at ×{{ot}} (Settings)",
+    "otNotSet": "(not set)",
+    "attendance": "Attendance",
+    "trend": "Pay trend",
+    "prepare": "Prepare payroll",
+    "prepareAgain": "Prepare again",
+    "approve": "Approve and pay",
+    "noRight": "The Payroll right is needed to see and run payroll. Ask Admin.",
+    "noCompany": "No company to run payroll for yet.",
+    "prepared": "Payroll prepared. Another person with the Payroll right approves it.",
+    "approved": "Payroll approved and posted to the books. Payslip-ready messages are queued (no amounts).",
+    "emptyTitle": "No payroll for {{month}} yet",
+    "emptyBody": "Mark attendance first, then press Prepare payroll. You can prepare again until it is approved.",
+    "kpis": "Payroll totals",
+    "kpi": {
+      "people": "People on this sheet",
+      "gross": "Gross",
+      "advance": "Advances recovered",
+      "net": "To pay"
+    },
+    "state": {
+      "draft": "Draft",
+      "posted": "Approved and posted"
+    },
+    "checkTitle": "Check before approving",
+    "preparedBy": "Prepared by {{who}} on {{when}}.",
+    "approvedBy": "Approved by {{who}} on {{when}}.",
+    "someone": "a user",
+    "youPrepared": "You prepared this sheet, so another person with the Payroll right must approve it.",
+    "otherPrepared": "Prepared by someone else — you may approve it after checking.",
+    "postedAs": "Posted to the books as {{no}} dated {{date}}.",
+    "pfEsi": "PF and ESI are off until the CA confirms the rates in Settings.",
+    "monthlyTitle": "Monthly salary",
+    "monthlyRule": "Basic = salary × payable days ÷ days in the month",
+    "dailyTitle": "Daily wages",
+    "dailyRule": "Basic = day rate × days present",
+    "noneInGroup": "No one on monthly salary in this run.",
+    "total": "Total",
+    "ofDays": "{{d}} / {{n}}",
+    "col": {
+      "employee": "Employee",
+      "present": "Present",
+      "half": "Half days",
+      "leave": "Leave",
+      "payable": "Payable days",
+      "otHours": "OT hours",
+      "basic": "Basic",
+      "allowance": "Allowances",
+      "otPay": "OT pay",
+      "gross": "Gross",
+      "advance": "Advance cut",
+      "deduction": "Deductions",
+      "net": "To pay"
+    },
+    "confirmTitle": "Approve payroll for {{month}}?",
+    "confirmEffect": "Posts ₹{{net}} to pay for {{people}} people to the books, recovers advances, locks the month's attendance and queues payslip-ready messages. It cannot be edited after this."
+  }
+}

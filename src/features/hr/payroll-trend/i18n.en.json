@@ -1,1 +1,31 @@
-{}
+{
+  "payrollTrend": {
+    "title": "{{company}} payroll · FY {{fy}}",
+    "subtitle": "Month by month from the payroll runs · draft months may still change",
+    "toPayroll": "This month's payroll",
+    "noRight": "The Payroll right is needed to see payroll. Ask Admin.",
+    "emptyTitle": "No payroll runs this financial year",
+    "emptyBody": "Prepare a month on Payroll; it appears here as a draft until it is approved.",
+    "kpis": "Payroll this year",
+    "kpi": {
+      "gross": "Gross, {{n}} months",
+      "avg": "₹{{v}} a month on average",
+      "net": "Paid after advances",
+      "advance": "Advances set off"
+    },
+    "chartTitle": "Gross pay by month",
+    "chartNote": "Darker bars are approved months; lighter bars are drafts. The figures are in the table below.",
+    "tableTitle": "Month by month",
+    "total": "Total",
+    "draft": "Draft",
+    "posted": "Approved",
+    "col": {
+      "month": "Month",
+      "people": "On the sheet",
+      "gross": "Gross ₹",
+      "advance": "Advances ₹",
+      "net": "Paid ₹",
+      "state": "State"
+    }
+  }
+}

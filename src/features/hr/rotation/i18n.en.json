@@ -1,1 +1,41 @@
-{}
+{
+  "rotation": {
+    "title": "Staff rotation",
+    "subtitle": "Southfield Group · one staff list, and anyone can work for either company · week of {{from}} to {{to}}",
+    "copyLastWeek": "Copy last week",
+    "copied": "Copied {{n}} duties from last week",
+    "prevWeek": "Previous week",
+    "nextWeek": "Next week",
+    "weekOf": "Week of",
+    "toDuties": "Today's duties on Staff duties →",
+    "caption": "Duties for the week {{from}} to {{to}}",
+    "legend": "Each slot shows the company, the job, and the place and shift. Tap a slot to change it.",
+    "legendEmpty": "Nothing is assigned this week yet. Tap + to assign a slot.",
+    "noStaffTitle": "No staff yet",
+    "noStaffBody": "Add staff on Employees & KYC, then plan their week here.",
+    "col": {
+      "staff": "Staff",
+      "pay": "Pay company",
+      "days": "Days"
+    },
+    "assignSlot": "Assign {{name}} on {{day}}",
+    "changeSlot": "Change the duty of {{name}} on {{day}}",
+    "dialogTitle": "{{name}} · {{day}}",
+    "saveSlot": "Save duty",
+    "errCompany": "Choose the company.",
+    "errJob": "Enter the duty.",
+    "shift": {
+      "day": "Day",
+      "night": "Night",
+      "general": "General"
+    },
+    "f": {
+      "company": "Works for",
+      "choose": "Choose",
+      "place": "Place",
+      "anyPlace": "No particular place",
+      "duty": "Duty",
+      "shift": "Shift"
+    }
+  }
+}

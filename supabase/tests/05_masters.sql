@@ -1,6 +1,6 @@
 -- Masters and KYC: GSTIN check digit and PAN, duplicates, KYC segregation, bank change by two people with a
 -- call-back, MRP rule on prices, opening bills hidden from the GST view until classified.
-select plan(16);
+select plan(15);
 
 create temp table s as select tests.seed2(tests.seed()) as v;
 grant select on s to authenticated;

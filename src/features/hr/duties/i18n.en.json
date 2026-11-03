@@ -1,1 +1,42 @@
-{}
+{
+  "duties": {
+    "title": "Staff duties",
+    "subtitle": "Who works where, for which company, on which job · the day's duty decides which company the day belongs to",
+    "day": "Day",
+    "copyYesterday": "Copy yesterday",
+    "toRotation": "Plan the week on Staff rotation →",
+    "noStaffTitle": "No staff yet",
+    "noStaffBody": "Add staff on Employees & KYC, then give them duties here.",
+    "caption": "Duties for {{date}}",
+    "col": {
+      "staff": "Staff",
+      "attendance": "Attendance",
+      "company": "Works for",
+      "place": "Place",
+      "duty": "Duty",
+      "shift": "Shift"
+    },
+    "notMarked": "Not marked",
+    "choose": "Choose",
+    "anyPlace": "No particular place",
+    "companyFor": "Works for, {{name}}",
+    "placeFor": "Place, {{name}}",
+    "dutyFor": "Duty, {{name}}",
+    "shiftFor": "Shift, {{name}}",
+    "shift": {
+      "day": "Day",
+      "night": "Night",
+      "general": "General"
+    },
+    "save": "Save duties",
+    "saved": "Saved {{n}} duties for {{date}}",
+    "copiedNote": "Yesterday's duties are filled in. Check them and press Save duties.",
+    "errCompany": "Choose the company {{name}} works for.",
+    "errNone": "Enter a duty for at least one person.",
+    "note": "Only rows with a duty are saved. One duty per person per day; saving again replaces it.",
+    "byCompanyTitle": "On duty by company",
+    "people_one": "{{count}} person",
+    "people_other": "{{count}} people",
+    "byCompanyNote": "Labour cost follows the company of the day's duty."
+  }
+}

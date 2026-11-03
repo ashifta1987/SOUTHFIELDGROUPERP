@@ -1,1 +1,70 @@
-{}
+{
+  "staffWorkflow": {
+    "title": "How staff work across Southfield Group",
+    "subtitle": "From joining to payslip · one staff list, either company · each step shows where your data stands today",
+    "kpis": "Staff workflow summary",
+    "kpi": {
+      "people": "People on the staff list",
+      "att": "Attendance marks, {{month}}",
+      "requests": "Requests waiting",
+      "designation": "Designation missing",
+      "designationSub": "needed before payroll"
+    },
+    "yourData": "Your data",
+    "links": {
+      "addStaff": "Add staff",
+      "kyc": "Employees & KYC",
+      "rotation": "Staff rotation",
+      "duties": "Staff duties",
+      "attendance": "Attendance",
+      "requests": "Leave and advances",
+      "hours": "Workers and hours",
+      "cash": "Cash given to staff",
+      "payroll": "Payroll",
+      "trend": "Pay trend"
+    },
+    "data": {
+      "join": "{{n}} people on the list. {{k}} still have no designation: {{names}}.",
+      "joinAll": "{{n}} people on the list, each with a designation.",
+      "plan": "Week of {{from}} to {{to}}: {{n}} duties assigned.",
+      "mark": "{{month}}: {{n}} attendance marks so far · {{r}} requests waiting for a decision.",
+      "hours": "This month: {{n}} days worked for a company other than the pay company.",
+      "cash": "This month: {{n}} cash payments to staff, recovered in payroll.",
+      "pay": "{{month}}: {{d}} draft payroll sheets, {{p}} approved."
+    },
+    "steps": {
+      "join": {
+        "title": "Join the group",
+        "who": "HR · Admin",
+        "body": "Add the person once to Southfield Group: designation (required for everyone), the company that issues the payslip, pay group, salary or day rate, KYC and WhatsApp number."
+      },
+      "plan": {
+        "title": "Plan the week",
+        "who": "Supervisor · HR",
+        "body": "Each day's slot names the company, place, job and shift. The day's duty decides which company the day belongs to."
+      },
+      "mark": {
+        "title": "Mark attendance",
+        "who": "Supervisor",
+        "body": "One mark per person per day, with hours and overtime hours. Leave and advances are asked for in the staff app and decided by someone else."
+      },
+      "hours": {
+        "title": "Days follow the company",
+        "who": "Automatic",
+        "body": "Days worked for the other company are visible by person, for the month-end cross-charge. The payslip stays with one company."
+      },
+      "cash": {
+        "title": "Cash given",
+        "who": "Cashier",
+        "body": "Advances and other cash to staff are entered when paid, under the daily cash limit, and recovered when payroll is approved."
+      },
+      "pay": {
+        "title": "Month-end payroll",
+        "who": "Payroll · approved by another person",
+        "body": "One salary sheet per payslip company, worked out by the server. The person who prepares it cannot approve it; approval posts it to the books and sends payslip-ready messages without amounts."
+      }
+    },
+    "legalTitle": "The one legal point to settle",
+    "legalBody": "Everyone belongs to Southfield Group in the app, but the group is not a company, so each person's payslip, PF, ESI and wage register come from one company. Confirm the treatment with your CA; PF and ESI stay off until then."
+  }
+}

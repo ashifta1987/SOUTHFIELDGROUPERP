@@ -1,1 +1,36 @@
-{}
+{
+  "workerHours": {
+    "title": "Workers, companies and hours",
+    "subtitle": "Southfield Group · one staff list · days and overtime by the company each person worked for · {{month}}",
+    "plan": "Plan the week",
+    "switch": "Switch a worker",
+    "kpis": "Hours summary",
+    "kpi": {
+      "people": "People in the group",
+      "days": "Days worked",
+      "ot": "Overtime hours",
+      "cross": "Worked for the other company",
+      "crossSub": "billed across at month end",
+      "designation": "Designation not set",
+      "designationSub": "every person needs one"
+    },
+    "tableTitle": "Days by company · {{month}}",
+    "tableCaption": "Days and overtime by company, {{month}}",
+    "emptyTitle": "No attendance this month yet",
+    "emptyBody": "Days and overtime appear here once attendance is marked.",
+    "toAttendance": "Mark attendance →",
+    "group": "{{company}} · {{n}} people",
+    "notSet": "Not set",
+    "otherCompany": "Not the pay company",
+    "col": {
+      "worker": "Staff",
+      "designation": "Designation",
+      "payslip": "Payslip from",
+      "days": "Days",
+      "ot": "OT hours",
+      "note": "Note"
+    },
+    "howTitle": "How costs follow the days",
+    "howBody": "Each day is booked to the company the person worked for that day (from attendance and duties). The payslip still comes from one company per person; days worked for the other company are billed across at month end. Switch someone by giving them a duty for the other company on Staff duties."
+  }
+}

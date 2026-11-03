@@ -1,1 +1,34 @@
-{}
+{
+  "allowances": {
+    "title": "Allowances and benefits",
+    "subtitle": "Allowances and deductions on staff records · every line shows on the payslip and in the salary register under its own name",
+    "toPayroll": "Payroll",
+    "noRight": "The Payroll right is needed to see allowances. Ask Admin.",
+    "kpis": "Allowances summary",
+    "kpi": {
+      "allow": "Allowances, {{month}} · {{n}} lines",
+      "ded": "Deductions · {{n}} lines",
+      "heads": "Types in use",
+      "people": "People with a line this month"
+    },
+    "tableTitle": "Allowance and deduction lines",
+    "emptyTitle": "No allowances on record",
+    "emptyBody": "No allowance or deduction lines are on staff records yet. Adding them from this screen comes in a later slice; payroll adds the lines running in the month.",
+    "ongoing": "Ongoing",
+    "kind": {
+      "allowance": "Allowance",
+      "deduction": "Deduction"
+    },
+    "col": {
+      "staff": "Staff",
+      "head": "Type",
+      "kind": "Shows as",
+      "amount": "Amount a month ₹",
+      "from": "From",
+      "to": "Until",
+      "note": "Note"
+    },
+    "howTitle": "How allowances are treated",
+    "howBody": "Payroll adds every allowance running in the month to gross pay and takes every deduction off. The tax, PF and ESI treatment of each type is set by Admin with the CA; PF and ESI stay off until the CA confirms them."
+  }
+}

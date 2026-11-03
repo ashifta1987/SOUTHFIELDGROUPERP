@@ -1,1 +1,54 @@
-{}
+{
+  "requests": {
+    "title": "Leave and advance requests",
+    "subtitle": "Sent by staff from the staff app · nobody approves their own request",
+    "filter": "Show requests",
+    "tabs": {
+      "all": "All · {{n}} waiting",
+      "leave": "Leave",
+      "advance": "Advances"
+    },
+    "kind": {
+      "leave": "Leave",
+      "advance": "Advance"
+    },
+    "emptyTitle": "No requests waiting",
+    "emptyBody": "Requests appear here once staff sign in to the staff app and ask for leave or an advance.",
+    "toStaffApp": "See the staff app screens →",
+    "cardTitle": "{{kind}} · {{name}}",
+    "reason": "Reason:",
+    "sentOn": "Sent on {{date}}",
+    "own": "Your own request — another person must decide it",
+    "approve": "Approve",
+    "reject": "Reject",
+    "approveNamed": "Approve {{kind}} request of {{name}}",
+    "rejectNamed": "Reject {{kind}} request of {{name}}",
+    "noRight": "The HR approve right is needed to decide requests. Ask Admin.",
+    "advanceOf": "Advance of",
+    "leaveFromTo": "Leave from {{from}} to {{to}}",
+    "refused": "Rejected",
+    "withdrawn": "Withdrawn",
+    "historyTitle": "Decided requests",
+    "historyEmpty": "Nothing decided yet.",
+    "col": {
+      "sent": "Sent",
+      "staff": "Staff",
+      "kind": "Type",
+      "what": "Asked for",
+      "status": "Decision",
+      "note": "Note",
+      "decided": "Decided on"
+    },
+    "whoTitle": "Who decides",
+    "whoBody": "A person with the HR approve right decides, and never their own request. The server checks this on every decision; hiding a button is never the check.",
+    "afterTitle": "After a decision",
+    "afterBody": "Leave → marked in attendance for those days and used in that month's payroll. Advance → the cashier pays it on Cash given to staff (cash book entry), and payroll recovers it. Staff hear back in the app and on WhatsApp (no amounts in the message).",
+    "toCash": "Cash given to staff →",
+    "approveTitle": "Approve the request of {{name}}?",
+    "rejectTitle": "Reject the request of {{name}}?",
+    "approveLeaveEffect": "The leave days are marked in attendance and the person is told.",
+    "approveAdvanceEffect": "The advance can then be paid on Cash given to staff, and payroll recovers it.",
+    "rejectEffect": "The person is told the request was rejected.",
+    "note": "Note for the record (optional)"
+  }
+}

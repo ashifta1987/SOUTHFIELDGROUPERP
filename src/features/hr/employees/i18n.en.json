@@ -1,1 +1,62 @@
-{}
+{
+  "employees": {
+    "title": "Employees · KYC",
+    "subtitle": "{{n}} on the group staff list · {{k}} with KYC complete · Aadhaar, PAN and bank are shown masked",
+    "add": "Add employee",
+    "kpis": "Staff summary",
+    "kpi": {
+      "people": "People on the staff list",
+      "complete": "KYC complete",
+      "noDesignation": "Designation not set",
+      "noDesignationSub": "every person needs one",
+      "login": "Signed in to the staff app"
+    },
+    "tableCaption": "Group staff list with KYC",
+    "col": {
+      "id": "Staff ID",
+      "employee": "Employee",
+      "payGroup": "Payslip from · pay group",
+      "phone": "WhatsApp",
+      "collected": "Collected",
+      "kyc": "KYC",
+      "open": "Open"
+    },
+    "noDesignation": "Designation not set",
+    "noPayGroup": "Pay group not set",
+    "nOfM": "{{n}} of {{m}}",
+    "kyc": {
+      "complete": "Complete",
+      "started": "Started",
+      "notStarted": "Not started"
+    },
+    "open": "Open",
+    "openNamed": "Open {{name}}",
+    "emptyTitle": "No staff yet",
+    "emptyBody": "Add each person once to Southfield Group, or bring them in with the payroll import on Import data.",
+    "detailTitle": "{{name}} · KYC",
+    "edit": "Edit",
+    "personal": "Personal",
+    "identity": "Identity",
+    "salary": "Salary",
+    "missing": "Not collected",
+    "privacy": "Only the last 4 Aadhaar digits are kept. Bank and PAN are masked here; the full numbers are never shown in lists.",
+    "salaryNoRight": "The Payroll right is needed to see salary.",
+    "salaryHidden": "Salary is hidden until you ask for it. Each view is recorded in the user log.",
+    "showSalary": "Show salary",
+    "f": {
+      "id": "Staff ID",
+      "phone": "WhatsApp number",
+      "dob": "Date of birth",
+      "language": "First language",
+      "login": "Staff app sign-in",
+      "aadhaar": "Aadhaar",
+      "pan": "PAN",
+      "bank": "Bank account",
+      "joined": "Joining date",
+      "department": "Department",
+      "basis": "Pay group",
+      "monthlySalary": "Monthly salary",
+      "dailyWage": "Day rate"
+    }
+  }
+}

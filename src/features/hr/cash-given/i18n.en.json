@@ -1,1 +1,62 @@
-{}
+{
+  "cashGiven": {
+    "title": "Cash given to staff",
+    "subtitle": "Every cash payment to a staff member, by staff ID and purpose · posted to the cash book · advances are recovered in payroll",
+    "toCashBook": "Cash book",
+    "noCompany": "No company to record cash for yet.",
+    "noRight": "The cash book right is needed to pay cash. Ask Admin.",
+    "kpis": "Cash given summary",
+    "kpi": {
+      "month": "This month · {{n}} payments",
+      "open": "Still to recover · {{n}}",
+      "all": "All recorded · {{n}}"
+    },
+    "byStaffTitle": "By staff and purpose",
+    "linesTitle": "Every payment",
+    "empty": "No cash given to staff yet.",
+    "emptyBody": "Record each payment here when it is handed over; it goes to the cash book and the person's record.",
+    "recovered": "Recovered in payroll",
+    "toRecover": "To recover",
+    "limitTitle": "Cash limits",
+    "col": {
+      "date": "Date",
+      "staff": "Staff",
+      "purpose": "Purpose",
+      "amount": "Amount ₹",
+      "recovered": "Recovery",
+      "total": "Total ₹"
+    },
+    "purpose": {
+      "advance": "Advance",
+      "food": "Food",
+      "fuel_travel": "Fuel, travel",
+      "room_rent": "Room rent",
+      "other": "Other"
+    },
+    "form": {
+      "title": "Give cash",
+      "staff": "Staff member",
+      "choose": "Choose",
+      "date": "Date",
+      "purpose": "Purpose",
+      "request": "Against an approved advance request",
+      "noRequest": "Not against a request",
+      "requestOption": "Asked on {{date}} · ₹{{amount}}",
+      "amount": "Amount",
+      "account": "Paid from cash account",
+      "noCash": "No cash account yet — add one on Bank → Set-up",
+      "pay": "Give cash",
+      "payAnyway": "Give cash with this reason",
+      "posted": "Posted {{no}}",
+      "flagged": "Flagged for Admin: over the cash limit",
+      "overTitle": "Over the daily cash limit to one person",
+      "overBody": "Pay this by bank instead, or give a reason. The payment is then flagged for Admin.",
+      "reason": "Why cash and not bank",
+      "help": "Every payment is a cash book entry. Advances given are recovered automatically when payroll is approved.",
+      "errPerson": "Choose the staff member.",
+      "errAmount": "Enter the amount in rupees.",
+      "errAccount": "Choose the cash account.",
+      "errReason": "Give a reason of at least a few words."
+    }
+  }
+}

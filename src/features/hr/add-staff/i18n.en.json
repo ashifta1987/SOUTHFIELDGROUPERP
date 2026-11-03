@@ -1,1 +1,58 @@
-{}
+{
+  "addStaff": {
+    "back": "Employees & KYC",
+    "title": "Add staff member",
+    "editTitle": "Edit staff member · {{name}}",
+    "subtitle": "Everyone joins Southfield Group once, then gets a designation and the company that issues the payslip",
+    "save": "Save staff member",
+    "person": "Person",
+    "identity": "Identity and bank",
+    "job": "Job and pay",
+    "inUse": "Designations in use",
+    "inUseEmpty": "No designations yet.",
+    "missing": "Every staff member must have a designation. {{n}} have none yet: {{names}}.",
+    "allSet": "Everyone on the list has a designation.",
+    "saved": "Saved as {{code}}",
+    "toList": "Back to the staff list",
+    "allowancesNote": "Allowances and deductions show on the payslip with their own names.",
+    "allowancesLink": "Allowances and benefits →",
+    "col": {
+      "designation": "Designation",
+      "people": "People"
+    },
+    "err": {
+      "name": "Enter the full name as on the ID.",
+      "designation": "Every staff member needs a designation.",
+      "company": "Choose the company that issues the payslip.",
+      "salary": "Enter the amount in rupees, like 15000 or 15000.50."
+    },
+    "f": {
+      "name": "Full name as on ID",
+      "id": "Staff ID",
+      "idAuto": "Given by the app",
+      "idHelp": "Given by the app when you save, never reused",
+      "phone": "WhatsApp number",
+      "phoneHelp": "Signs in to the staff app with this",
+      "current": "On record: {{v}} · leave blank to keep",
+      "language": "First language",
+      "joined": "Joining date",
+      "dob": "Date of birth",
+      "aadhaar": "Aadhaar",
+      "aadhaarHelp": "Only the last 4 digits are kept",
+      "pan": "PAN",
+      "bank": "Bank account · last 4 digits",
+      "bankHelp": "Only the last 4 digits are kept",
+      "designation": "Designation",
+      "department": "Department",
+      "none": "None",
+      "company": "Payslip from",
+      "choose": "Choose",
+      "basis": "Pay group",
+      "monthlySalary": "Monthly salary",
+      "dailyWage": "Day rate",
+      "salaryNoRight": "Salary: the Payroll right is needed to see or set it.",
+      "salaryOnRecord": "On record: ₹{{v}} · leave blank to keep"
+    },
+    "notFound": "This staff member was not found, or you cannot see them."
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "hrCommon": {
+    "month": "Month",
+    "readFailed": "Could not load this list. Try again, or ask Admin if it keeps happening.",
+    "serverSays": "The server said: “{{message}}”.",
+    "sodNext": "Ask another person with the right to do this step.",
+    "noRight": "You don't have the right to change this. Ask Admin.",
+    "readOnly": "Read-only view: you can see this but not change it.",
+    "codes": {
+      "P": "Present",
+      "A": "Absent",
+      "H": "Half day",
+      "L": "Leave",
+      "WO": "Weekly off"
+    },
+    "basis": {
+      "monthly": "Monthly",
+      "daily": "Daily wage"
+    },
+    "languages": {
+      "en": "English",
+      "ml": "മലയാളം · Malayalam",
+      "hi": "हिंदी · Hindi",
+      "bho": "भोजपुरी · Bhojpuri"
+    },
+    "rules": {
+      "staff.name": "Enter the full name as on the ID.",
+      "staff.designation": "Every staff member needs a designation.",
+      "staff.pay_company": "Choose the company that issues the payslip.",
+      "staff.pay_basis": "Choose monthly or daily pay.",
+      "staff.phone": "Enter a 10-digit Indian mobile number.",
+      "staff.aadhaar": "Enter the 12-digit Aadhaar or its last 4 digits. Only the last 4 are kept.",
+      "staff.person": "Choose the staff member.",
+      "staff.date": "Choose the date.",
+      "staff.request": "Only an approved advance request of this person can be paid.",
+      "staff.request_paid": "This advance request is already paid.",
+      "staff.request_missing": "This request was not found. Reload the list.",
+      "payroll.month_locked": "Payroll for this month is already approved, so it is locked.",
+      "cash.payment_over_limit": "Cash over the daily limit to one person needs a reason Admin will see — or pay by bank.",
+      "cash.limits_not_set": "The cash limits are not set yet. Admin sets them on Settings.",
+      "money.amount": "Enter an amount above zero.",
+      "money.account": "Choose the cash account.",
+      "posting.rule_missing": "A posting rule is missing for this company. Set it on Bank → Set-up:",
+      "posting.unbalanced": "The entry does not balance. Nothing was posted.",
+      "period.no_fy": "There is no open financial year for this date. Open it on Numbering.",
+      "period.closed": "This month is closed in the books.",
+      "entries.backdate": "This date is older than allowed. Ask Admin for a “Back-date entries” permission.",
+      "date.future": "The date cannot be in the future.",
+      "staff.duty": "Enter the duty."
+    }
+  }
+}

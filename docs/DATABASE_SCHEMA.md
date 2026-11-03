@@ -121,3 +121,16 @@ Tests: `05_masters.sql` (16), `06_import.sql` (15). **73/73 pass in total.**
 
 Contracts are written at the start of each phase. The plan is in [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md).
 
+
+### Phase 3 HR screens (`20261103003000_hr_screens.sql`, built)
+
+| Object | Contract |
+|---|---|
+| `api.save_staff(crid, p jsonb) → {person_id, person_code}` | Add or edit a staff member in **one transaction**: `master.people` + `master.person_companies` (pay company) + `hr.staff_profiles`. Rights: `hr.create` (new), `hr.edit` on the pay company (and on the old one when moving); salary keys need `payroll.run`. Designation and pay company required; Aadhaar → last 4 only; bank → last 4 only; phone normalised to +91. Staff ID from `hr.staff_code_seq` via `app.next_staff_code()` (`EMP-0001`…, never reused). Rule codes `staff.*`. |
+| `api.staff_kyc()` (read) | Staff list with KYC completeness (phone, DOB, Aadhaar, PAN, bank = 5); Aadhaar, PAN and bank returned **masked**. Rows limited to `hr.view` on the pay company, or the person themselves. |
+| `api.staff_pay(p_person_id)` (read, logged) | Salary / day rate of one person; `payroll.run` on the pay company or self; every view of someone else's pay is logged as `view_sensitive`. |
+| `api.staff_allowances` (view, invoker) | Read-only allowances/deductions under `hr.allowances` RLS. |
+| `api.give_staff_cash` (replaced) | Now locks the person, applies the daily cash **payment** limit per person (`cash.payment_warn_amount`; above it needs `cash_reason`, voucher flagged, Admin log), and pays an advance request only if it is that person's **approved** advance and not already paid. Returns `warning`. |
+| `api.decide_staff_request` (replaced) | Refuses a missing request (`staff.request_missing`); leave marking only when the request has a company. |
+
+Tests: `supabase/tests/10_hr_screens.sql` (18).

@@ -723,6 +723,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"staff_allowances": {
+                  Row: {
+                    "amount": number,"company_id": string,"company_name": string,"from_month": string,"head": string,"id": string,"kind": string,"note": string | null,"person_code": string | null,"person_id": string,"person_name": string,"to_month": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"staff_requests": {
                   Row: {
                     "amount": number | null,"company_id": string | null,"created_at": string,"decided_at": string | null,"decision_note": string | null,"from_date": string | null,"id": string,"kind": string,"person_id": string,"person_name": string,"reason": string,"requested_by": string,"status": string,"to_date": string | null
@@ -1002,6 +1010,9 @@ export type Database = {
 "save_sales_draft":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"save_staff":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "search_help":
 { Args: { "p_language": string,"p_query": string,"p_screen": string }; Returns: {
               "rank": number,"rule_code": string,"screen": string,"slug": string,"snippet": string,"title": string
@@ -1034,8 +1045,16 @@ export type Database = {
 "set_tally_group_map":
 { Args: { "p_account_group_id": string,"p_client_request_id": string,"p_company_id": string,"p_tally_group": string }; Returns: Json
                            },
+"staff_kyc":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "aadhaar_masked": string,"active": boolean,"bank_masked": string,"department_id": string,"department_name": string,"designation": string,"dob": string,"has_login": boolean,"has_profile": boolean,"join_date": string,"kyc_done": number,"kyc_needed": number,"language": string,"name": string,"pan_masked": string,"pay_basis": string,"pay_company_id": string,"pay_company_name": string,"person_code": string,"person_id": string,"phone_masked": string,"status": string
+            }[]
+                           },
 "staff_me":
 { Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"staff_pay":
+{ Args: { "p_person_id": string }; Returns: Json
                            },
 "statement_of_account":
 { Args: { "p_company_id": string,"p_from": string,"p_party_id": string,"p_to": string }; Returns: Json
