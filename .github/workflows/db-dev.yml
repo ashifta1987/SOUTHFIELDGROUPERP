@@ -21,7 +21,7 @@ jobs:
       - name: Check secret
         id: s
         run: echo "ok=${{ env.DB_PASSWORD != '' }}" >> "$GITHUB_OUTPUT"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v5
         if: steps.s.outputs.ok == 'true'
       - uses: actions/setup-node@v4
         if: steps.s.outputs.ok == 'true'
