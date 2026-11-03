@@ -20,7 +20,14 @@ test.describe('Phase 3 · WhatsApp & email', () => {
     // A synthetic customer whose WhatsApp contact agreed to messages.
     const digits = `6${String(Math.floor(Math.random() * 1e9)).padStart(9, '0')}`
     const partyName = `E2E Test WhatsApp Party ${rand4()}${rand4()}`
-    const [company] = await api.view<{ id: string }>('companies', 'status=eq.active&select=id&order=code&limit=1')
+    // Its own synthetic company (switched back on if the E2E clean-up switched it off).
+    let [company] = await api.view<{ id: string; status: string }>('companies', 'code=eq.E2EWAPP&select=id,status')
+    if (!company) {
+      const res = await api.rpc<{ id: string }>('upsert_company', { p: { code: 'E2EWAPP', legal_name: 'E2E Test WhatsApp Company', short_name: 'E2E Test WhatsApp', registered_address: 'E2E Test Address, Kerala' } })
+      company = { id: res.id, status: 'active' }
+    } else if (company.status !== 'active') {
+      await api.rpc('upsert_company', { p: { id: company.id, status: 'active' } })
+    }
     await api.rpc('upsert_party', {
       p: { company_id: company?.id, legal_name: partyName, is_customer: true, whatsapp: `+91${digits}`, whatsapp_consent: true, contact_name: 'E2E Test Contact', address: 'E2E Test Street', city: 'Thrissur', pincode: '680001', force: true },
     })
