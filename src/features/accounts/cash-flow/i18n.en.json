@@ -1,1 +1,62 @@
-{}
+{
+  "cashFlow": {
+    "title": "Cash flow and reminders",
+    "subtitle": "What comes in, what must go out, and the lowest balance ahead.",
+    "paymentRun": "Payment run",
+    "reminderSettings": "Reminder settings",
+    "fy": "Financial year",
+    "fyLabel": "FY {{fy}}",
+    "noCompany": "No company to show yet.",
+    "kpis": "Cash flow summary",
+    "kpi": {
+      "avgIn": "Average money in a month",
+      "avgOut": "Average money out a month",
+      "period": "Cash and bank · {{n}} accounts · FY {{fy}}",
+      "same": "same period",
+      "lowest": "Lowest balance",
+      "on": "on {{d}}",
+      "noEntries": "no entries yet",
+      "below": "Days below ₹{{min}}",
+      "belowUnset": "Days below the minimum",
+      "setMin": "Set a minimum balance on Settings",
+      "ofDays": "of {{n}} days with entries"
+    },
+    "chart": {
+      "title": "Money in and out each month · FY {{fy}}",
+      "table": "Money in and out by month",
+      "month": "Month",
+      "in": "In",
+      "out": "Out",
+      "net": "Net",
+      "emptyTitle": "No money moved in this year yet",
+      "emptyBody": "Receipts, payments and bank entries appear here as they are posted.",
+      "note": "Moves between the company's own cash and bank accounts are left out of money in and out."
+    },
+    "weeks": {
+      "title": "Next {{n}} weeks",
+      "body": "Each week: open customer bills and supplier bills falling due (overdue ones count in this week). Salaries, EMIs and statutory dues join the forecast once their schedules are set.",
+      "caption": "Amounts due by week",
+      "week": "Week from",
+      "dueIn": "Due from customers",
+      "dueOut": "Due to suppliers"
+    },
+    "reminders": {
+      "title": "Automatic reminders",
+      "channels": "WhatsApp, email and in the app",
+      "what": "What",
+      "when": "When",
+      "to": "Goes to",
+      "then": "Then",
+      "note": "Reminders go out once the WhatsApp Business account and its sender are connected; Admin changes the schedule on WhatsApp & email.",
+      "rows": {
+        "buyer": { "what": "Buyer payment due", "when": "7 and 3 days before, on the day, then 3, 7 and 14 days late", "to": "Buyer (WhatsApp, email), then their sales person", "then": "Long overdue: the owner is told and new orders need Admin release" },
+        "supplier": { "what": "Supplier bill due", "when": "Before the due date", "to": "Accounts", "then": "Goes into the payment run for Admin to approve" },
+        "msme": { "what": "MSME supplier", "when": "Within the agreed period, at most 45 days", "to": "Accounts and owner", "then": "Paid first in the payment run" },
+        "salaries": { "what": "Salaries", "when": "Before payday", "to": "Payroll user and owner", "then": "Large advance cuts flagged before approval" },
+        "statutory": { "what": "Statutory", "when": "TDS, GSTR-1, PF/ESI and GSTR-3B due dates", "to": "Accounts and owner", "then": "Amount due shown from locked books" },
+        "emi": { "what": "EMIs and regular debits", "when": "A few days before each date", "to": "Accounts and owner", "then": "Warns if the balance will not cover it" },
+        "low": { "what": "Low balance ahead", "when": "When any forecast week falls below the minimum", "to": "Owner", "then": "Shows which payments to move or receipts to chase" }
+      }
+    }
+  }
+}

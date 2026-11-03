@@ -34,6 +34,7 @@ const OWN_RULES = [
   'period.closed',
   'entries.backdate',
   'date.future',
+  'date.range',
   'bank.no_match',
   'statement.admin_only',
   'gst.no_rate',

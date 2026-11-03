@@ -1,1 +1,30 @@
-{}
+{
+  "cashEntry": {
+    "title": "Cash entry",
+    "back": "Back to my home",
+    "balanceAria": "Cash in the box now",
+    "noRightTitle": "Cash entry is for the cash holder",
+    "kind": "Kind of entry",
+    "paidOut": "Paid out",
+    "received": "Received",
+    "intoBank": "Into bank",
+    "to": "To (party)",
+    "from": "From (party)",
+    "for": "For (account)",
+    "bank": "Bank account",
+    "amount": "Amount",
+    "overLimitTitle": "Over the daily cash limit to one person.",
+    "overLimitBody": "The company loses the tax deduction on cash over the limit. Send it by bank instead, or give the reason and pay in cash; Admin sees it.",
+    "payCash": "Pay in cash",
+    "payCashReason": "Pay in cash with this reason",
+    "payBank": "Pay by bank",
+    "footnote": "Paying in cash over the limit needs a reason, and Admin sees it.",
+    "postReceipt": "Post receipt",
+    "postContra": "Post into bank",
+    "contraNarration": "Cash paid into the bank",
+    "done": "Posted {{no}}.",
+    "err": {
+      "noBank": "No bank account yet. Admin adds it on Bank → Set-up."
+    }
+  }
+}

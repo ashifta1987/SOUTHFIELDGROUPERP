@@ -115,6 +115,7 @@
       "period.closed": "This month is closed. Ask Admin for a \"Reopen a closed day or month\" permission.",
       "entries.backdate": "This date is older than allowed. Ask Admin for a \"Back-date entries\" permission.",
       "date.future": "The date is in the future.",
+      "date.range": "The from date must be on or before the to date.",
       "bank.no_match": "This voucher doesn't move the same amount through this bank account.",
       "statement.admin_only": "This statement includes documents only Admin can see. Ask Admin to send it.",
       "gst.no_rate": "No GST rate for this HSN on this date. Set it on Product master → HSN and GST rates.",

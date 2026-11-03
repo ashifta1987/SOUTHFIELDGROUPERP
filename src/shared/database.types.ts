@@ -848,6 +848,12 @@ export type Database = {
 "cancel_sales_document":
 { Args: { "p_client_request_id": string,"p_document_id": string,"p_reason": string }; Returns: Json
                            },
+"cash_book_summary":
+{ Args: { "p_account_id": string,"p_from": string,"p_to": string }; Returns: Json
+                           },
+"cash_flow_summary":
+{ Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: Json
+                           },
 "check_gstin":
 { Args: { "p_gstin": string }; Returns: Json
                            },

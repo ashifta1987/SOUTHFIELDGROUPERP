@@ -1,1 +1,59 @@
-{}
+{
+  "cashBookCheck": {
+    "title": "Cash book check",
+    "subtitle": "{{account}} · line by line from {{from}} to {{to}}",
+    "subtitleNone": "Month by month, where the cash went, and what needs a second look.",
+    "dayView": "← Day view",
+    "kpis": "Cash book check summary",
+    "kpi": {
+      "received": "Received · {{n}} lines",
+      "paid": "Paid out · {{n}} lines",
+      "intoBank": "Paid into the bank · {{n}} times",
+      "staff": "Cash given to staff · {{n}}",
+      "byStaff": "By staff ID →",
+      "box": "In the box on {{d}}",
+      "openingWas": "Opening"
+    },
+    "months": {
+      "title": "Month by month",
+      "month": "Month",
+      "days": "Days",
+      "opening": "Opening",
+      "received": "Received",
+      "paid": "Paid out",
+      "closing": "Closing",
+      "total": "Total",
+      "empty": "No cash entries in these dates."
+    },
+    "where": {
+      "title": "Where the cash went",
+      "sub": "Paid out, by the account on the other side ·",
+      "empty": "Nothing paid out in these dates.",
+      "receivedFrom": "Received from"
+    },
+    "tally": {
+      "title": "Against Tally",
+      "body": "A line counts as found when Tally has a voucher of the same amount within a few days. The comparison runs once this company's Tally books are imported; differences go to the Bug fixer.",
+      "link": "Open Import data →"
+    },
+    "limits": {
+      "title": "Cash limits in the Income-tax Act",
+      "flagged_one": "{{count}} cash payment over the daily limit, paid with a reason ·",
+      "flagged_other": "{{count}} cash payments over the daily limit, paid with a reason ·"
+    },
+    "book": {
+      "title": "In the book itself",
+      "reversed_one": "{{count}} entry in these dates was reversed.",
+      "reversed_other": "{{count}} entries in these dates were reversed.",
+      "note": "Posted entries are never edited. A mistake is reversed and posted again, both linked, so the box always matches the book."
+    },
+    "changes": {
+      "title": "What the ERP changes",
+      "phone": "The cash holder enters each line on the phone, picking an account or a party. No more typing it again into Tally.",
+      "staff": "Pay, advances and allowances go to the staff record and the payslip, so advances are recovered.",
+      "contra": "Paying cash into the bank is a contra entry, matched with the bank statement.",
+      "close": "Every line carries its running balance; the day's closing is the next day's opening.",
+      "withoutGst": "Receipts against bills without GST are marked, and only Admin and the CA see them."
+    }
+  }
+}
