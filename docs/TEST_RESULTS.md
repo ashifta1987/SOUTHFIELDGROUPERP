@@ -59,3 +59,10 @@ Notes: pgTAP runs through `scripts/pgtap.mjs` against the DEV project because Do
 | Concurrency (two real connections) | `node scripts/concurrency-check.mjs` | Pass — of two simultaneous issues of the last unit exactly one commits, the other is refused `stock.insufficient` after waiting on the lock; balance 0; one ledger row (2 rounds) |
 | End to end + axe | `npx playwright test --workers=1` | **48 passed**, 7 skipped (screenshot specs). New: `phase4-purchase`, `phase4-inventory` (three logins for segregation of duties) |
 
+## Phase 5 (database) — 03-11-2026
+
+| Check | Command | Result |
+|---|---|---|
+| Lint / types | `pnpm lint`, `npx tsc -b` (after `pnpm db:types`) | Pass |
+| pgTAP (DEV, rolled back) | `pnpm db:test` | **352 passed, 0 failed** — adds `14_production_biochem` (63: formula approval by another person, no batch without an approved formula or a valid licence, second-person weighing, QC limits, packaging + bulk reconciliation with Bug fixer item and close block, FG quarantine, self-release block, costing, pack GST treatment, RLS) and `15_production_plastics` (39: mould project order and approval, theoretical output and OEE recomputed, granules/scrap through the ledger, inspection by someone else, BOM approval, assembly refused when short, pad printing ink, machine checks, RLS) |
+| End to end + axe | — | Screens not built yet (Phase 5 screens next) |

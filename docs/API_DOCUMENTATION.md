@@ -191,11 +191,142 @@ Notes: `sellable` = `available` only (in transit, quarantine, hold, rejected are
 | `api.msme_dues` | bill_id, company_id, party_id, party_name, msme_category, udyam_no, supplier_bill_no, supplier_bill_date, doc_no, accepted_on, agreed_days, due_date, legal_due_date, effective_due, total, open_amount, warn_days, days_left, state |
 | `api.warehouse_tasks` | task_kind, company_id, place_id, place_name, ref_table, ref_id, ref_no, title, qty, due_date, href |
 
+## Phase 5 RPCs (production)
+
+All `api.*`, security definer, first parameter `p_client_request_id uuid` (idempotent: the same id returns the first result), row locks, rights + state + period + stock checks; history by triggers. Dates default to today; stock moves are dated today and pass `app.check_stock_date`. Money (18,2), quantities (18,3).
+
+### Licences, families, formulas
+
+| RPC | Right | Params | Returns | Rule codes |
+|---|---|---|---|---|
+| `upsert_licence(crid, p)` | settings.manage (Admin) | `id?`, `company_id`, `branch_id`, `kind`, `licence_no`, `issued_by`, `valid_from`, `valid_to`, `status` active\|suspended\|cancelled, `document_path`, `note` | `{id}` | licence.no_number, licence.dates, org.branch_other_company |
+| `upsert_process_family(crid, p)` | production.edit | `id?`, `company_id`, `code`, `name`, `licence_kind` (null = none), `steps` [text], `status` | `{id}` | prod.family_name |
+| `save_formula_version(crid, p)` | production.create | `company_id`; `formula_id` **or** (`product_id`, `family_id`, `code`, `name`); `version_id?` (edit a draft); `batch_size` (kg), `fill_qty_g`, `notes`, `qc_spec` [{parameter, min, max, unit, stage in_process\|bulk\|finished}], `lines` [{line_kind bulk\|packaging, product_id, qty, note}] | `{formula_id, version_id, version, status}` | prod.bulk_by_weight, prod.packaging_in_nos, prod.pack_in_nos, formula.batch_size, formula.no_bulk, formula.not_draft, formula.qty, formula.line_kind, prod.family_missing |
+| `submit_formula_version(crid, p_version_id)` | production.create | | `{id, status}` | formula.state |
+| `approve_formula_version(crid, p_version_id, p_effective_from date?)` | production.approve, **not** the writer/submitter | supersedes the version in force (ends the day before) | `{id, status, effective_from}` | **sod.own_formula**, formula.state, formula.effective_overlap |
+| `withdraw_formula_version(crid, p_version_id, p_reason)` | production.approve | reason ≥ 5 | `{id, status}` | formula.state |
+
+### Batches (Biochem production entry)
+
+| RPC | Right | Params | Returns | Rule codes |
+|---|---|---|---|---|
+| `plan_batch(crid, p)` | production.create | `company_id`, `product_id`, `formula_version_id?` (default: in force on the date), `planned_qty` (kg bulk), `date`, `shift`, `line_place_id`, `stores_place_id`, `fg_place_id`, `note` | `{id, batch_no, status, formula_version_id, licence_id}` | **prod.no_approved_formula**, **licence.missing**, **licence.expired**, prod.qty, stock.place_other_company, stock.same_place |
+| `reserve_batch_materials(crid, p_batch_id)` | production.create | reserves bulk lines × planned ÷ batch size at the stores | `{id, status, lines}` | batch.state, stock.insufficient, licence.* |
+| `record_weighing(crid, p_batch_id, p_lines)` | production.create | `[{product_id, lot_id?, qty (kg), scale_asset_id?, note}]` | `{batch_id, weighing_ids[]}` | prod.not_in_formula, stock.lot_not_released, asset.calibration_due, asset.not_in_use |
+| `verify_weighing(crid, p_weighing_id, p_ok bool = true, p_note?)` | production.create, **not** the weigher | OK → stock out of the stores (`consumption`) + consumption ledger; all lines checked → `weighed` | `{id, status, value, batch_status}` | **sod.own_weighing**, weighing.state |
+| `start_batch(crid, p_batch_id)` | production.create | | `{id, status}` | batch.state, weighing.pending |
+| `send_sample(crid, p_batch_id, p)` | production.create | `kind` in_process\|bulk\|finished\|retained, `bulk_qty` (kg, required for bulk), `labour_hours`, `machine_hours`, `assigned_to`, `retain_until`, `note` | `{sample_id, sample_no, batch_status}` | prod.no_bulk_qty, batch.state |
+| `record_lab_result(crid, p_sample_id, p)` | qc.test (rnd samples: lab.rnd) | `result` pass\|fail\|hold, `parameters` {name: number}, `instrument_id`, `remarks`, `date` | `{id, result, out_of_spec[]}` | **qc.out_of_spec**, qc.sample_state, qc.result, asset.calibration_due |
+| `issue_batch_packaging(crid, p_batch_id, p_lines)` | production.create | `[{product_id, lot_id?, qty (whole Nos)}]` stores → line | `{batch_id, lines, status}` | prod.packaging_in_nos, prod.packaging_whole, stock.insufficient |
+| `record_packing(crid, p_batch_id, p)` | production.create | `good_packs`, `rejected_packs`, `bulk_scrap_kg`, `bulk_left_kg`, `labour_hours`, `machine_hours`, `mfg_date`, `expiry_date`, `packaging` [{product_id, scrapped, returned, at_line}] | `{batch_id, status, fg_lot_id, unit_cost, recon}` | prod.no_good_packs, prod.no_bulk_qty, prod.no_fill_weight, prod.not_issued, prod.recon_decrease |
+| `reconcile_packaging(crid, p_batch_id, p_counts?)` | production.create | optional recount `[{product_id, scrapped, returned, at_line}]` (scrapped/returned only go up) | `{batch_id, balanced, packaging_ok, bulk{bulk_qty, packed_kg, scrap_kg, left_kg, difference, tolerance_pct, tolerance_set, tolerance_kg, ok}, items[{product_id, product_code, product_name, issued, in_good, in_rejected, scrapped, returned, at_line, difference}], bug_item_id}` | batch.state |
+| `qc_release_batch(crid, p_batch_id, p_note?)` | qc.release, **not a batch maker** | needs a passed bulk test and the latest finished test = pass | `{batch_id, status, released_qty}` | **sod.self_release**, qc.no_test, qc.no_pass |
+| `qc_reject_batch(crid, p_batch_id, p_reason)` | qc.release, not a batch maker | packed_hold (failed finished test) or bulk_failed | `{batch_id, status, rejected_qty}` | sod.self_release, qc.no_fail |
+| `close_batch(crid, p_batch_id)` | production.approve | reconciliation must balance; fixes `prod.batch_costs` | `{batch_id, status, cost{materials, packaging, labour, machine, overhead, total, good_packs, cost_per_pack, rates_missing[]}}` | **prod.recon_mismatch** |
+| `cancel_batch(crid, p_batch_id, p_reason)` | production.edit | planned/reserved, nothing issued | `{batch_id, status}` | batch.has_issues |
+| `set_cost_rate(crid, p)` | settings.manage | `company_id`, `kind` labour_hour\|machine_hour\|overhead_per_kg\|overhead_per_piece, `rate`, `effective_from`, `note` | `{id}` | cost.rate |
+
+"Batch maker" = planner, weighers and checkers, starter, packaging issuers, packer, anyone assigned a non-QC duty on the batch (`app.batch_makers`).
+
+### Labs, work assignment, assets
+
+| RPC | Right | Params | Returns | Rule codes |
+|---|---|---|---|---|
+| `save_rnd_trial(crid, p)` | lab.rnd | `id?`, `company_id`, `code`, `title`, `family_id`, `formula_version_id`, `assigned_to`, `status`, `started_on`, `notes` | `{id}` | rnd.code |
+| `record_stability_check(crid, p_trial_id, p)` | lab.rnd | `day_no`, `condition`, `due_on`, `result` pass\|fail\|watch (null = plan only), `observations` | `{id}` | rnd.day |
+| `send_trial_sample(crid, p_trial_id, p)` | lab.rnd | `assigned_to`, `note` | `{sample_id, sample_no}` | |
+| `assign_shift_duties(crid, p)` | production.edit | `company_id`, `place_id`, `work_date`, `shift`, `assignments` [{user_id, duty, batch_id, asset_id, hours}] | `{ids[]}` | **sod.self_release**, work.not_staff, work.date |
+| `remove_shift_duty(crid, p_assignment_id, p_reason)` | production.edit | | `{id, removed}` | work.batch_started |
+| `upsert_asset(crid, p)` | assets.manage | `id?`, `company_id`, `code`, `name`, `kind`, `place_id` (on add), `make`, `model`, `serial_no`, `attrs`, `purchase_date`, `put_to_use_date`, `cost`, `useful_life_years`, `residual_pct`, `needs_calibration`, `calibration_interval_days`, `calibration_due` (on add), `amc_vendor`, `amc_until` | `{id}` | asset.code |
+| `record_asset_event(crid, p_asset_id, p)` | assets.manage | `kind` moved\|repair\|service\|amc\|breakdown\|restored\|disposed\|note, `date`, `place_id` (moved), `amc_until` (amc), `detail`, `amount` | `{id}` | asset.event_kind, asset.disposed |
+| `record_calibration(crid, p_asset_id, p)` | assets.manage or qc.test | `calibrated_on`, `next_due` (default + interval), `result` pass\|adjusted\|fail, `agency`, `certificate_path`, `remarks` | `{id, next_due}` | asset.calibration_result, asset.next_due |
+| `add_asset_document(crid, p_asset_id, p)` | assets.manage | `kind`, `path`, `valid_to` | `{id}` | asset.document_path |
+
+### Packs (free items, gift and combo packs)
+
+| RPC | Right | Params | Returns | Rule codes |
+|---|---|---|---|---|
+| `upsert_pack(crid, p)` | production.edit | `id?`, `company_id`, `product_id`, `kind` free_item_pack\|gift_pack\|combo_pack, `name`, `status`, `items` [{product_id, qty, is_free, note}] (replaces) | `{id, items}` | pack.name, pack.self, pack.qty |
+| `set_pack_gst_treatment(crid, p_pack_id, p_treatment, p_note)` | settings.manage (Admin) | treatment free_with_sale_single_price\|gift_without_consideration\|mixed_supply\|composite_supply; note = CA's advice | `{id, gst_treatment}` | pack.gst_treatment |
+| `post_pack_assembly(crid, p)` | production.create | `pack_id`, `qty` (whole), `from_place_id`, `to_place_id`, `date` | `{id, doc_no, unit_cost}` | pack.no_items, pack.inactive, stock.insufficient |
+
+A pack without a GST treatment cannot be put on a sales document (`pack.gst_treatment_unset`, trigger).
+
+### Plastics
+
+| RPC | Right | Params | Returns | Rule codes |
+|---|---|---|---|---|
+| `save_mould_project(crid, p)` | production.edit | `id?`, `company_id`, `code`, `name`, `product_id`, `ownership` own\|buyer, `buyer_party_id`, `target_date`, `estimated_cost`, `notes` | `{id}` | mould.code, mould.buyer, mould.project_closed |
+| `advance_mould_project(crid, p_project_id, p_stage, p_note?)` | production.edit (`approved`: production.approve, not the creator) | next stage only, or `dropped` (note ≥ 5) | `{id, stage}` | mould.stage_order, **sod.own_approval** |
+| `upsert_mould(crid, p)` | production.edit | `id?`, `company_id`, `code`, `name`, `project_id`, `product_id`, `material_product_id`, `cavities`, `cycle_time_sec`, `part_weight_g`, `runner_weight_g`, `ownership`, `buyer_party_id`, `place_id`, `service_interval_shots`, `life_shots`, `cost`, `shot_count` (on add), `status` retired | `{id}` | mould.cavities |
+| `move_mould(crid, p_mould_id, p)` | production.create | `location` rack\|machine\|repair\|buyer\|other, `machine_asset_id`, `place_id`, `date`, `note` | `{id, location}` | mould.machine, mould.machine_busy |
+| `record_mould_service(crid, p_mould_id, p)` | production.create | `kind` service\|repair, `amount`, `date`, `note` (resets shots since service) | `{id, shots_at_service}` | |
+| `record_injection_shift(crid, p)` | production.create | `company_id`, `place_id`, `output_place_id`, `date`, `shift`, `machine_asset_id`, `mould_id`, `operator_user_id`/`operator_name`, `cavities_running`, `planned_minutes`, `shot_start`, `shot_end`, `good_qty`, `rejects` [{reason, qty}], `downtime` [{kind, reason, minutes}], `materials` [{product_id, qty, place_id}], `regrind` [{product_id, qty, place_id}], `scrap` {product_id, qty, place_id}, `note` | `{id, doc_no, lot_id, run_minutes, theoretical_qty, total_qty, shots, availability, performance, quality, oee}` | shift.cavities, shift.planned, shift.downtime, shift.good, shift.shots, mould.not_active, mould.no_product, scrap.not_scrap_item, stock.insufficient |
+| `record_quality_inspection(crid, p)` | qc.test (final/assembly: qc.release), **not** the maker/recorder | `lot_id`, `kind` first_piece\|patrol\|final\|assembly, `sample_qty`, `accepted_qty`, `rejected_qty`, `result`, `defects`, `remarks`, `date` | `{id, lot_status}` | **sod.inspector_maker**, qc.qty_mismatch, qc.not_inspection_lot |
+| `save_assembly_bom(crid, p)` | production.edit | `company_id`, `product_id`, `notes`, `lines` [{product_id, qty_per, note}] | `{id, version, status}` | bom.self, bom.qty |
+| `approve_assembly_bom(crid, p_bom_id)` | production.approve, not the writer | | `{id, status}` | sod.own_approval, bom.state |
+| `post_assembly(crid, p)` | production.create | `product_id`, `qty` (whole), `from_place_id`, `to_place_id`, `date`, `labour_hours`, `note` | `{id, doc_no, lot_id, unit_cost}` | **prod.components_short** (lists every short item), bom.none_approved |
+| `record_pad_print_job(crid, p)` | production.create | `company_id`, `date`, `product_id`, `machine_asset_id`, `operator_user_id`, `qty_printed`, `qty_rejected`, `prints_per_piece`, `ink_product_id`, `ink_qty`, `ink_place_id`, `labour_minutes`, `note` | `{id, doc_no, ink_value}` | print.qty, print.ink |
+| `upsert_material_spec(crid, p)` | production.edit | `company_id`, `product_id`, `granule_product_id`, `grade`, `colour`, `masterbatch_product_id`, `masterbatch_pct`, `part_weight_g`, `runner_weight_g`, `cavities`, `packing_cost_per_piece` | `{id}` | |
+| `record_machine_check(crid, p)` | production.create | `asset_id`, `date`, `shift`, `checklist` [{item, ok, note}], `remarks` | `{id, all_ok}` | check.empty |
+
+Lots made by production (`inv.lots.source = 'production'`) are refused by `record_incoming_test`, `release_from_quarantine`, `reject_from_quarantine` (`qc.use_batch_release`).
+
+### Phase 5 read views (security_invoker; RLS decides rows; cost columns null without `cost.view`)
+
+| View | Columns |
+|---|---|
+| `api.licences` | id, company_id, company_name, branch_id, branch_name, kind, licence_no, issued_by, valid_from, valid_to, status, document_path, note, created_at, updated_at, is_valid, days_to_expiry |
+| `api.process_families` | id, company_id, code, name, licence_kind, steps, status, created_at, formulas, approved_formulas, licence_ok |
+| `api.formula_versions` | id, company_id, formula_id, formula_code, formula_name, product_id, product_code, product_name, family_id, family_code, family_name, version, status, batch_size, fill_qty_g, qc_spec, effective_from, effective_to, notes, created_by, created_by_name, created_at, submitted_by, submitted_at, approved_by, approved_by_name, approved_at, in_force, bulk_lines, packaging_lines |
+| `api.formula_lines` | id, company_id, version_id, line_no, line_kind, product_id, product_code, product_name, uom, qty, note |
+| `api.batches` | id, company_id, batch_no, product_id, product_code, product_name, formula_version_id, formula_code, formula_version, family_id, family_name, licence_id, licence_no, licence_valid_to, line_place_id, line_place_name, stores_place_id, stores_place_name, fg_place_id, fg_place_name, batch_date, shift, planned_qty, status, bulk_qty, bulk_scrap_kg, bulk_left_kg, fill_qty_g, good_packs, rejected_packs, fg_lot_id, mfg_date, expiry_date, labour_hours, machine_hours, recon_status, basis_locked, note, reject_reason, planned_by, planned_by_name, started_by, started_at, packed_by, packed_at, released_by, released_by_name, released_at, closed_by, closed_at, created_at, **i_made_it**, weighings_to_check, last_bulk_result, last_finished_result |
+| `api.batch_events` | id, company_id, batch_id, from_status, to_status, note, by_user, by_name, at |
+| `api.batch_weighings` | id, company_id, batch_id, product_id, product_code, product_name, lot_id, lot_no, planned_qty, weighed_qty, variance, scale_asset_id, scale_code, status, weighed_by, weighed_by_name, weighed_at, verified_by, verified_by_name, verified_at, note, i_can_check |
+| `api.batch_packaging` | id, company_id, batch_id, product_id, product_code, product_name, uom, issued, in_good, in_rejected, scrapped, returned, at_line, difference, balanced, updated_at |
+| `api.material_consumption` | id, company_id, source_table, source_id, batch_id, batch_no, kind, product_id, product_code, product_name, uom, lot_id, lot_no, place_id, place_name, qty, consumed_on, created_by, created_at, unit_cost†, value† |
+| `api.batch_states` | step, status, label, rpc, next_states |
+| `api.batch_costs` (cost.view) | batch_id, company_id, batch_no, status, product_id, product_code, product_name, family_id, family_name, final, materials, packaging, labour, machine, overhead, total, good_packs, cost_per_pack, rates_missing, mrp |
+| `api.cost_rates` (cost.view) | id, company_id, kind, rate, effective_from, note, set_by, set_at |
+| `api.lab_samples` | id, company_id, sample_no, kind, batch_id, batch_no, product_id, product_code, product_name, lot_id, lot_no, trial_id, trial_code, assigned_to, assigned_to_name, status, retain_until, note, taken_by, taken_by_name, taken_at, last_result, spec_parameters |
+| `api.lab_tests` (extended) | id, company_id, lot_id, lot_no, product_id, product_name, kind, result, parameters, remarks, test_date, tested_by, tested_by_name, created_at, out_of_spec, batch_id, batch_no, sample_id, sample_no, instrument_id, instrument_code |
+| `api.my_lab_work` | kind sample\|stability\|calibration\|release, id, company_id, ref, detail, sub_kind, due_on, mine, i_made_it |
+| `api.rnd_trials` | id, company_id, code, title, family_id, family_name, formula_version_id, assigned_to, assigned_to_name, status, started_on, notes, created_at, next_check_due |
+| `api.stability_checks` | id, company_id, trial_id, trial_code, day_no, condition, due_on, result, observations, recorded_by, recorded_by_name, recorded_at |
+| `api.shift_assignments` | id, company_id, place_id, place_name, work_date, shift, user_id, user_name, duty, batch_id, batch_no, asset_id, asset_code, hours, assigned_by, assigned_at |
+| `api.factory_workload` | company_id, work_date, shift, user_id, user_name, duties, duty_list, hours, batches |
+| `api.assets` | id, company_id, company_name, code, name, kind, place_id, place_name, make, model, serial_no, attrs, purchase_date, put_to_use_date, useful_life_years, residual_pct, needs_calibration, calibration_interval_days, calibration_due, calibration_overdue, days_to_calibration, amc_vendor, amc_until, status, created_at, cost†, mould_on_machine, last_check_date |
+| `api.asset_events` | id, company_id, asset_id, asset_code, kind, event_date, detail, amount, recorded_by, recorded_by_name, created_at |
+| `api.calibrations` | id, company_id, asset_id, asset_code, asset_name, calibrated_on, next_due, result, agency, certificate_path, remarks, recorded_by, recorded_by_name, created_at |
+| `api.asset_documents` | id, company_id, asset_id, kind, path, valid_to, uploaded_by, created_at |
+| `api.packs` | id, company_id, product_id, product_code, product_name, kind, name, gst_treatment, gst_treatment_note, gst_treatment_set, gst_treatment_set_at, status, created_at, items, free_items |
+| `api.pack_items` | id, company_id, pack_id, product_id, product_code, product_name, uom, qty, is_free, note |
+| `api.pack_assemblies` | id, company_id, doc_no, pack_id, pack_name, qty, from_place_id, to_place_id, assembly_date, assembled_by, created_at, unit_cost† |
+| `api.mould_projects` | id, company_id, code, name, product_id, product_code, product_name, ownership, buyer_party_id, buyer_name, stage, target_date, notes, created_by, created_at, approved_by, approved_at, estimated_cost† |
+| `api.moulds` | id, company_id, code, name, project_id, product_id, product_code, product_name, material_product_id, material_code, cavities, cycle_time_sec, part_weight_g, runner_weight_g, ownership, buyer_party_id, buyer_name, location, place_id, place_name, machine_asset_id, machine_code, shot_count, shots_at_last_service, shots_since_service, service_interval_shots, service_due, life_shots, life_used_pct, status, created_at |
+| `api.mould_events` | id, company_id, mould_id, mould_code, project_id, kind, event_date, detail, shots, source_id, recorded_by, recorded_by_name, created_at, amount† |
+| `api.mould_costs` (cost.view) | mould_id, company_id, code, name, cavities, shot_count, life_shots, cost, upkeep, cost_per_shot, cost_per_piece |
+| `api.injection_shifts` | id, company_id, doc_no, place_id, place_name, output_place_id, shift_date, shift, machine_asset_id, machine_code, mould_id, mould_code, product_id, product_code, product_name, operator_user_id, operator_name, cavities_running, cycle_time_sec, planned_minutes, downtime_minutes, run_minutes, shot_start, shot_end, shots, good_qty, reject_qty, total_qty, theoretical_qty, availability, performance, quality, oee, lot_id, lot_status, note, recorded_by, created_at |
+| `api.shift_rejects` / `api.shift_downtime` | id, company_id, shift_id, reason, qty / id, company_id, shift_id, kind, reason, minutes |
+| `api.quality_inspections` | id, company_id, lot_id, lot_no, product_id, product_code, product_name, shift_id, assembly_order_id, kind, sample_qty, accepted_qty, rejected_qty, result, defects, remarks, inspection_date, inspected_by, inspected_by_name, created_at |
+| `api.assembly_boms` | id, company_id, product_id, product_code, product_name, version, status, notes, created_by, created_by_name, created_at, approved_by, approved_by_name, approved_at, lines |
+| `api.assembly_bom_lines` | id, company_id, bom_id, product_id, product_code, product_name, uom, qty_per, note, avg_cost† |
+| `api.assembly_orders` | id, company_id, doc_no, bom_id, bom_version, product_id, product_code, product_name, qty, from_place_id, to_place_id, lot_id, lot_status, labour_hours, order_date, note, assembled_by, assembled_by_name, created_at, unit_cost† |
+| `api.assembly_costs` (cost.view) | bom_id, company_id, product_id, product_code, product_name, version, components_cost, components_without_cost, mrp |
+| `api.pad_print_jobs` | id, company_id, doc_no, job_date, product_id, product_code, product_name, machine_asset_id, machine_code, operator_user_id, operator_name, qty_printed, qty_rejected, prints_per_piece, ink_product_id, ink_qty, labour_minutes, note, created_at, ink_value†, cost_per_print† |
+| `api.material_specs` | id, company_id, product_id, product_code, product_name, granule_product_id, granule_code, grade, colour, masterbatch_product_id, masterbatch_code, masterbatch_pct, part_weight_g, runner_weight_g, cavities, packing_cost_per_piece, set_at |
+| `api.component_costs` (cost.view) | company_id, product_id, product_code, product_name, part_weight_g, runner_weight_g, cavities, granule_cost, masterbatch_cost, packing_cost, mould_cost, granule_cost_missing |
+| `api.machine_checks` | id, company_id, asset_id, asset_code, asset_name, check_date, shift, checklist, all_ok, remarks, checked_by, checked_by_name, created_at |
+
+† null without `cost.view`.
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.
 
 Phase 4: `stock.*` (insufficient, reserved, qty, bucket, place_missing, place_other_company, lot_mismatch, lot_not_released, same_place, target, issue_missing, return_exceeds, allowance_missing, allowance_revoked, direct_write), `count.*`, `qc.*`, `scrap.*`, `transfer.*`, `purchase.*`, `capture.*`, `msme.terms_over_45`, `sod.own_request`, `sod.own_order`, `sod.own_count`, `sod.tester_receiver`, `sod.releaser_receiver`, `sod.not_picker`, `sod.picker_carrier`, `sod.picker_receiver`, `sod.witness_required`, `sod.write_off`, `sod.picker_close`, `period.no_fy`.
+
+Phase 5: `licence.*` (missing, expired, no_number, dates), `prod.*` (no_approved_formula, bulk_by_weight, packaging_in_nos, pack_in_nos, packaging_whole, not_in_formula, no_bulk_qty, no_fill_weight, no_good_packs, not_issued, recon_decrease, **recon_mismatch**, components_short, qty, family_name, family_missing), `formula.*`, `batch.*` (missing, state, has_issues), `weighing.*` (missing, state, pending), `qc.out_of_spec`, `qc.no_test`, `qc.sample_state`, `qc.use_batch_release`, `qc.qty_mismatch`, `qc.not_inspection_lot`, `asset.*` (calibration_due, not_in_use, missing, …), `mould.*`, `shift.*`, `bom.*`, `pack.*` (incl. gst_treatment_unset), `print.*`, `rnd.*`, `work.*`, `cost.rate`, `check.empty`, **`sod.own_formula`**, **`sod.own_weighing`**, **`sod.self_release`**, **`sod.inspector_maker`**, `sod.own_approval`.
 
 ## Edge Functions
 

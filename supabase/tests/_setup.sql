@@ -172,4 +172,53 @@ begin
   return s || u || jsonb_build_object('stores', v_stores, 'line', v_line, 'qplace', v_qp, 'shop', v_shop, 'tn_shop', v_tn, 'place_b', v_pb, 'rm1', v_rm1, 'rm2', v_rm2,
                                       'scrap', v_scrap, 'supp2', v_supp2, 'tn_party', v_tn_party, 'gstin_tn', v_tn_g);
 end $$;
+
+-- The stable rule code (error hint) a statement raises, 'no error', or the SQLSTATE when there is no hint.
+create or replace function tests.hint(p_sql text) returns text
+language plpgsql as $$
+declare v text;
+begin
+  execute p_sql;
+  return 'no error';
+exception when others then
+  get stacked diagnostics v = pg_exception_hint;
+  return coalesce(nullif(v, ''), sqlstate);
+end $$;
+
+-- Phase 5 seed on top of seed4: synthetic production items (finished soap counted in Nos with a 100 g net quantity, a second
+-- raw material, a wrapper, a pack, granules, two components, an assembled item, ink), a finished-goods place, assets
+-- (scale and pH meter within calibration, an overdue scale, an injection machine) and one synthetic user per job.
+-- No licence is seeded: the tests enter synthetic ones.
+create or replace function tests.seed5(s jsonb) returns jsonb
+language plpgsql as $$
+declare
+  v_a uuid := (s ->> 'company_a')::uuid; v_ba uuid := (s ->> 'branch_a')::uuid; v_fgp uuid; v_out uuid; u jsonb := '{}'::jsonb; r record; p jsonb := '{}'::jsonb; v_id uuid;
+begin
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_ba, 'TFGH', 'Test FG Hold', 'fg_hold') returning id into v_fgp;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_ba, 'TMLD', 'Test Moulding Output', 'wip') returning id into v_out;
+  for r in select * from (values ('fg', 'TFG1', 'Test Finished Soap', 'NOS', 'finished'), ('rm3', 'TRM3', 'Test Raw Material Three', 'KGS', 'raw_material'),
+                                 ('wrap', 'TPK1', 'Test Wrapper', 'NOS', 'packaging'), ('pack', 'TPACK', 'Test Gift Pack', 'NOS', 'finished'),
+                                 ('granule', 'TGR1', 'Test Granule', 'KGS', 'raw_material'), ('cmp1', 'TCMP1', 'Test Component One', 'NOS', 'component'),
+                                 ('cmp2', 'TCMP2', 'Test Component Two', 'NOS', 'component'), ('mixer', 'TMIX', 'Test Assembled Unit', 'NOS', 'finished'),
+                                 ('ink', 'TINK', 'Test Ink', 'KGS', 'consumable')) x(k, code, name, uom, kind) loop
+    insert into master.products (code, name, hsn_code, uom, status, kind, net_qty, net_qty_uom)
+    values (r.code, r.name, '99999001', r.uom, 'active', r.kind, case when r.k = 'fg' then 100 end, case when r.k = 'fg' then 'GMS' end)
+    returning id into v_id;
+    p := p || jsonb_build_object(r.k, v_id);
+  end loop;
+  insert into core.assets (company_id, code, name, kind, place_id, needs_calibration, calibration_due, status) values (v_a, 'TSCALE', 'Test Scale', 'scale', v_fgp, true, current_date + 30, 'active')
+  returning id into v_id; p := p || jsonb_build_object('scale', v_id);
+  insert into core.assets (company_id, code, name, kind, needs_calibration, calibration_due, status) values (v_a, 'TSCALE2', 'Test Scale Overdue', 'scale', true, current_date - 1, 'active')
+  returning id into v_id; p := p || jsonb_build_object('scale_overdue', v_id);
+  insert into core.assets (company_id, code, name, kind, needs_calibration, calibration_due, status) values (v_a, 'TPHM', 'Test pH Meter', 'lab_instrument', true, current_date + 30, 'active')
+  returning id into v_id; p := p || jsonb_build_object('phm', v_id);
+  insert into core.assets (company_id, code, name, kind, place_id, status) values (v_a, 'TINJ', 'Test Injection Machine', 'injection_machine', v_out, 'active')
+  returning id into v_id; p := p || jsonb_build_object('inj', v_id);
+  for r in select * from (values ('maker', 'production_manager'), ('chemist', 'chemist'), ('releaser', 'qc_releaser'), ('approver', 'factory_manager'),
+                                 ('operator', 'machine_operator'), ('inspector', 'quality'), ('mouldmgr', 'mould_manager'), ('assembler', 'assembly')) x(k, role) loop
+    u := u || jsonb_build_object(r.k, tests.create_user('test.p5' || r.k || '@example.test'));
+    insert into core.user_roles (user_id, role_key, company_id) values ((u ->> r.k)::uuid, r.role, v_a);
+  end loop;
+  return s || p || u || jsonb_build_object('fg_place', v_fgp, 'mould_out', v_out);
+end $$;
 grant execute on all functions in schema tests to authenticated;

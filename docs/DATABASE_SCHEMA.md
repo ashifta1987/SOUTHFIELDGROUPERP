@@ -242,3 +242,82 @@ RLS on every new table; select only (all writes through `api` RPCs). Stock table
 ### Tests
 
 `supabase/tests/12_inventory.sql` (50), `supabase/tests/13_purchase.sql` (45); `scripts/concurrency-check.mjs` (two real connections race for the last unit). **250/250 pgTAP pass in total.**
+
+
+## Phase 5: production (database built; screens next)
+
+Migrations: `20261103005000_production_core.sql` (tables, guards, RLS, rights), `005100_production_biochem_api.sql`, `005200_production_plastics_api.sql`, `005300_production_views.sql`. All additive. Widened (non-destructive): `inv.stock_ledger.move_type` adds `consumption` and `production_in`; `prod.lab_tests.kind` adds `in_process|bulk|finished|retained|stability|rnd|component` and `lot_id` became nullable (a test belongs to a lot, a batch or a sample). `app.internal_doc_no` gains prefixes `BT` (batch), `QC` (lab sample), `SH` (injection shift), `AS` (assembly order), `PK` (pack assembly), `PP` (pad print). The Phase 4 `api.record_incoming_test / release_from_quarantine / reject_from_quarantine` now refuse production lots (`qc.use_batch_release`) so the self-release block cannot be bypassed.
+
+Decisions (also in `ERP_ARCHITECTURE.md`): one asset register `core.assets` for both companies (no separate `prod.machines` / `prod.instruments`: lab instruments are `kind = lab_instrument`, injection machines `kind = injection_machine`); bulk is work in progress on the batch (not a stock item); finished goods are valued at material + packaging cost at packing, the full batch cost (labour, machine, overhead) is on the cost sheet.
+
+### Tables
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `core.licences` | company_id, branch_id (null = every branch), kind `cosmetics_manufacturing\|drug_manufacturing\|factory\|pollution_consent\|fire\|trade\|fssai\|legal_metrology\|other`, licence_no, issued_by, valid_from, valid_to, status `active\|suspended\|cancelled`, document_path, note | Admin (`settings.manage`) only; numbers never invented. Read: anyone who can see the company. |
+| `core.assets` | company_id, code (unique per company), name, kind `mixer\|scale\|filling\|soap_line\|lab_instrument\|injection_machine\|pad_printer\|assembly_station\|compressor\|chiller\|utility\|vehicle\|it\|other`, place_id, make, model, serial_no, attrs jsonb, purchase_date, put_to_use_date, cost (18,2), useful_life_years, residual_pct (Schedule II, set with the CA), needs_calibration, calibration_interval_days, calibration_due, amc_vendor, amc_until, status `active\|repair\|out_of_service\|disposed` | Place, status and calibration change only through events / calibrations / machine checks. |
+| `core.asset_events` | id bigint, asset_id, kind `added\|moved\|repair\|service\|amc\|breakdown\|restored\|disposed\|note`, event_date, detail jsonb, amount | **Append-only.** |
+| `core.asset_documents` | asset_id, kind `invoice\|warranty\|amc\|manual\|calibration_certificate\|photo\|other`, path, valid_to | |
+| `prod.calibrations` | id bigint, asset_id, calibrated_on, next_due, result `pass\|adjusted\|fail`, agency, certificate_path, remarks | **Append-only.** Fail → asset `out_of_service`. |
+| `prod.process_families` | company_id, code, name, licence_kind (null = no licence needed), steps jsonb (route), status | |
+| `prod.formulas` | company_id, product_id (finished item), family_id, code (unique per company), name | |
+| `prod.formula_versions` | formula_id, version, status `draft\|submitted\|approved\|superseded\|withdrawn`, batch_size (kg), fill_qty_g (bulk per pack; else the item's net quantity in g/kg), qc_spec jsonb `[{parameter, min, max, unit, stage}]`, effective_from/to, created_by, submitted_by, approved_by (≠ creator and ≠ submitter, check) | Approved/superseded versions cannot change (trigger `formula.not_draft`). |
+| `prod.formula_lines` | version_id, line_no, line_kind `bulk\|packaging`, product_id, qty (bulk: kg per batch_size, item uom must be KGS; packaging: Nos per pack, count uom) | Only draft versions' lines can change. |
+| `prod.batches` | company_id, batch_no (`BT/…`), product_id, formula_version_id, family_id, licence_id, line_place_id, stores_place_id, fg_place_id, batch_date, shift, planned_qty (kg), status (state machine), bulk_qty, bulk_scrap_kg, bulk_left_kg, fill_qty_g, good_packs, rejected_packs (whole), fg_lot_id, mfg_date, expiry_date, labour_hours, machine_hours, recon_status `pending\|balanced\|mismatch`, basis_locked, planned_by, started_by, packed_by, released_by, closed_by (+ _at), reject_reason | |
+| `prod.batch_events` | id bigint, batch_id, from_status, to_status, note, by_user, at | **Append-only.** |
+| `prod.weighings` | batch_id, product_id, lot_id, planned_qty, weighed_qty, scale_asset_id, status `weighed\|verified\|rejected`, weighed_by, verified_by (≠ weighed_by, check) | Stock leaves the stores only at verification. |
+| `prod.material_consumption` | id bigint, company_id, source_table, source_id, batch_id, kind `bulk_material\|packaging\|free_item\|pack_item\|component\|granule\|ink\|other`, product_id, lot_id, place_id, qty, unit_cost, value, consumed_on, reverses_id | **Append-only** consumption ledger (mirrors the stock ledger's `consumption` rows). |
+| `prod.batch_packaging_issues` | id bigint, batch_id, product_id, qty, issued_by | **Append-only.** |
+| `prod.packaging_recon` | batch_id, product_id (unique), issued, in_good, in_rejected, scrapped, returned, at_line, **difference (generated = issued − in_good − in_rejected − scrapped − returned − at_line)** | |
+| `prod.lab_samples` | company_id, sample_no (`QC/…`), kind `in_process\|bulk\|finished\|retained\|rnd`, batch_id, lot_id, trial_id, assigned_to, status `pending\|tested\|retained\|disposed`, retain_until | |
+| `prod.lab_tests` (extended) | + batch_id, sample_id, instrument_id, out_of_spec jsonb | Append-only (Phase 4 trigger). |
+| `prod.rnd_trials` | company_id, code, title, family_id, formula_version_id, assigned_to, status `planned\|running\|stability\|passed\|failed\|dropped`, started_on | |
+| `prod.stability_checks` | trial_id, day_no, condition, due_on, result `pass\|fail\|watch`, observations | unique (trial, day, condition). |
+| `prod.shift_assignments` | company_id, place_id, work_date, shift `day\|night\|general`, user_id, duty `batch_maker\|weigher\|weigh_checker\|packer\|labour\|supervisor\|qc_tester\|qc_releaser\|rnd\|operator\|helper\|inspector\|assembler\|printer`, batch_id, asset_id, hours | One person can hold several duties. |
+| `prod.packs` | company_id, product_id (the pack), kind `free_item_pack\|gift_pack\|combo_pack`, name, gst_treatment (null = not set) `free_with_sale_single_price\|gift_without_consideration\|mixed_supply\|composite_supply`, gst_treatment_note, set_by/at, status | Q-23: no billing until set. |
+| `prod.pack_items` | pack_id, product_id, qty, is_free | |
+| `prod.pack_assemblies` | doc_no (`PK/…`), pack_id, qty, from/to_place_id, unit_cost, assembly_date | |
+| `prod.cost_rates` | company_id, kind `labour_hour\|machine_hour\|overhead_per_kg\|overhead_per_piece`, rate (18,2), effective_from | Admin only; never invented. |
+| `prod.batch_costs` | batch_id (unique), materials, packaging, labour, machine, overhead, total, good_packs, cost_per_pack, rates_missing text[] | Fixed at close. |
+| `prod.mould_projects` | code, name, product_id, ownership `own\|buyer`, buyer_party_id, stage `design\|trial\|approval\|approved\|dropped`, target_date, estimated_cost, approved_by (≠ created_by) | |
+| `prod.moulds` | code, name, project_id, product_id, material_product_id, cavities (> 0), cycle_time_sec (> 0), part_weight_g, runner_weight_g, ownership, buyer_party_id, location `rack\|machine\|repair\|buyer\|other`, place_id, machine_asset_id, shot_count, shots_at_last_service, service_interval_shots, life_shots, cost, status `active\|repair\|retired` | |
+| `prod.mould_events` | id bigint, mould_id / project_id, kind `created\|stage\|moved\|mounted\|unmounted\|service\|repair\|shots\|retired`, event_date, detail, shots, amount, source_id | **Append-only.** |
+| `prod.injection_shifts` | doc_no (`SH/…`), place_id, output_place_id, shift_date, shift, machine_asset_id, mould_id, product_id, operator_user_id / operator_name, cavities_running, cycle_time_sec (standard, from the mould), planned_minutes, downtime_minutes, run_minutes, shot_start/end, shots, good_qty, reject_qty, theoretical_qty, availability, performance, quality, oee (9,4), lot_id | KPIs per `KPI_DEFINITIONS.md`. |
+| `prod.shift_rejects` / `prod.downtime` | shift_id, reason, qty / shift_id, kind `setup\|mould_change\|breakdown\|no_material\|no_operator\|power\|quality\|other`, reason, minutes | |
+| `prod.quality_inspections` | lot_id, shift_id, assembly_order_id, kind `first_piece\|patrol\|final\|assembly`, sample_qty, accepted_qty, rejected_qty, result, defects, inspected_by | **Append-only.** |
+| `prod.assembly_boms` / `prod.assembly_bom_lines` | product_id, version, status `draft\|approved\|superseded`, approved_by (≠ created_by) / bom_id, product_id, qty_per | |
+| `prod.assembly_orders` | doc_no (`AS/…`), bom_id, product_id, qty, from/to_place_id, lot_id, unit_cost, labour_hours, order_date | |
+| `prod.pad_print_jobs` | doc_no (`PP/…`), job_date, product_id, machine_asset_id, operator_user_id, qty_printed, qty_rejected, prints_per_piece, ink_product_id, ink_qty, ink_place_id, ink_value, labour_minutes | |
+| `prod.material_specs` | product_id (component, unique per company), granule_product_id, grade, colour, masterbatch_product_id, masterbatch_pct, part_weight_g, runner_weight_g, cavities, packing_cost_per_piece | |
+| `prod.machine_checks` | asset_id, check_date, shift, checklist jsonb `[{item, ok, note}]`, all_ok, remarks, checked_by | **Append-only.** A failed item sets the asset to `repair`. |
+
+### Helpers (`app`)
+
+`app.check_licence(company, family, place, date) → licence id` (refuses `licence.missing` / `licence.expired`); `app.lock_batch(batch, right, states[], licence)`; `app.batch_event`; `app.check_instrument(company, asset, date)` (`asset.calibration_due`, `asset.not_in_use`); `app.current_formula_version(company, product, date)`; `app.fill_g(version, product)`; `app.batch_makers(batch) → uuid[]`; `app.qc_out_of_spec(spec, params, stage)`; `app.batch_recon(batch) → jsonb` (writes recon_status, opens/fixes the Bug fixer item `prod.recon:<batch>`); `app.batch_cost(batch) → jsonb`; `app.cost_rate(company, kind, date)`; `app.record_consumption(...)`; `app.apply_packaging_counts`; `app.can_prod(company)`, `app.can_lab(company)`.
+
+### State machines
+
+- **Batch:** `planned → reserved → weighed → in_process → sample_sent → bulk_passed | bulk_failed`; `bulk_passed → packing → packed_hold → released | rejected`; `bulk_failed → rejected`; `released | rejected → closed`; `planned | reserved → cancelled`. Exposed as `api.batch_states`.
+- **Formula version:** `draft → submitted → approved → superseded` (by a later approved version) or `withdrawn`.
+- **Mould project:** `design → trial → approval → approved`, or `dropped` from any open stage.
+- **Assembly BOM:** `draft → approved → superseded`.
+
+### Rules enforced
+
+Licence block on plan and every production entry; approved formula in force on the batch date; bulk lines in kg only, packaging and packs in Nos only; second-person weighing check; scale / instrument calibration; QC limits on a pass; packaging reconciliation (exact) and bulk reconciliation (setting `production.bulk_loss_pct` per company; **unset = exact**); difference → Bug fixer item and close refused; finished goods into quarantine; QC release only with a passed bulk test and a passed finished test, never by a batch maker (`app.batch_makers`); work assignment conflict check; pack GST treatment before billing (trigger `pack_billing_guard` on `sales.document_lines`); moulding lots released only by an inspector who did not make or record them; assembly refuses when any component is short.
+
+### Rights seeded
+
+New: `lab.rnd`, `assets.view`, `assets.manage`. Module rights `production.view/create/edit/approve` given to production_manager, chemist (view/create + lab.rnd), qc_releaser (view), supervisor, factory_staff (view/create), mould_manager, injection_manager (view/create/edit + assets), assembly, machine_operator (view/create), quality (view), factory_manager (view/edit/approve + assets), md, gm, finance_head (view). Costs need `cost.view`; cost rates, licences and pack GST treatment need `settings.manage` (Admin).
+
+### RLS
+
+On for every new table; reads only (writes through the RPCs). Production tables: `production.view`; lab tables, batches, formulas: `app.can_lab` (production.view or qc.test or qc.release or lab.rnd); assets/calibrations: `assets.view` or lab; licences: `app.can_read_company`; cost tables: `cost.view`; shift assignments: also your own rows.
+
+### Law register
+
+`COS-1` → built; new `PROD-1` (self-release block), `PROD-2` (reconciliation), `GST-FREE` (needs CA, Q-23).
+
+### Tests
+
+`supabase/tests/14_production_biochem.sql` (63), `supabase/tests/15_production_plastics.sql` (39); `_setup.sql` gains `tests.seed5` and `tests.hint` (returns the rule code). **352/352 pgTAP pass in total.**

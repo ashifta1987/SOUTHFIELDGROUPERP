@@ -17,7 +17,10 @@ The same register is stored in `core.law_rules` and shown on the **Built to Indi
 | EWB-1 | E-way bill above the threshold | Dispatch RPC; thresholds per state in settings | — | Planned (Phase 8) |
 | MSME-1 | Pay within agreed terms, at most 45 days | Purchase RPCs, payables report | — | Planned (Phase 4) |
 | LM-1 | Never sell above MRP; label data | `api.post_sales_document` (MRP in force on bill date) | `07_documents.sql` | **Built (Phase 3)** (label data with products/labels later) |
-| COS-1 | Cosmetics Rules 2020: expired licence blocks production | Production RPCs | — | Planned (Phase 5) |
+| COS-1 | Cosmetics Rules 2020: expired licence blocks production | `app.check_licence` in `api.plan_batch` and every production entry (`app.lock_batch`); licences in `core.licences`, Admin entry only | `14_production_biochem.sql` | **Built (Phase 5)** |
+| PROD-1 | A batch maker cannot QC-release their own batch | `app.batch_makers` in `api.qc_release_batch`, `qc_reject_batch`, `assign_shift_duties`; `record_quality_inspection` (`sod.inspector_maker`) | `14_production_biochem.sql`, `15_production_plastics.sql` | **Built (Phase 5)** |
+| PROD-2 | Packaging and bulk reconciliation before close | `app.batch_recon`, `api.reconcile_packaging`, `api.close_batch`; tolerance setting `production.bulk_loss_pct` (unset = exact) | `14_production_biochem.sql` | **Built (Phase 5)** |
+| GST-FREE | Free items, gifts, combo packs (CBIC circular 92/11/2019, s.17(5)(h), s.8) | `prod.packs.gst_treatment` set by Admin with the CA's note; trigger `pack_billing_guard` refuses an unset pack on a sales document | `14_production_biochem.sql` | Needs CA (Q-23) |
 | LAB-1 | Labour codes: wage slips, overtime, PF/ESI | Payroll RPCs | — | Needs CA (Phase 3) |
 | DPDP-1 | DPDP Act 2023: purpose, consent, masking, retention | `api.list_users` masks phone numbers; HR/field tables later | `10_hr_screens.sql`, `11_staff_help.sql` | Partly built (Phase 3: staff Aadhaar/PAN/bank masked, salary reads logged, WhatsApp consent-only, no pay/KYC/bank in staff templates; GPS retention with field sales) |
 
