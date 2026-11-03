@@ -10,6 +10,8 @@ import { formatDate } from '@/shared/format'
 import { useDocBundle, type SalesDoc } from './docs'
 import { DocumentPreview, printDocument } from './DocumentPreview'
 import { InvoiceEditor, initialFromDoc, newLine, type EditorInitial, type HeaderDraft } from './InvoiceEditor'
+import { EinvoiceErrorBox, EinvoicePanel, useFinalStatus } from '@/features/sales/einvoice/EinvoicePanel'
+import { RpcError, callApi } from '@/data/rpc'
 
 /**
  * Invoices (`Invoice`, /sales/invoices): document entry for tax invoices, credit notes and — Admin only, with a
@@ -33,6 +35,23 @@ export function InvoicePage() {
   const [adopted, setAdopted] = useState<string | null>(null)
   const [preset, setPreset] = useState<Partial<HeaderDraft> | null>(null)
   const [printing, setPrinting] = useState(false)
+  const [printError, setPrintError] = useState<RpcError | null>(null)
+  const finalStatus = useFinalStatus(bundle.doc?.status === 'posted' ? docId : null)
+  const irn = finalStatus.data?.status === 'ready' ? finalStatus.data.data.irn : undefined
+
+  // A posted invoice prints only when it is final (its IRN is there when e-invoicing applies); the server decides and logs it.
+  async function printChecked() {
+    setPrintError(null)
+    if (docId && bundle.doc?.status === 'posted') {
+      try {
+        await callApi('check_document_printable', { p_document_id: docId }, { idempotent: false })
+      } catch (e) {
+        setPrintError(e instanceof RpcError ? e : null)
+        return
+      }
+    }
+    printDocument()
+  }
 
   function openDoc(id: string) {
     setAdopted(null)
@@ -91,13 +110,14 @@ export function InvoicePage() {
           <h1 style={{ margin: 0, fontSize: 'var(--sf-fs-page)' }}>{t('invoice.print.heading', { no: bundle.doc.doc_no ?? t('invoice.notNumbered') })}</h1>
           <div style={{ display: 'flex', gap: 8 }}>
             <Button onClick={() => setPrinting(false)}>{t('invoice.actions.backToEdit')}</Button>
-            <Button variant="primary" onClick={printDocument}>
+            <Button variant="primary" onClick={() => void printChecked()}>
               {t('invoice.actions.print')}
             </Button>
           </div>
         </div>
+        <EinvoiceErrorBox error={printError} />
         <div style={{ background: 'var(--sf-line-soft)', borderRadius: 'var(--sf-radius-card)', padding: 24, overflowX: 'auto' }}>
-          <DocumentPreview bundle={bundle} />
+          <DocumentPreview bundle={bundle} irn={irn} />
         </div>
       </>
     )
@@ -155,6 +175,11 @@ export function InvoicePage() {
         <span className="muted"> / {bundle.doc?.doc_no ?? (docId ? t('invoice.draft') : t('invoice.newCrumb'))}</span>
       </nav>
       {body}
+      {!printing && !waiting && docId && bundle.doc?.status === 'posted' && (bundle.doc.doc_type === 'sales_invoice' || bundle.doc.doc_type === 'credit_note') ? (
+        <div style={{ marginTop: 16 }}>
+          <EinvoicePanel documentId={docId} canCreate={canCreate} canCancel={canCancel} isAdmin={isAdmin} />
+        </div>
+      ) : null}
       {!printing ? <RecentDocuments companyId={companyId} currentId={docId} onOpen={openDoc} /> : null}
     </>
   )

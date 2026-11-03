@@ -52,6 +52,12 @@ export interface Me {
   rights: string[]
   grants: ActiveGrant[]
   read_only_until: string | null
+  /** Phase 9: the session's assurance level and whether the server wants the second factor now. */
+  aal?: 'aal1' | 'aal2' | string
+  mfa_required?: boolean
+  mfa_enforced?: boolean
+  /** True when security.enforce_mfa is on, the account has an MFA role and this session is not aal2. */
+  mfa_needed?: boolean
 }
 
 export interface Profile {
@@ -207,8 +213,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const me = useQuery({
-    queryKey: ['api', 'me', session?.user.id ?? 'none'],
+    // Keyed on the access token too: after the TOTP step the new aal2 token must be re-checked by the server.
+    queryKey: ['api', 'me', session?.user.id ?? 'none', session?.access_token ?? ''],
     enabled: Boolean(session),
+    // Keep the last answer while a refreshed token is re-checked, but never across users.
+    placeholderData: (prev, prevQuery) => (prevQuery?.queryKey[2] === session?.user.id ? prev : undefined),
     staleTime: 60_000,
     refetchInterval: 60_000, // grants start and end on their own; refresh the banner and menus
     queryFn: async (): Promise<Me | null> => {
@@ -226,7 +235,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading: loading || (Boolean(session) && me.isLoading),
       session,
       profile: session?.user ? (me.data ? profileFromMe(session.user, me.data) : profileFromUser(session.user)) : null,
-      needsMfa,
+      // The factor check from supabase-js, or the server's MFA enforcement (security.enforce_mfa) via api.me().
+      needsMfa: needsMfa || Boolean(me.data?.mfa_needed),
       refreshMfa,
       signOut: async () => {
         await supabase.auth.signOut()

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { Amount } from '@/ui'
 import { formatDate, formatIndian } from '@/shared/format'
 import { hsnSummary, stateLabel, type DocBundle } from './docs'
+import { IrnPrintBlock, type FinalStatus } from '@/features/sales/einvoice/EinvoicePanel'
 
 /**
  * The A4 layout of a sales document (tax invoice, bill of supply, delivery challan, credit note), exactly what
@@ -41,7 +42,7 @@ function Row({ label, value, strong }: { label: ReactNode; value: ReactNode; str
   )
 }
 
-export function DocumentPreview({ bundle }: { bundle: DocBundle }) {
+export function DocumentPreview({ bundle, irn }: { bundle: DocBundle; irn?: FinalStatus['irn'] }) {
   const { t } = useTranslation()
   const { doc, lines, company, gstin, address, against } = bundle
   if (!doc) return null
@@ -213,7 +214,7 @@ export function DocumentPreview({ bundle }: { bundle: DocBundle }) {
                 ))}
               </tbody>
             </table>
-            <div style={{ fontSize: 10, color: 'var(--sf-text-muted)' }}>{t('invoice.print.einvoiceNote')}</div>
+            {irn?.status === 'active' ? <IrnPrintBlock irn={irn} /> : <div style={{ fontSize: 10, color: 'var(--sf-text-muted)' }}>{t('invoice.print.einvoiceNote')}</div>}
           </div>
           <div>
             <Row label={t('invoice.tax.taxable')} value={<Amount value={doc.taxable} />} />

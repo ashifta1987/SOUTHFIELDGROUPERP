@@ -1,6 +1,9 @@
 {
   "_meta": { "language": "हिन्दी", "needs-native-review": true, "note": "Machine draft. A native Hindi speaker must review every string before go-live." },
   "common": {
+    "loadMore": "और दिखाएँ",
+    "shownRows_one": "{{count}} पंक्तियाँ दिखाई गईं",
+    "shownRows_other": "{{count}} पंक्तियाँ दिखाई गईं",
     "comingInPhase": "चरण {{phase}} में आ रहा है",
     "reference": "संदर्भ",
     "askHelp": "इसके बारे में मदद पूछें",

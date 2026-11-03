@@ -9,13 +9,14 @@ import { RpcErrorBox } from '@/features/common/RpcErrorBox'
 import { routeForFile } from '@/app/flows'
 import { formatDate } from '@/shared/format'
 import { ApiError, makeErrorRef } from '@/shared/supabase'
+import { IntegrationsCard } from '@/features/admin/integrations/IntegrationsCard'
 import { Amount, Button, Card, Chip, DataTable, EmptyState, ErrorRef, KpiTiles, PageHeader, SelectField, Tabs, TextAreaField, type Column } from '@/ui'
 
 type Bug = ViewRow<'bug_items'>
 type Company = ViewRow<'companies'>
 type Json = string | number | boolean | null | Json[] | { [k: string]: Json }
 
-const AREAS = ['ledger', 'stock', 'production', 'cash', 'tax', 'between_companies', 'masters', 'import'] as const
+const AREAS = ['ledger', 'stock', 'production', 'cash', 'tax', 'between_companies', 'masters', 'import', 'integration'] as const
 const STATUSES = ['open', 'fixed', 'dismissed', 'all'] as const
 type Status = (typeof STATUSES)[number]
 type Action = 'keep_separate' | 'link_existing' | 'accept_change' | 'dismiss' | 'fixed'
@@ -259,6 +260,8 @@ export function BugFixerPage() {
           </Card>
         )}
       </div>
+
+      {profile?.view === 'all' ? <IntegrationsCard /> : null}
 
       <Card title={t('bugFixer.how.title')}>
         <div className="sf-grid-3">

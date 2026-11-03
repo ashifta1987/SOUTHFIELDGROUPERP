@@ -8,6 +8,8 @@ import { useCompanyChoice } from '@/features/admin/branches/company'
 import { formatDate, formatTime } from '@/shared/format'
 import { Amount, Button, Card, EmptyState, Field, FieldGrid, FormDialog, PageHeader, SelectField, Skeleton, Tabs } from '@/ui'
 import { Check, DispatchStatus, istLocalToIso, LOGI_REFRESH, LogisticsErrorBox, usePlaces, useLogisticsRights } from '../common/logistics'
+import { EwayStatus } from '../eway/EwayStatus'
+import { useAuth } from '@/auth/AuthProvider'
 
 type Dispatch = ViewRow<'dispatches'>
 type View = 'board' | 'list'
@@ -178,6 +180,7 @@ export function DispatchBoardPage() {
 function DispatchCard({ d, trips }: { d: Dispatch; trips: ViewRow<'trips'>[] }) {
   const { t } = useTranslation()
   const rights = useLogisticsRights()
+  const { profile } = useAuth()
   const invoice = useApiMutation<{ p_dispatch_id: string; p: Record<string, unknown> }>('invoice_dispatch', LOGI_REFRESH)
   const eway = useApiMutation<{ p_dispatch_id: string; p_eway_bill_no: string }>('set_dispatch_eway', LOGI_REFRESH)
   const assign = useApiMutation<{ p_trip_id: string; p_dispatch_ids: string[] }>('assign_to_trip', LOGI_REFRESH)
@@ -239,6 +242,7 @@ function DispatchCard({ d, trips }: { d: Dispatch; trips: ViewRow<'trips'>[] }) 
           {t('dispatchBoard.ewayNo')} <span className="mono">{d.eway_bill_no}</span>
         </span>
       ) : null}
+      <EwayStatus dispatchId={d.id} planned={planned} canEdit={rights.edit} hasInvoice={Boolean(d.document_id)} isAdmin={profile?.view === 'all'} />
       <LogisticsErrorBox error={err} />
       <FormDialog
         open={ewayOpen}

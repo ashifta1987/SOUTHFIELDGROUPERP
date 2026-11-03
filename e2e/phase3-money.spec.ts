@@ -167,7 +167,8 @@ test.describe('Phase 3 · Money and books', () => {
     await page.getByRole('button', { name: 'Import 1 lines' }).click()
     await expect(page.getByText('1 lines added · 0 already there')).toBeVisible({ timeout: 15_000 })
     const row = page.getByRole('row').filter({ hasText: narration })
-    await expect(row).toContainText('Not matched')
+    // The list refetches after the import; on a busy DEV database that can take longer than the default 5 s.
+    await expect(row).toContainText('Not matched', { timeout: 15_000 })
     await expectNoSeriousA11y(page)
 
     await row.getByRole('button', { name: /^Match line of/ }).click()

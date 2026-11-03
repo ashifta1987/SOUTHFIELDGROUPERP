@@ -645,6 +645,98 @@ Requests (withdraw, loan, project interest, information) go through `api.submit_
 **After the close:** no entry dated in a closed month can be posted by any route. That includes Admin and any special grant: `app.fy_for` and the triggers on the GL and the stock ledger refuse it with `period.closed`.
 
 
+## Phase 8 RPCs (integrations)
+
+All changing RPCs take `p_client_request_id` first (idempotent) unless marked *service*. *Service* RPCs are callable only by the Edge Functions with the service-role key (`app.require_service`, no `EXECUTE` for `authenticated`). Every outside call is queued in `ops.integration_requests`; the Edge Functions send it and report back.
+
+### Outbound queue (Bug fixer → Integrations)
+
+| RPC | Who | Does |
+|---|---|---|
+| `integration_claim_due(p_limit, p_kinds text[])` | *service* | Claims due `queued` requests (skip-locked), sets `in_progress`, counts the attempt; returns `[{id, company_id, provider, kind, ref_table, ref_id, payload, attempts, max_attempts}]` |
+| `integration_report(p_request_id, p_ok, p_response, p_error, p_retryable)` | *service* | Success → `done` (closes its Bug fixer item); failure → back-off or dead letter. E-invoice / e-way kinds must use their apply RPC |
+| `integration_retry(crid, p_request_id)` | Admin | Dead or waiting → `queued` now, attempts reset (logged) |
+| `integration_cancel(crid, p_request_id, p_reason)` | Admin | Dead or waiting → `cancelled` (logged) |
+| `run_mock_integration(crid, p_request_id, p {fail, error, retryable})` | Admin (DEV) | Completes a request of provider `mock` with the database mock (or a simulated failure); refused unless `integrations.allow_mock` is true (`integrations.mock_not_allowed`) |
+
+Views: `api.integration_requests` (no payload), `api.integration_attempts`, `api.webhook_events` (no payload).
+
+### Webhooks
+
+| RPC | Who | Does |
+|---|---|---|
+| `ingest_webhook(p_provider, p_external_id, p_signature_ok, p_topic, p_payload)` | *service* | Unsigned → stored as `rejected` (payload dropped), `{accepted:false, reason:'bad_signature'}`. Signed → stored once per provider + id; repeat → `{accepted:false, duplicate:true}` |
+| `finish_webhook(p_event_id, p_status processed|failed|ignored, p_result, p_error)` | *service* | Marks the event |
+
+### E-invoice (IRN)
+
+| RPC | Who | Does |
+|---|---|---|
+| `set_einvoice_switch(crid, p_gstin_id, p_enabled, p_from date, p_note)` | Admin | Switch per GSTIN + start date; switching on needs the CA's note (`einvoice.ca_note`). Logged |
+| `request_einvoice(crid, p_document_id)` | `sales_invoices.create` | Queues `einvoice_generate` with the INV-01 body (`app.einvoice_payload`). Refuses `einvoice.switch_off`, `einvoice.not_posted`, `einvoice.not_eligible`, `einvoice.already_issued`, `integrations.provider_not_set`, `integrations.mock_not_allowed`. Same document again → same request |
+| `apply_einvoice_result(p_request_id, p {ok, irn, ack_no, ack_date, signed_qr} | {ok:false, error, retryable})` | *service* | Stores the IRN, puts it on the document, releases the held invoice message; or back-off / dead letter. Repeat → `{duplicate:true}` |
+| `cancel_einvoice(crid, p_document_id, p_reason duplicate|data_entry_mistake|order_cancelled|other, p_remark)` | `sales_invoices.cancel` | Queues `einvoice_cancel` within `einvoice.cancel_window_hours` (`einvoice.cancel_window` after it) |
+| `document_final_status(p_document_id)` | viewers of the document | `{found, status, einvoice_required, final, irn {irn, ack_no, ack_date, signed_qr, status, is_mock}, request {id, status, attempts, next_attempt_at, last_error}}` |
+| `check_document_printable(p_document_id)` | viewers | Refuses `einvoice.irn_required` for a posted invoice without its IRN; logs the print |
+| `cancel_sales_document` (replaced) | `sales_invoices.cancel` | Adds `einvoice.cancel_irn_first` |
+
+View: `api.einvoice_irns`, `api.einvoice_switches`.
+
+### E-way bill
+
+| RPC | Who | Does |
+|---|---|---|
+| `request_eway_bill(crid, p_dispatch_id, p {vehicle_no, transporter_gstin, distance_km, transport_mode})` | `logistics.edit` | Queues `eway_generate` from the posted invoice. Refuses `dispatch.state`, `eway.needs_invoice`, `einvoice.irn_required`, `eway.already`, `eway.vehicle`, `eway.vehicle_format` |
+| `update_eway_partb(crid, p_eway_bill_id, p_vehicle_no, p_reason)` | `logistics.edit` | Queues a Part-B vehicle update |
+| `cancel_eway_bill(crid, p_eway_bill_id, p_reason)` | `logistics.edit` | Only before the goods move (`eway.goods_moved`) and within `eway.cancel_window_hours` (unset → `eway.cancel_window_not_set`) |
+| `apply_eway_result(p_request_id, p {ok, eway_bill_no, generated_at, valid_until} | {ok:false, …})` | *service* | Stores the e-way bill and puts the number on the planned dispatch; Part-B / cancel results |
+
+Views: `api.eway_bills`, `api.dispatch_compliance` (per dispatch: e-way status, validity, request status/error, `irn_missing`). `api.start_trip` keeps `dispatch.eway_required`; the leave guard adds `einvoice.irn_required` and `dispatch.eway_invalid`.
+
+### Online stores and marketplace TCS
+
+| RPC | Who | Does |
+|---|---|---|
+| `stage_channel_event(p_event_id, p_channel_id, p_kind, p_external_id, p_detail)` | *service* | Stages a normalised order (`{external_order_id, order_date, ship_state, lines:[{sku, qty, price_incl_tax}]}`) once |
+| `ingest_staged_channel_orders(crid, p_channel_id)` | `sales.create` | Brings staged orders in through Phase 6 `ingest_online_order` (each in its own sub-transaction; failures kept with the error) |
+| `record_marketplace_settlement(crid, p)` | `receipts_payments.create` | Records the operator's settlement (`settlement.*` rules), or `{reverses_id, note}` to reverse one |
+
+Views: `api.channel_sync_log`, `api.marketplace_settlements`, **`api.tcs_reconciliation`** (per company, channel, month: operator net taxable and TCS vs books net taxable, `rate_pct` from `marketplace.tcs_rate_pct`, `expected_tcs`, `tcs_difference`, `status` `rate_not_set|no_settlement|not_in_books|matched|mismatch`; `accounts.view`).
+
+### Bank feeds and GPS
+
+| RPC | Who | Does |
+|---|---|---|
+| `upsert_bank_feed(crid, p {account_id, provider, external_ref, status})` | `settings.manage` | Feed config per bank account (`bank_feed.no_account_number`) |
+| `request_bank_feed_sync(crid, p_feed_id)` | `receipts_payments.create` | Queues `bank_feed_sync` |
+| `bank_feed_import(p_request_id, p_feed_id, p_lines, p_cursor)` | *service* | Same dedupe hash as `import_bank_lines`; updates last sync |
+| `upsert_gps_device(crid, p {company_id, provider, device_ref, user_id, vehicle_id, active})` | `logistics.edit` | Device → person |
+| `gps_ingest(p_provider, p_device_ref, p_points)` | *service* | Keeps points inside the person's open duty session only; `{accepted, rejected, reason}` |
+
+Views: `api.bank_feeds`, `api.gps_devices`.
+
+### Help on WhatsApp (§HELP-8)
+
+| RPC | Who | Does |
+|---|---|---|
+| `verify_help_whatsapp_staff(crid, p {person_id, number, language, consent})` | Admin (not for their own number) | Number must be the one on the staff record; consent required |
+| `revoke_help_whatsapp_staff(crid, p_id)` | Admin or the staff member | Stops it |
+| `help_whatsapp_inbound(p_event_id, p_from, p_kind, p_text)` | *service* | Unverified → `{allowed:false}` (nothing kept); verified → stores the redacted line, returns the allowed tools |
+| `help_wa_tool(p_number, p_tool, p_args)` | *service* | Only `search_help`, `help_page`, `explain_error` (own errors), `create_problem_report`, `handoff`, `ticket_status` (`help_wa.tool_not_allowed`, `help_wa.unverified`) |
+| `help_wa_log_reply(p_number, p_text)` | *service* | Logs the reply (redacted) |
+
+View: `api.help_whatsapp_staff` (number masked).
+
+## Phase 9 (go-live readiness)
+
+| RPC / field | Who | Returns / does |
+|---|---|---|
+| `api.me()` new fields | signed in | `mfa_required` (holds an MFA role), `mfa_enforced` (`security.enforce_mfa`), `aal` (`aal1`/`aal2`), `mfa_needed` (enforced, has an MFA role and the session is not aal2). The client shows the TOTP step when `mfa_needed` is true |
+| `api.sales_register_totals(p_company_id, p_from, p_to)` | sales view (RLS, security invoker) | One row per `tax_class` × `doc_type` for posted documents in the range (delivery challans excluded): `docs, taxable, cgst, sgst, igst, cess, total`. A GST-view user's totals never include bills without GST |
+| Error `mfa_required` | any RPC through `app.require()` | Raised when enforcement is on, the right comes only from an MFA-required role and the session is aal1 |
+
+Paging: list screens request pages with PostgREST `range()` (`src/data/paged.tsx`, 200 rows) in the order of the Phase 9 indexes.
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.
@@ -657,10 +749,22 @@ Phase 6: `order.*` (channel, payment, product, no_rate, no_price_list, price_loc
 
 Phase 7: `jobwork.*` (party, party_other_company, process, goods_kind, no_lines, no_gstin, limit_not_set, missing, closed, date, line, kind, returned_item, returned_qty, loss_qty, scrap_item, input_qty, **over_balance**), `repair.*` (what, title, missing, closed, status, purchase_request, resolution, restore_before_breakdown), `spares.no_lines`, `schedule.*`, `licence.*` (blocks, owner, missing_row, cancelled, **not_later**, duplicate, document_path, document_folder; **expired** now also from blocking licences), `depreciation.*` (**settings_missing**, **life_not_set**, asset_dates_missing, residual_not_set, period_not_ended, already_run), `asset.*` (disposed, no_cost, disposal_reason, proceeds, proceeds_account), `partner.*` (missing, name, inactive, amount, account_not_set, account_other_company, share_over_100, agreement_required, project, bank, over_due, board_resolution_required), `partner_request.*` (kind, source, project, question, missing, state, decision, reason), **`companies_act.s185`**, **`companies_act.s186_limit_not_set`**, **`companies_act.s186_limit`**, **`companies_act.director_declaration`**, `loan.*` (kind, request, over_repaid), `minutes.*` (missing, not_draft, fy, ref, partner, pct, pct_over_100, not_approved), `profit_share.*` (missing, state, no_profit, share_pct_not_100, already_posted), **`sod.own_minutes`**, **`sod.doer_is_checker`**, `close.*` (exists, missing, closed, title, task_missing, task_state, not_doer, not_checker, note, action, reason, no_checklist, tasks_open, month_not_over), `period.*` (**closed**: no grant overrides, missing, already_closed, not_closed, **reopen_admin_only**, reason_required).
 
+Phase 8: `rights.service_only`, `integrations.*` (provider_not_set, mock_not_allowed, not_queued, missing, state, use_apply), `webhook.*` (no_id, status), `einvoice.*` (switch_off, ca_note, not_posted, not_eligible, already_issued, no_irn, cancel_reason, cancel_window, cancel_window_not_set, **irn_required**, cancel_irn_first, locked), `eway.*` (needs_invoice, already, vehicle, vehicle_format, missing, goods_moved, cancel_window_not_set, cancel_window), **`dispatch.eway_invalid`**, `settlement.*` (missing, already_reversed, ref, period, negative, payout, duplicate, bank_line), `bank_feed.*` (provider, no_account_number, missing, not_active), `gps.device`, `gps.user`, `help_wa.*` (person, no_sign_in, number_mismatch, consent, unverified, tool_not_allowed), `doc.missing`, `org.gstin_missing`.
+
 ## Edge Functions
 
 | Function | Purpose | Status |
 |---|---|---|
 | `tally-bridge` | Device-key endpoint for the Tally bridge on the import computer (next batch + signed TBK URL, staged rows, done) | Code in `supabase/functions/tally-bridge`. **Not deployed** (owner's `supabase login`; import PC not chosen) |
 | `admin-users` | Create a sign-in account (phone or email + password) and assign its role as the calling Admin; disable an account | Code in `supabase/functions/admin-users`. **Not deployed yet**: needs `supabase login` by the owner. See DEPLOYMENT_GUIDE. |
+| `integration-worker` | Sends every due integration request (all kinds) through its adapter; back-off and dead letter in Postgres | Code in `supabase/functions/integration-worker`. **Not deployed** (no access token); scheduler call with `INTEGRATION_WORKER_SECRET` |
+| `einvoice` | IRN generate / cancel now (GSP adapter; `MockGsp` on DEV) | Code only; GSP not chosen (Q-P8-1) |
+| `ewaybill` | E-way bill generate / Part-B / cancel now (adapter; `MockEway` on DEV) | Code only (Q-P8-1) |
+| `bank-feed` | Statement lines from the feed provider → `bank_feed_import` | Code only (Q-P8-3) |
+| `gps-intake` | GPS provider push: HMAC check → dedupe → `gps_ingest` (on duty only) | Code only (Q-P8-2) |
+| `store-webhooks` | Shopify (documented HMAC) and Amazon / Flipkart / JioMart / Meesho (generic HMAC until confirmed) → dedupe → stage order | Code only (Q-P8-4) |
+| `help-agent` | In-app help assistant: user's JWT only, allow-listed help tools, redaction filter, voice input via transcriber adapter | Code only; model not chosen (Q-P8-5) — `MockModel` with `HELP_ALLOW_MOCK=true` |
+| `help-whatsapp` | Help on WhatsApp for verified staff: signature → dedupe → verified check → no data tools → reply with "talk to a person" | Code only (Q-13, Q-P8-5) |
+
+Webhook contract for every inbound handler: verify the signature on the raw body first → `ingest_webhook` (dedupe) → answer 200 → process in the background (`EdgeRuntime.waitUntil`) → `finish_webhook`.
 

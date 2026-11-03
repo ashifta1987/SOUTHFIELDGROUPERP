@@ -45,3 +45,10 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # Our own scan (Phase 9): Supabase sb_secret_ keys, service-role JWTs, private keys, Postgres URLs with a
+      # password, across the tree and the whole history. Values are printed masked. No install needed.
+      - name: Secrets scan (scripts/secrets-scan.mjs)
+        run: node scripts/secrets-scan.mjs

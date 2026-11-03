@@ -8,7 +8,8 @@ import { todayIst, useCompanyChoice } from '@/features/admin/branches/company'
 import { TableCard } from '@/features/admin/import-data/layout'
 import { formatDate, formatTime } from '@/shared/format'
 import { Amount, Button, Card, ConfirmDialog, DataTable, EmptyState, Field, FieldGrid, PageHeader, SelectField, Skeleton, Tabs, type Column } from '@/ui'
-import { cleanQty, InventoryErrorBox, placeLabel, Qty, STOCK_REFRESH, StockStatus, useInventoryRights, useMoveLabel, useStockItems, useStockMovements, useStockPlaces } from '../common/inventory'
+import { cleanQty, InventoryErrorBox, placeLabel, Qty, STOCK_REFRESH, StockStatus, useInventoryRights, useMoveLabel, useStockItems, usePagedStockMovements, useStockPlaces } from '../common/inventory'
+import { LoadMore } from '@/data/paged'
 
 type Tab = 'issue' | 'return'
 type Move = ViewRow<'stock_movements'>
@@ -282,8 +283,8 @@ function Ledger({ companyId, productParam }: { companyId: string; productParam: 
   const [type, setType] = useState('')
   const [from, setFrom] = useState('')
   const [to, setTo] = useState('')
-  const q = useStockMovements(companyId, { product, place, type, from, to, limit: 500 })
-  const rows = q.data ?? []
+  const q = usePagedStockMovements(companyId, { product, place, type, from, to })
+  const rows = q.rows
   const columns: Column<Move>[] = [
     {
       key: 'when',
@@ -334,6 +335,7 @@ function Ledger({ companyId, productParam }: { companyId: string; productParam: 
         minWidth={1000}
         empty={<EmptyState title={t('stockMovements.emptyTitle')} body={t('stockMovements.emptyBody')} />}
       />
+      <LoadMore shown={rows.length} hasMore={q.hasMore} busy={q.loadingMore} onMore={q.loadMore} />
     </TableCard>
   )
 }

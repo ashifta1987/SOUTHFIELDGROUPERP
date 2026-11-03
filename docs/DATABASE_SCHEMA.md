@@ -624,3 +624,95 @@ The investor role holds only `home.view` and `investor.portal`. Job work and mai
 | `23_partners_investor_close.sql` | Partners, the investor portal and the close | 42 |
 
 `_setup.sql` has a new seed, `tests.seed7`.
+
+## Phase 8: integrations (database built; providers are mocks until the owner chooses)
+
+Migrations (all additive):
+
+- `20261103008000_integrations_core.sql`: tables, guards, RLS, operational settings
+- `008100_integrations_api.sql`: RPCs (outbound queue, webhooks, e-invoice, e-way bill, stores, settlements, bank feeds, GPS, help on WhatsApp), the leave guard, the outbox hold, the sweep job
+- `008200_integrations_views.sql`: read views and `api.tcs_reconciliation`
+
+**Widened (non-destructive):** `ops.bug_items.area` adds `integration`; `ops.bug_items.kind` adds `integration_dead_letter`.
+
+**New column:** `core.gstins.einvoice_from date` (the e-invoice start date for the GSTIN; Q-21). E-invoicing applies to a document when `einvoice_enabled` is true and (`einvoice_from` is null or the document date is on/after it).
+
+### Tables
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `ops.integration_requests` | `company_id`, `provider`, `kind` (`einvoice_generate`, `einvoice_cancel`, `eway_generate`, `eway_update_partb`, `eway_cancel`, `bank_feed_sync`, `channel_listing_sync`, `channel_order_ack`, `help_whatsapp_reply`), `ref_table`/`ref_id`, `payload` (built on the server; never secrets), `payload_hash` (SHA-256), `idempotency_key` **unique**, `status` `queued→in_progress→done|dead|cancelled`, `attempts`, `max_attempts`, `next_attempt_at`, `locked_at`, `last_error`, `response`, `bug_id` | Outbound log and dead letter. Admin reads (RLS) |
+| `ops.integration_attempts` | `request_id`, `attempt_no`, `ok`, `error`, `retryable`, `next_attempt_at` | **Append-only** (trigger) |
+| `ops.webhook_events` | `provider`, `external_id`, `topic`, `signature_ok`, `payload`, `payload_hash`, `status` (`received|processed|rejected|failed|ignored`), `result`, `error`, `received_at`, `processed_at` | **Unique (provider, external_id) where signature_ok** — only signed events dedupe, so a forged event never blocks the real one. Payloads cleared after 90 days |
+| `sales.einvoice_irns` | `document_id`, `gstin_id`, `irn` (64 hex, unique), `ack_no`, `ack_date`, `signed_qr`, `provider`, `is_mock`, `status` (`active|cancelled`), `cancel_reason` (`duplicate|data_entry_mistake|order_cancelled|other`), `cancel_remark`, `cancelled_at/by`, `request_id` | One active IRN per document (partial unique index). Never edited or deleted; the only change is active → cancelled (trigger `einvoice_irn_guard`, rule `einvoice.locked`) |
+| `sales.eway_bills` | `dispatch_id`, `document_id`, `eway_bill_no` (12 digits, unique), `generated_at`, `valid_until`, `vehicle_no`, `transporter_gstin`, `distance_km`, `transport_mode`, `provider`, `is_mock`, `status` (`active|cancelled`) | One active per dispatch |
+| `sales.eway_partb_updates` | `eway_bill_id`, `vehicle_no`, `reason`, `valid_until`, `request_id` | **Append-only** |
+| `acct.bank_feeds` | `account_id` (→ `acct.bank_accounts`), `provider`, `external_ref` (provider's opaque link id; a 9+ digit run is refused), `status`, `last_sync_at`, `last_cursor`, `last_result`, `last_error` | Unique (account, provider). Never an account number or a statement password |
+| `sales.channel_sync_log` | `channel_id`, `direction`, `kind` (`order|order_cancel|listing|inventory|settlement|return`), `external_id`, `status` (`staged|ingested|failed|sent|skipped`), `detail` (normalised order), `webhook_event_id`, `online_order_id` | Unique (channel, kind, external_id) for inbound |
+| `sales.marketplace_settlements` | `channel_id`, `settlement_ref` (unique per channel), `period_from/to`, `payout_date`, `gross_sales`, `returns_value`, `net_taxable`, `tcs_cgst`, `tcs_sgst`, `tcs_igst`, `tds_amount`, `commission`, `other_fees`, `net_payout`, `bank_line_id`, `reverses_id`, `source` | **Append-only**; a wrong one is reversed by a negated row (`<ref>-REV`) |
+| `ops.gps_devices` | `provider`, `device_ref` (unique per provider), `user_id`, `vehicle_id`, `active` | GPS provider devices mapped to the person on duty |
+| `help.whatsapp_staff` | `person_id`, `user_id`, `number` (+91…, unique while active), `language`, `consent_at`, `verified_at/by`, `revoked_at/by` | Verified staff numbers for help on WhatsApp |
+| `help.whatsapp_messages` | `staff_id`, `direction`, `kind` (`text|voice`), `body` (redacted), `tool`, `webhook_event_id` | Kept 12 months (sweep) |
+
+Money is `numeric(18,2)` everywhere above.
+
+### Rules enforced (where)
+
+| Rule | Where |
+|---|---|
+| Outbound calls retry with back-off `base × 2^(attempts−1)` capped, then dead-letter → one Bug fixer item (`area integration`, `kind integration_dead_letter`, high); a later success closes it | `app.integration_fail`, `app.integration_succeed`, `app.integration_backoff_seconds`; settings `integrations.max_attempts` (5), `integrations.backoff_base_seconds` (60), `integrations.backoff_max_seconds` (21600) |
+| A worker that never reports back counts as a failed attempt after 10 minutes | `app.integration_sweep` (pg_cron `integration-sweep`, every 5 minutes) |
+| Webhooks: signature checked before anything; one stored event per provider + id | Edge Functions, then `api.ingest_webhook` |
+| E-invoice switch per GSTIN; IRN only for posted B2B tax invoices / credit notes with GST on or after the start date | `api.request_einvoice` (`einvoice.switch_off`, `einvoice.not_posted`, `einvoice.not_eligible`, `einvoice.already_issued`) |
+| Not final without the IRN: no print, the WhatsApp invoice message waits, goods do not leave | `app.einvoice_pending`, `api.check_document_printable` (`einvoice.irn_required`), trigger `outbox_wait_for_irn` (send_after = infinity, released by the IRN), trigger `dispatch_leave_guard` on `sales.dispatches` |
+| IRN cancel only within `einvoice.cancel_window_hours` (seeded 24, CA confirms); a document with an active IRN is not cancelled first | `api.cancel_einvoice` (`einvoice.cancel_window`, `einvoice.cancel_reason`), `api.cancel_sales_document` (`einvoice.cancel_irn_first`) |
+| E-way bill before the vehicle leaves (existing `dispatch.eway_required` in `api.start_trip`), and a cancelled or expired e-way bill is refused | `dispatch_leave_guard` (`dispatch.eway_invalid`); `api.request_eway_bill` needs the invoice final (`einvoice.irn_required`) |
+| E-way bill cancel only before the goods move and within `eway.cancel_window_hours` (**unset** → refused, CA confirms) | `api.cancel_eway_bill` |
+| Provider chosen per kind by setting `integrations.provider.<einvoice|eway|…>`; unset → refused; `mock` only where `integrations.allow_mock` is true; mock IRNs / e-way bills flagged `is_mock` and printed as TEST | `app.integration_provider`, `api.run_mock_integration` |
+| TCS u/s 52: rate is the CA's setting `marketplace.tcs_rate_pct` (effective-dated); unset → `rate_not_set`; bills without GST never counted | `api.tcs_reconciliation` |
+| GPS from the provider only inside the device user's open duty session | `api.gps_ingest` (`off_duty`, `unknown_device`, points outside the session dropped) |
+| Help on WhatsApp: verified staff numbers only (number = staff record, consent, another Admin verifies), no data tools, numbers masked before storing | `api.verify_help_whatsapp_staff` (`help_wa.number_mismatch`, `help_wa.consent`, `sod.own_request`), `api.help_whatsapp_inbound`, `api.help_wa_tool` (`help_wa.unverified`, `help_wa.tool_not_allowed`), `app.help_redact` |
+| Service-only RPCs refuse signed-in users | `app.require_service` (`rights.service_only`) and no `EXECUTE` grant to `authenticated` |
+
+### RLS
+
+- `ops.integration_requests`, `ops.integration_attempts`, `ops.webhook_events`, `help.whatsapp_messages`: Admin only.
+- `sales.einvoice_irns`: `sales_invoices.view` or `sales.view` for the company. `sales.eway_bills` (+ Part-B): `logistics.view`, `sales.view` or `sales_invoices.view`.
+- `acct.bank_feeds`, `sales.marketplace_settlements`: `accounts.view`. `sales.channel_sync_log`: `sales.view`. `ops.gps_devices`: Admin or `logistics.view`. `help.whatsapp_staff`: Admin or the staff member.
+
+### Background jobs (pg_cron)
+
+| Job | Schedule (UTC) | Calls |
+|---|---|---|
+| `integration-sweep` | `*/5 * * * *` | `app.integration_sweep()`: stale in-progress requests → failed attempt (back-off / dead letter); webhook payloads older than 90 days cleared; help WhatsApp lines older than 12 months deleted |
+
+The Edge Functions `integration-worker` (every minute) and `bank-feed` are called by Supabase Cron + `pg_net` once deployed (DEPLOYMENT_GUIDE).
+
+### Tests
+
+| File | Covers | Tests |
+|---|---|---|
+| `supabase/tests/24_integrations.sql` | Back-off, dead letter → Bug fixer → retry, e-invoice switch / not final / print / outbox hold, cancel window, e-way required and invalid, service-only RPCs, webhook dedupe, help on WhatsApp, GPS on duty, TCS reconciliation, sweep, RLS | 65 |
+
+## Phase 9: go-live readiness (security, performance)
+
+No new business tables. Migrations (all additive, applied to DEV 03-11-2026):
+
+| Migration | Contents |
+|---|---|
+| `20261103009000_security_hardening.sql` | Read policies for `core.request_log` (own rows), `core.doc_numbers_issued` (All / All read-only views) and `ops.bridge_devices` (Admin). `anon` EXECUTE on `api.log_sign_in_failure` restored. `search_path` pinned on `app.imp_*`. MFA enforcement: `app.mfa_enforced()`, `app.mfa_satisfied()`, `app.has_mfa_role()`, `app.my_roles()` (drops MFA-required roles below aal2 when enforced), `app.require()` (raises `mfa_required`), investor-portal row functions gated, `api.me()` gains `mfa_required` / `mfa_enforced` / `aal` / `mfa_needed` |
+| `20261103009100_performance_indexes.sql` | `app.companies_with(right)`, `app.companies_with_any(rights[])`, `app.readable_companies()`, `app.sees_all_classes()`, `app.visible_party_ids()`. Equivalent once-per-statement read policies on `core.companies/gstins/branches/financial_years/places/user_profiles/special_grants`, `master.parties/party_companies/product_companies`, `sales.documents`, `acct.vouchers/gl_entries/open_bills/bill_allocations/accounts`, `inv.stock_ledger/lots`, `msg.outbox`, `audit.row_history`. List indexes. `api.sales_register_totals` |
+| `20261103009200_rls_helpers_set_based.sql` | The three set helpers rewritten as one pass over `app.my_roles()` (same results as `app.can()` / `app.can_read_company()`). `api.stock_movements` checks cost visibility once per statement |
+| `20261103009300_row_history_policy_gate.sql` | `row_history_read` keeps its rule and adds an index range that is empty without `logs.view` |
+
+### Settings
+
+| Key | Scope | Default | Meaning |
+|---|---|---|---|
+| `security.enforce_mfa` | group (`company_id` null) | absent = off | When `true`, MFA-required roles count only in `aal2` sessions |
+
+### Tests
+
+| File | Covers | Tests |
+|---|---|---|
+| `supabase/tests/25_security.sql` | Catalogue: RLS + at least one policy on every table, invoker views, pinned `search_path`, no `anon` access except the failed sign-in log, no direct writes, no `using (true)` write policy, no public bucket. MFA off/on at aal1/aal2 for accountant, Admin, salesman and investor. Set helpers equal `app.can()` for 7 user kinds × 11 rights. Audit-history gate | 35 |

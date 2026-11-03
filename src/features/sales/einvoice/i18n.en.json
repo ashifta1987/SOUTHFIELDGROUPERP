@@ -1,0 +1,47 @@
+{
+  "einvoice": {
+    "title": "E-invoice (IRN and QR)",
+    "notPosted": "The IRN is asked for once the document is posted.",
+    "notRequired": "E-invoice not needed for this document",
+    "final": "IRN received · final",
+    "mock": "Test IRN (mock provider)",
+    "mockWarning": "TEST IRN from the mock provider — not valid for GST",
+    "pending": "IRN pending · not final yet",
+    "pendingNote": "E-invoicing is on for this GSTIN. Until the IRN arrives this invoice cannot be printed or sent, and the goods cannot leave.",
+    "cancelledNote": "The IRN was cancelled. Cancel this invoice or issue a credit note; a new IRN is not issued for the same number.",
+    "attempts": "{{n}} attempt(s)",
+    "lastError": "Last provider answer: {{error}}",
+    "request": "Get IRN",
+    "runMock": "Run with mock provider",
+    "cancel": "Cancel IRN",
+    "cancelReason": "Why",
+    "cancelRemark": "Remark",
+    "cancelWindowNote": "An IRN can be cancelled only within 24 hours of acknowledgement; after that, issue a credit note.",
+    "cancelConfirm": "Cancel the IRN",
+    "back": "Back",
+    "choose": "Choose…",
+    "irn": "IRN",
+    "ackNo": "Ack no.",
+    "qrLabel": "E-invoice QR code",
+    "reasons": { "duplicate": "Duplicate", "data_entry_mistake": "Data entry mistake", "order_cancelled": "Order cancelled", "other": "Other" },
+    "req": { "queued": "Waiting to send", "in_progress": "Sending", "done": "Done", "dead": "Gave up — see Bug fixer", "cancelled": "Cancelled" },
+    "printBlocked": "Get the IRN before printing.",
+    "rules": {
+      "einvoice": {
+        "irn_required": "This invoice needs its IRN first (e-invoicing is on for the GSTIN). Get the IRN, then print or send.",
+        "switch_off": "E-invoicing is off for this GSTIN. Admin switches it on after the CA confirms.",
+        "not_eligible": "E-invoicing does not apply to this document (only B2B tax invoices and credit notes with GST).",
+        "not_posted": "Post the document first.",
+        "already_issued": "This document already has its IRN.",
+        "no_irn": "This document has no active IRN.",
+        "cancel_window": "The IRN is more than 24 hours old and can no longer be cancelled. Issue a credit note instead.",
+        "cancel_reason": "Choose why the IRN is cancelled.",
+        "cancel_irn_first": "Cancel the IRN first (within 24 hours) or issue a credit note."
+      },
+      "integrations": {
+        "provider_not_set": "No e-invoice provider is chosen yet. The owner picks the GSP on Settings.",
+        "mock_not_allowed": "The mock provider works only on the development database."
+      }
+    }
+  }
+}

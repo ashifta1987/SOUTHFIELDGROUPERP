@@ -86,7 +86,7 @@ Other commands:
 - [ ] Database password kept in the owner's password manager only — never pasted into the agent or chat.
 - [ ] **Rotate the secret key that was shared in chat** (Project Settings → API Keys → roll). Update Edge Function / CI secrets afterwards.
 - [ ] Data API: expose **only** the `api` schema (Settings → API → Exposed schemas). Until Phase 1 creates `api`, nothing ERP-specific is exposed.
-- [ ] Enable PITR / daily backups (Mumbai). Second-copy backups only to an Indian location (Phase 2).
+- [ ] Enable PITR / daily backups (Mumbai). Second-copy backups only to an Indian location (see "Backups and restore (Phase 9)" below).
 
 ### Auth
 
@@ -112,6 +112,12 @@ Private buckets only: `kyc`, `bills`, `documents`, `licences`, `lab`, `imports`.
 | `WHATSAPP_TEST_ALLOWLIST` | dev/preview only | 3 |
 | `HELP_AI_PROVIDER`, `HELP_AI_API_KEY`, `HELP_AI_REGION` | `help-agent` | 3 |
 | `GSP_CLIENT_ID`, `GSP_CLIENT_SECRET` | `gstin-verify`, `einvoice`, `ewaybill` | 2 / 8 |
+| `INTEGRATION_WORKER_SECRET` | scheduler → `integration-worker`, `einvoice`, `ewaybill`, `bank-feed` | 8 |
+| `GSP_BASE_URL`, `GSP_USERNAME`, `GSP_PASSWORD` (per GSTIN, as the GSP requires) | `einvoice`, `ewaybill` (via `integration-worker`) | 8 |
+| `BANK_FEED_CLIENT_ID`, `BANK_FEED_CLIENT_SECRET` | `bank-feed` | 8 |
+| `GPS_WEBHOOK_SECRET` | `gps-intake` | 8 |
+| `STORE_WEBHOOK_SECRET_SHOPIFY`, `…_AMAZON`, `…_FLIPKART`, `…_JIOMART`, `…_MEESHO` | `store-webhooks` | 8 |
+| `HELP_ALLOW_MOCK` (DEV only: `true`), `HELP_WHATSAPP_PHONE_NUMBER_ID`, `HELP_WHATSAPP_VERIFY_TOKEN` | `help-agent`, `help-whatsapp` | 8 |
 
 Edge Functions are invoked regionally in `ap-south-1`.
 
@@ -171,6 +177,83 @@ supabase functions deploy whatsapp-webhook --project-ref <ref> --no-verify-jwt  
 - Keep `WHATSAPP_PROVIDER=mock` on DEV; in dev only allow-listed numbers receive messages.
 - Webhook URL to give Meta: `https://<ref>.supabase.co/functions/v1/whatsapp-webhook`.
 
+## Phase 8 Edge Functions (integrations)
+
+Code is in `supabase/functions/<name>/index.ts`; pure adapters in `supabase/functions/_shared/` (unit-tested by `pnpm test`, type-checked by `tsc -b` through `tsconfig.functions.json`). **None is deployed yet** (needs the owner's `supabase login` / access token) and **no real provider is configured**: each kind of integration uses the provider named in Settings (`integrations.provider.einvoice`, `…eway`, …). Unset → refused; `mock` works only where the setting `integrations.allow_mock` is true — set it on DEV only, never on prod.
+
+```bash
+REF=fxwoabbwzcifxzqsmrie   # DEV; prod later from the protected environment
+supabase secrets set --project-ref $REF INTEGRATION_WORKER_SECRET=<random 32+ chars> GPS_WEBHOOK_SECRET=<from GPS provider> \
+  STORE_WEBHOOK_SECRET_SHOPIFY=<Shopify app client secret> HELP_AI_PROVIDER=mock HELP_ALLOW_MOCK=true WHATSAPP_PROVIDER=mock
+# when chosen: GSP_BASE_URL=… GSP_CLIENT_ID=… GSP_CLIENT_SECRET=… GSP_USERNAME=… GSP_PASSWORD=… BANK_FEED_CLIENT_ID=… BANK_FEED_CLIENT_SECRET=… HELP_AI_API_KEY=… HELP_AI_REGION=asia-south1
+
+# Called by the scheduler or a signed-in user (JWT verified by Supabase):
+supabase functions deploy integration-worker --project-ref $REF --no-verify-jwt   # checks INTEGRATION_WORKER_SECRET in code
+supabase functions deploy bank-feed          --project-ref $REF --no-verify-jwt   # checks INTEGRATION_WORKER_SECRET in code
+supabase functions deploy einvoice           --project-ref $REF --no-verify-jwt   # worker secret or a valid user JWT, checked in code
+supabase functions deploy ewaybill           --project-ref $REF --no-verify-jwt
+supabase functions deploy help-agent         --project-ref $REF                    # user JWT required; runs with the user's rights only
+# Called by outside providers (signature checked in code before anything else):
+supabase functions deploy gps-intake         --project-ref $REF --no-verify-jwt
+supabase functions deploy store-webhooks     --project-ref $REF --no-verify-jwt
+supabase functions deploy help-whatsapp      --project-ref $REF --no-verify-jwt
+```
+
+**Regional invocation (data stays in India).** From the app: `supabase.functions.invoke('einvoice', { region: FunctionRegion.ApSouth1 })` (header `x-region: ap-south-1`). Provider webhooks cannot set headers, so their URLs carry the query parameter: `https://<ref>.supabase.co/functions/v1/store-webhooks?provider=shopify&channel=<online channel id>&forceFunctionRegion=ap-south-1`, `…/gps-intake?provider=<name>&forceFunctionRegion=ap-south-1`, `…/help-whatsapp?forceFunctionRegion=ap-south-1`.
+
+**Scheduler.** Enable `pg_net`, keep `INTEGRATION_WORKER_SECRET` in Supabase Vault (never in the repo), then:
+
+```sql
+select cron.schedule('integration-worker', '* * * * *', $$
+  select net.http_post(url := 'https://<ref>.supabase.co/functions/v1/integration-worker',
+    headers := jsonb_build_object('Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'integration_worker_secret'),
+                                  'x-region', 'ap-south-1', 'Content-Type', 'application/json'), body := '{}'::jsonb) $$);
+```
+
+`integration-sweep` (pg_cron, every 5 minutes) is created by the migration and needs nothing else.
+
+**Webhook set-up per provider** (after the owner opens the accounts): Shopify → Settings → Notifications → Webhooks (`orders/create`, `orders/cancelled`) to the URL above; the app's client secret is `STORE_WEBHOOK_SECRET_SHOPIFY`. Amazon SP-API sends notifications to SQS/EventBridge — relay them to `store-webhooks?provider=amazon` signed with the generic HMAC (`X-Signature` = hex HMAC-SHA256 of `${X-Timestamp}.${body}`, `X-Event-Id`); Flipkart, JioMart and Meesho the same until their own scheme is confirmed (Q-P8-4). GPS provider → `gps-intake` with the same generic HMAC. Help WhatsApp number → Meta webhook to `help-whatsapp` (verify token `HELP_WHATSAPP_VERIFY_TOKEN`).
+
+**Turning e-invoicing on (per GSTIN):** Admin records the CA's confirmation with `api.set_einvoice_switch` (start date). From then on a B2B tax invoice / credit note is final only with its IRN (no print, the WhatsApp invoice waits, goods do not leave).
+
 ## Help pages (Phase 3)
 
 `docs/help/*.md` are loaded into `help.pages` with `DB_PASSWORD=… node scripts/help-seed.mjs` after each change.
+
+## Backups and restore (Phase 9)
+
+### Policy (production)
+
+| Layer | What | Where | Retention | Who |
+|---|---|---|---|---|
+| 1. Supabase daily backups | Physical backup of the whole database, taken by Supabase | Same project region, **`ap-south-1` (Mumbai)** | Per plan (Pro: 7 days) | Automatic |
+| 2. **PITR** (point-in-time recovery add-on) | WAL archive: restore to any second inside the window | `ap-south-1` | 7 days minimum (owner may buy 14/28) | Owner enables at go-live |
+| 3. Second copy — India-hosted `pg_dump` runner | Nightly `pg_dump --format=custom` of the app schemas + Storage bucket sync, encrypted (age/GPG, key held by the owner offline) | A VM or office server **in India** (e.g. a small VM in `ap-south-1`/`ap-south-2`, or the Chalissery office server) — never a GitHub-hosted runner, never outside India | 35 nightly + 12 month-end copies; month-end copies of FY-end kept 8 years (books of account, Companies Act s.128(5)) | Admin; each run recorded via `api.record_backup_run` (kind `pg_dump`) |
+| 4. Tally archive | Final Tally data folder after sign-off | Indian archive location | 8 years | Admin (cut-over Step 4) |
+
+Rules: the dump runner uses a **read-only** database role created for it (not the `postgres` password, never the secret key in the browser); its connection string lives only on that machine; dumps never go into Git, CI artifacts or chat. Each run's size and checksum go into `ops.backup_runs`; the Backup screen (Phase 2) shows the latest run and warns when the last good run is older than 26 hours.
+
+### Restore procedures
+
+1. **Point-in-time (PITR)** — Supabase dashboard → Database → Backups → Point in time → pick the time → restore **into a new project in `ap-south-1`**. Then run `scripts/restore-drill.mjs`-style checks (schema fingerprint, row counts, ledger checksums) against it, point Vercel's `VITE_SUPABASE_URL`/key at it, redeploy Edge Functions and secrets, update the CSP URL in `vercel.json`. Owner decides; recorded in the Bug fixer.
+2. **From the India `pg_dump`** — create an empty project in `ap-south-1` and restore the whole custom dump into it in one go (`pg_restore --single-transaction --no-owner`), as a like-for-like copy that includes the audit tables. Never restore selected rows into a live database: corrections are reversals plus new documents.
+3. After any restore: verify `audit.row_history` continuity (max id/time), trial balance per company = pre-incident report, stock ledger totals, gap-free numbering (`core.doc_numbers_issued`).
+
+### Restore drill — DEV, 03-11-2026 (what was and wasn't drilled)
+
+Docker is not available on the build machine and the DEV project is on the free plan, so a full PITR restore into a second project **was not** performed. What **was** drilled, with `DB_PASSWORD=… node scripts/restore-drill.mjs --record`:
+
+The drill ran on 03-11-2026 at 21:09 IST. The data is synthetic only. Dump files went to `backups/drill-…/` on the office laptop in India; that folder is git-ignored.
+
+1. **Dump from one snapshot** (`REPEATABLE READ`, read-only):
+   - 13 key tables as JSON: `core.companies, gstins, user_roles, settings`, `master.parties, products`, `acct.accounts, vouchers, gl_entries, bill_allocations`, `sales.documents, document_lines`, `inv.stock_ledger`.
+   - Their row counts and order-independent content checksums.
+   - Row counts of all 238 app tables.
+   - A schema fingerprint: tables, columns, constraints, indexes, policies, `api`/`app` function bodies and `api` views.
+   - Size: 240.8 MB. Time: 104 s.
+2. **Restore and verify:** each file was checked against its SHA-256, loaded into a temporary copy of its table (`create temp table … (like …)` + `json_populate_recordset`), and re-checksummed. **13/13 tables matched exactly** on row count and content checksum, including 240,614 GL rows, 100,409 stock rows and 70,212 vouchers. The temporary copies were rolled back. The schema fingerprint read again was identical. Total time: 154 s.
+3. **Recorded** through `api.record_backup_run` (kind `restore_drill`, status `ok`) as the synthetic E2E Admin. It shows on the Backup screen.
+
+What this proves: a logical export of the books can be taken consistently and read back bit-for-bit. What it does **not** prove: that a whole database can be rebuilt, including roles, auth users, Storage objects, sequences and triggers.
+
+**Not drilled yet (owner, on prod before go-live — `docs/GO_LIVE_CHECKLIST.md` §7):** a real PITR restore into a new `ap-south-1` project; a full `pg_dump`/`pg_restore` round trip on the India runner; Storage bucket restore; timing the switch of the app to a restored project (target RTO 4 h, RPO ≤ 5 minutes with PITR).

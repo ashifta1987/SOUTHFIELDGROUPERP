@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useCan } from '@/auth/AuthProvider'
-import { rowsOf, useApiView } from '@/data/queries'
+import { useQuery } from '@tanstack/react-query'
+import type { ViewRow } from '@/data/queries'
+import { api } from '@/shared/supabase'
 import { useApiMutation, type RpcError } from '@/data/rpc'
 import { CompanyPicker } from '@/features/admin/branches/CompanyPicker'
 import { todayIst, useCompanyChoice } from '@/features/admin/branches/company'
@@ -42,8 +44,23 @@ export function CashBookPage() {
   const [from, setFrom] = useState(todayIst())
   const [to, setTo] = useState(todayIst())
   const ledger = useReadRpc<LedgerRow[]>('account_ledger', { p_account_id: account?.id, p_from: from, p_to: to }, Boolean(account))
-  const vouchers = useApiView('vouchers', { eq: { company_id: companyId }, order: 'posted_at', ascending: false, limit: 500, enabled: Boolean(companyId) })
-  const status = new Map(rowsOf(vouchers).map((v) => [v.id, v]))
+  // Status of exactly the vouchers on screen (Phase 9: not "the latest 500", which missed older rows at volume).
+  const ledgerVoucherIds = [...new Set((ledger.data ?? []).map((r) => r.voucher_id).filter((v): v is string => Boolean(v)))]
+  const vouchers = useQuery({
+    queryKey: ['api', 'vouchers', 'cash-book', companyId ?? '', ledgerVoucherIds.length, ledgerVoucherIds[0] ?? '', ledgerVoucherIds[ledgerVoucherIds.length - 1] ?? ''],
+    enabled: Boolean(companyId) && ledgerVoucherIds.length > 0,
+    staleTime: 10_000,
+    queryFn: async () => {
+      const out: ViewRow<'vouchers'>[] = []
+      for (let i = 0; i < ledgerVoucherIds.length; i += 200) {
+        const { data, error } = await api().from('vouchers').select('*').in('id', ledgerVoucherIds.slice(i, i + 200))
+        if (error) throw new Error(error.message)
+        out.push(...((data ?? []) as ViewRow<'vouchers'>[]))
+      }
+      return out
+    },
+  })
+  const status = new Map((vouchers.data ?? []).map((v) => [v.id, v]))
   const [journal, setJournal] = useState(false)
   const [reverse, setReverse] = useState<LedgerRow | null>(null)
 

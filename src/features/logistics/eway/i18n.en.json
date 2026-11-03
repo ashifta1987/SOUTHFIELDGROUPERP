@@ -1,0 +1,35 @@
+{
+  "eway": {
+    "active": "E-way bill active",
+    "cancelled": "E-way bill cancelled",
+    "mock": "Test e-way bill (mock provider)",
+    "irnMissing": "Invoice waits for its IRN",
+    "validUntil": "Valid until {{when}} · vehicle {{vehicle}}",
+    "lastError": "Last provider answer: {{error}}",
+    "request": "Get e-way bill",
+    "runMock": "Run with mock provider",
+    "title": "E-way bill for {{doc}}",
+    "help": "The e-way bill is made from the posted invoice through the e-way bill API, before the vehicle leaves.",
+    "submit": "Ask for the e-way bill",
+    "vehicle": "Vehicle number",
+    "distance": "Distance (km)",
+    "req": { "queued": "Waiting to send", "in_progress": "Sending", "dead": "Gave up — see Bug fixer", "cancelled": "Cancelled" },
+    "rules": {
+      "eway": {
+        "needs_invoice": "Make or link the invoice first; the e-way bill is made from it.",
+        "already": "This dispatch already has an e-way bill.",
+        "vehicle": "Give the vehicle number or the transporter's GSTIN.",
+        "vehicle_format": "The vehicle number looks wrong."
+      },
+      "einvoice": { "irn_required": "The invoice needs its IRN first (e-invoicing is on for the GSTIN)." },
+      "dispatch": {
+        "eway_invalid": "This dispatch's e-way bill is cancelled or no longer valid.",
+        "state": "This dispatch has already left."
+      },
+      "integrations": {
+        "provider_not_set": "No e-way bill provider is chosen yet. The owner picks it on Settings.",
+        "mock_not_allowed": "The mock provider works only on the development database."
+      }
+    }
+  }
+}

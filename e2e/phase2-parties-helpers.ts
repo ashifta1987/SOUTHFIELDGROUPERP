@@ -7,7 +7,10 @@ export function rand4(): string {
 }
 
 export function randomPan(): string {
-  return `EEEEE${rand4()}E`
+  // Synthetic PAN (EEE marker + random letters/digits). Phase 9: widened from 10^4 to ~1.8·10^8 values because test
+  // parties accumulate on DEV (append-only data) and GSTIN collisions ("party.gstin_exists") made specs flaky.
+  const L = () => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)]
+  return `EEE${L()}${L()}${rand4()}${L()}`
 }
 
 /** GSTIN check digit (mod-36, same algorithm as app.gstin_valid in the masters migration). */

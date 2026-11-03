@@ -1,6 +1,9 @@
 {
   "_meta": { "language": "भोजपुरी", "needs-native-review": true, "note": "Machine draft. A native Bhojpuri speaker must review every string before go-live. Missing keys fall back to Hindi, then English." },
   "common": {
+    "loadMore": "अउर देखाईं",
+    "shownRows_one": "{{count}} लाइन देखावल गइल",
+    "shownRows_other": "{{count}} लाइन देखावल गइल",
     "comingInPhase": "चरण {{phase}} में आई",
     "askHelp": "एकरा बारे में मदद पूछीं",
     "cancel": "रद्द करीं",

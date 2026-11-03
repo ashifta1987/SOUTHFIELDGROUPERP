@@ -39,7 +39,10 @@
     "when": "When",
     "who": "Who",
     "details": "Details",
-    "noAccess": "No access"
+    "noAccess": "No access",
+    "loadMore": "Load more",
+    "shownRows_one": "{{count}} row shown",
+    "shownRows_other": "{{count}} rows shown"
   },
   "shell": {
     "mainMenu": "Main",

@@ -1,0 +1,45 @@
+{
+  "integrations": {
+    "title": "Integrations",
+    "intro": "Every call to an outside service (GSP for e-invoice and e-way bill, bank feeds, online stores, WhatsApp help) is retried with growing waits. When it gives up it lands here and as a Bug fixer item.",
+    "filter": "Show",
+    "filters": { "attention": "Needs attention", "all": "All" },
+    "count": { "queued": "{{n}} waiting", "in_progress": "{{n}} sending", "dead": "{{n}} gave up" },
+    "caption": "Outbound integration requests",
+    "cols": { "kind": "What", "status": "Status", "attempts": "Attempts", "next": "Next try", "error": "Last answer", "actions": "Actions" },
+    "status": { "queued": "Waiting", "in_progress": "Sending", "done": "Done", "dead": "Gave up", "cancelled": "Cancelled" },
+    "kind": {
+      "einvoice_generate": "E-invoice IRN",
+      "einvoice_cancel": "Cancel IRN",
+      "eway_generate": "E-way bill",
+      "eway_update_partb": "E-way bill vehicle update",
+      "eway_cancel": "Cancel e-way bill",
+      "bank_feed_sync": "Bank statement feed",
+      "channel_listing_sync": "Store listing sync",
+      "channel_order_ack": "Store order acknowledgement",
+      "help_whatsapp_reply": "WhatsApp help reply"
+    },
+    "retry": "Retry",
+    "runMock": "Run with mock provider",
+    "empty": "Nothing waiting",
+    "emptyBody": "No outside call needs attention.",
+    "ev": {
+      "caption": "Latest inbound webhooks",
+      "at": "Received",
+      "provider": "From",
+      "topic": "Event",
+      "signature": "Signature",
+      "sigOk": "Checked",
+      "sigBad": "Rejected",
+      "status": "Result",
+      "st": { "received": "Received", "processed": "Processed", "rejected": "Rejected", "failed": "Failed", "ignored": "Ignored" },
+      "empty": "No webhooks received yet"
+    },
+    "rules": {
+      "integrations": {
+        "state": "Only a waiting or given-up request can be retried.",
+        "mock_not_allowed": "The mock provider works only on the development database."
+      }
+    }
+  }
+}

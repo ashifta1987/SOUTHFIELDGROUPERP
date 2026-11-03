@@ -32,3 +32,6 @@ jobs:
         if: steps.s.outputs.ok == 'true'
       - run: pnpm db:test
         if: steps.s.outputs.ok == 'true'
+      # Phase 9: catalogue-level RLS / grants audit (fails on any finding).
+      - run: node scripts/rls-audit.mjs
+        if: steps.s.outputs.ok == 'true'

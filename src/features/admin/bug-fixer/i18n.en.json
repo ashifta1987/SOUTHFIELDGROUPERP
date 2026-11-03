@@ -37,7 +37,8 @@
       "tax": "Tax",
       "between_companies": "Between companies",
       "masters": "Masters",
-      "import": "Import"
+      "import": "Import",
+      "integration": "Integrations"
     },
     "status": {
       "open": "Open",
@@ -75,7 +76,8 @@
       "cancelled_voucher": "Cancelled voucher",
       "classify_bills": "Bills to classify",
       "control_mismatch": "Control total differs",
-      "other": "Check"
+      "other": "Check",
+      "integration_dead_letter": "Outside call gave up"
     },
     "emptyTitle": "No problems found",
     "emptyBody": "Problems arrive from Tally loads and the checks. Run the checks to look again.",

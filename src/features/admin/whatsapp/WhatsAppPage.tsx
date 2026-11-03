@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '@/auth/AuthProvider'
 import { rowsOf, useApiView, type ViewRow } from '@/data/queries'
+import { LoadMore, usePagedRows } from '@/data/paged'
+import { api } from '@/shared/supabase'
 import { useApiMutation, type RpcError } from '@/data/rpc'
 import { RpcErrorBox } from '@/features/common/RpcErrorBox'
 import { askHelp } from '@/features/help/events'
@@ -434,8 +436,13 @@ function AllowTab({ canEdit }: { canEdit: boolean }) {
 function OutboxTab({ canEdit }: { canEdit: boolean }) {
   const { t } = useTranslation()
   const [status, setStatus] = useState('')
-  const q = useApiView('msg_outbox', { order: 'created_at', ascending: false, eq: { status }, limit: 200 })
-  const rows = rowsOf(q)
+  // Paged on the server (Phase 9): the outbox grows by every invoice, statement and reminder.
+  const q = usePagedRows<Outbox>(['api', 'msg_outbox', 'outbox-tab', status], (from, to) => {
+    let b = api().from('msg_outbox').select('*')
+    if (status) b = b.eq('status', status)
+    return b.order('created_at', { ascending: false }).range(from, to) as unknown as PromiseLike<{ data: Outbox[] | null; error: { message: string } | null }>
+  })
+  const rows = q.rows
   const [cancelling, setCancelling] = useState<Outbox | null>(null)
   const [reason, setReason] = useState('')
   const cancel = useApiMutation<{ p_id: string; p_reason: string }>('cancel_message', [['api', 'msg_outbox']])
@@ -503,6 +510,7 @@ function OutboxTab({ canEdit }: { canEdit: boolean }) {
         empty={<EmptyState title={t('whatsapp.noOutbox')} body={t('whatsapp.noOutboxBody')} />}
         minWidth={980}
       />
+      <LoadMore shown={rows.length} hasMore={q.hasMore} busy={q.loadingMore} onMore={q.loadMore} />
       <FormDialog
         open={cancelling !== null}
         onOpenChange={(o) => {

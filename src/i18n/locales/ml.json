@@ -1,6 +1,9 @@
 {
   "_meta": { "language": "മലയാളം", "needs-native-review": true, "note": "Machine draft. A native Malayalam speaker must review every string before go-live." },
   "common": {
+    "loadMore": "കൂടുതൽ കാണിക്കുക",
+    "shownRows_one": "{{count}} വരി കാണിക്കുന്നു",
+    "shownRows_other": "{{count}} വരി കാണിക്കുന്നു",
     "comingInPhase": "ഘട്ടം {{phase}}-ൽ വരുന്നു",
     "reference": "റഫറൻസ്",
     "askHelp": "ഇതിനെക്കുറിച്ച് സഹായം ചോദിക്കുക",

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { usePagedRows } from '@/data/paged'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useCan } from '@/auth/AuthProvider'
 import { rowsOf, useApiView, type ViewRow } from '@/data/queries'
@@ -192,6 +193,23 @@ export function useStockMovements(companyId: string | undefined, f: { product?: 
       return (data ?? []) as ViewRow<'stock_movements'>[]
     },
   })
+}
+
+/** The same ledger rows, paged on the server ("Load more"), for the full Stock movements list (Phase 9). */
+export function usePagedStockMovements(companyId: string | undefined, f: { product?: string; place?: string; type?: string; from?: string; to?: string }) {
+  return usePagedRows<ViewRow<'stock_movements'>>(
+    ['api', 'stock_movements', 'filtered', companyId ?? '', JSON.stringify(f)],
+    (from, to) => {
+      let q = api().from('stock_movements').select('*').eq('company_id', companyId ?? '')
+      if (f.product) q = q.eq('product_id', f.product)
+      if (f.place) q = q.eq('place_id', f.place)
+      if (f.type) q = q.eq('move_type', f.type)
+      if (f.from) q = q.gte('move_date', f.from)
+      if (f.to) q = q.lte('move_date', f.to)
+      return q.order('id', { ascending: false }).range(from, to) as unknown as PromiseLike<{ data: ViewRow<'stock_movements'>[] | null; error: { message: string } | null }>
+    },
+    { enabled: Boolean(companyId), pageSize: 300 },
+  )
 }
 
 /** Query keys to refresh after any stock change. */

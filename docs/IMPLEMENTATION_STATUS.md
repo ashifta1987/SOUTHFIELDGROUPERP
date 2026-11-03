@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phases 4–7 complete on DEV. Phase 8 — Integrations: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
+| Current phase | **Phases 4–8 complete on DEV. Phase 9 — Go-live readiness: built and verified on DEV (03-11-2026); production go-live waits for the owner's checklist (`docs/GO_LIVE_CHECKLIST.md`).** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,39 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 9 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | RLS / grants audit `scripts/rls-audit.mjs`. 3 real findings fixed in `20261103009000` (3 tables without a policy, lost `anon` grant on the failed sign-in log, 3 mutable `search_path`). Re-run: 238/238 tables with RLS + policy, **0 findings**. `supabase/tests/25_security.sql` makes these permanent. `docs/SECURITY.md` §12 | Done |
+| 2 | Server-side MFA: `security.enforce_mfa` (default off; on in prod) drops MFA-required roles below aal2 everywhere (RLS, RPCs → `mfa_required`, investor portal). `api.me().mfa_needed` sends the user to the TOTP step | Done. **Gap:** no in-app TOTP enrolment screen |
+| 3 | Secrets scan `scripts/secrets-scan.mjs` (tree + full history, masked output): **clean**. CI job `secrets-scan` (gitleaks + script) in `.github/workflows/ci.yml` | Done |
+| 4 | Security headers / CSP in `vercel.json` (Supabase https + wss, storage, `data:`/`blob:` images, Google Fonts, no `unsafe-eval`, `frame-ancestors 'none'`). `e2e/phase9-headers.spec.ts` checks the deployed URL | Done. Runs against a deployment |
+| 5 | Performance at 50k invoices: every list < 1 s for Admin **and** accountant (slowest 257 ms, was up to > 60 s). `009100` indexes + once-per-statement policies, `009200` set-based helpers, `009300` audit gate. Paging + server totals in the UI. `docs/TEST_RESULTS.md` → Phase 9 performance | Done |
+| 6 | `docs/DPDP_CHECKLIST.md` (each duty → where enforced, gaps marked) | Done |
+| 7 | Backups policy + logical restore drill on DEV (`scripts/restore-drill.mjs`, recorded in `ops.backup_runs`). `docs/DEPLOYMENT_GUIDE.md` → Backups and restore says what was **not** drilled (PITR, full pg_restore) | Done (logical drill) |
+| 8 | Cut-over plan in `docs/DATA_MIGRATION.md`. `docs/GO_LIVE_CHECKLIST.md` for the owner's signature | Done |
+
+Verification: pgTAP **695/695** (26 files), Vitest 69/69, `tsc -b`, lint and build pass, Playwright (list pages, Phase 0, Phase 8) green. See `docs/TEST_RESULTS.md`.
+
+Known Phase 9 gaps:
+- There is no TOTP enrolment screen. Enrol through Supabase before turning on enforcement.
+- The app ships as one 2.8 MB minified JS chunk (about 0.7 MB gzip). Route-level code splitting is still to do.
+- Full PITR and `pg_restore` drills must be done on prod.
+- The CSP carries the DEV project URL until go-live.
+
+## Phase 8 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` / `API_DOCUMENTATION.md` ("Phase 8"); decisions D-P8-1..6 in `ERP_ARCHITECTURE.md`; deploy steps, secrets and regional invocation in `DEPLOYMENT_GUIDE.md` | Done |
+| 2 | Migrations `20261103008000…8200` on DEV: outbound integration queue with back-off and dead letter → Bug fixer (closed again on success), stale-worker sweep (pg_cron), webhook events deduplicated per provider (signed events only), e-invoice IRNs with the per-GSTIN switch + start date (not final without IRN: print refused, WhatsApp invoice held, goods cannot leave), IRN cancel within the window, e-way bills from the API with Part-B and cancel, cancelled/expired e-way bill refused at the gate, bank feeds, online-store order staging, marketplace settlements and the TCS u/s 52 reconciliation (CA rate setting), GPS provider intake on duty only, help on WhatsApp for verified staff (no data tools) | Done |
+| 3 | Edge Functions (code + adapters with mocks; **not deployed**, no access token): `integration-worker`, `einvoice`, `ewaybill`, `bank-feed`, `gps-intake`, `store-webhooks`, `help-agent`, `help-whatsapp`; shared pure modules in `supabase/functions/_shared/` type-checked by `tsc -b` (Deno not installed, so no `deno check`) | Code done |
+| 4 | Screens: e-invoice panel + QR on the invoice (print checks the server first), IRN on the printed invoice, e-way bill status and request on the dispatch board, Bug fixer → Integrations (dead letters, retry, webhook log), Bug fixer area "Integrations" | Done, live data |
+| 5 | pgTAP `24_integrations.sql` **65/65**; Vitest +30 (HMAC, back-off, redaction, mock GSP, QR shape, feed/GPS cleaning); Playwright `phase8-integrations.spec.ts` green (mock providers through DB RPCs, axe on 3 screens) | Done |
+
+Known Phase 8 gaps: no real provider is wired (GSP, e-way, bank feed, GPS, stores, AI model, speech-to-text) — each adapter refuses until chosen, so requests dead-letter instead of pretending; voice input in the in-app Help panel (UI) and voice-note download from WhatsApp media are not built (transcriber adapter only); help-agent rate limit (30/hour) and monthly cost cap are not enforced yet; listing/inventory sync to stores is queued-kind only; GSTR-1/2B filing through the GSP not built; e-invoice for exports (EXPWP/EXPWOP) not covered (exports are stored without GST); the settings and verified-staff screens for Phase 8 are RPC-only (no screen yet for `set_einvoice_switch`, bank feeds, GPS devices, help WhatsApp staff, marketplace settlements — reachable through the API and planned for the Settings screen).
 
 ## Phase 7 result (03-11-2026)
 
@@ -253,7 +286,7 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 |---|---|---|
 | Q-19 | GST rates by HSN (prompt states soap bars 3401 11 at 5% and liquids/detergents at 18% from 22-Sep-2025). | Rates live in `master.hsn_rates` with effective dates; seeded only after CA confirmation; tests use synthetic HSNs. |
 | Q-20 | Lawful reasons list for bills without GST. | Only the four in §6; anything else refused. |
-| Q-21 | E-invoice start date per GSTIN. | Switch off until confirmed. |
+| Q-21 | E-invoice start date per GSTIN. | Switch off until confirmed. **Phase 8:** `core.gstins.einvoice_from` + `api.set_einvoice_switch` (Admin, CA's note required). |
 | Q-22 | PF/ESI and overtime settings under the labour codes. | Settings tables, off until confirmed. |
 | Q-23 | GST treatment of free items, gift and combo packs. | Per-pack setting required before such a pack can be billed. **Built (Phase 5):** `prod.packs.gst_treatment` (Admin, with the CA's note); a pack without it is refused on any sales document. Values offered: free with sale at a single price (circ. 92/11/2019), gift without consideration (s.17(5)(h)), mixed supply / composite supply (s.8) — the CA picks per pack. |
 | Q-24 | TDS sections and rates (Income-tax Act 2025); MSME expense treatment. | Settings, unset until confirmed. |
@@ -281,6 +314,30 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 | Q-41 | CA settings: depreciation method, useful lives and residual % by asset kind; s.185 exception; s.186 limit; profit-share posting rules and dividend treatment (s.123); investor net-worth definition; whether investors see figures without GST. | Each refuses with a rule code until recorded; investors never see figures without GST. |
 | Q-42 | Licence owners (who receives the 90/30/7 reminders) and which licences block which processes. | Without an owner the reminder is an on-screen alert only; Admin marks blocking licences. |
 | Q-30 | Minimum cash/bank balance for the Cash flow "days below minimum" indicator. | No `cash.min_balance` setting created; the indicator stays hidden until set. |
+
+### Phase 8 decisions (integrations)
+
+| # | Question | Owner | Safest reading taken |
+|---|---|---|---|
+| Q-P8-1 | Which **GSP** for e-invoice (IRP) and e-way bill (and GSTIN verification, GSTR filing)? API contract, sandbox, per-GSTIN credentials. | Owner | Adapter `UnconfiguredGsp` refuses (non-retryable → dead letter); DEV uses `MockGsp` with `integrations.allow_mock`. |
+| Q-P8-2 | Which **GPS provider** (vehicle trackers or phone app) and its push signature scheme? | Owner | `gps-intake` accepts a generic timestamped HMAC (`GPS_WEBHOOK_SECRET`); points only inside an open duty session. |
+| Q-P8-3 | Which **bank statement feed** (Account Aggregator / bank API) per bank account? | Owner | Manual statement import continues; feeds are configured but refuse until a provider is chosen. |
+| Q-P8-4 | Online **store accounts** (Shopify, Amazon, Flipkart, JioMart, Meesho) and the webhook signature scheme of each. Only Shopify's is public (base64 HMAC-SHA256); Amazon SP-API uses SQS/EventBridge. | Owner | Shopify verified per its docs; the others use a generic HMAC on our relay, marked **needs confirmation**. |
+| Q-P8-5 | **AI model** for the help assistant (Gemini on Vertex AI in `asia-south1`, Claude, other) and **speech-to-text** for voice notes; monthly cost cap. | Owner | `MockModel` only on DEV (`HELP_ALLOW_MOCK=true`); prod refuses and files the problem instead. Redaction filter always on. |
+| Q-P8-6 | Should store orders become sales orders **automatically** (a service account acting for the online desk) or be **brought in by a person** with sales rights? | Owner | Brought in by a person (`api.ingest_staged_channel_orders`); webhooks only stage them. |
+| Q-P8-7 | Marketplace **TCS rate** (`marketplace.tcs_rate_pct`) and how operator TCS / TDS are posted (GSTR-8 credit). | CA | Unset → reconciliation shows `rate_not_set`; settlements recorded, nothing posted to the GL. |
+| Q-P8-8 | IRN cancel window (`einvoice.cancel_window_hours`, seeded **24** per the IRP rule) and e-way bill cancel window (`eway.cancel_window_hours`, **unset** → cancel refused). | CA | As stated. |
+| Q-P8-9 | Integration retry settings: `integrations.max_attempts` (5), `integrations.backoff_base_seconds` (60), `integrations.backoff_max_seconds` (21600). | Owner | Seeded as operational defaults; change on Settings. |
+
+### Phase 9 decisions (go-live)
+
+| # | Question | Owner | Safest reading taken |
+|---|---|---|---|
+| Q-P9-1 | **TOTP enrolment**: build an in-app enrolment screen, or have Admin enrol each MFA-role user in a supervised session? | Owner | `security.enforce_mfa` stays **off** until every MFA-role account (owner, admin, MD, finance head, accountant, office admin, CA, auditor, investors) has a verified factor |
+| Q-P9-2 | **India-hosted second backup copy**: which machine (VM in `ap-south-1`/`ap-south-2`, or the office server), and who holds the encryption key? | Owner | Only Supabase daily backups + PITR (Mumbai) until chosen. No dump leaves India |
+| Q-P9-3 | **RTO / RPO** targets | Owner | RTO 4 h, RPO ≤ 5 min (PITR). Change in `DEPLOYMENT_GUIDE.md` if different |
+| Q-P9-4 | **Cut-over date** per company (1 April recommended) and the CA who signs the opening balances | Owner + CA | No cut-over until both are named. See `DATA_MIGRATION.md` |
+| Q-P9-5 | DPDP: grievance officer / contact, privacy notice texts, retention periods per record type | Owner + legal adviser | Defaults in `DPDP_CHECKLIST.md`, marked "to confirm" |
 
 ## Translations awaiting native review
 
