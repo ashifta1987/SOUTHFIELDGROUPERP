@@ -137,7 +137,9 @@ export function SalesRegisterPage({ variant }: { variant: 'admin' | 'accountant'
   // Admin view: bills without GST grouped by customer (only rows RLS returned).
   const byCustomer = new Map<string, { name: string; count: number; total: number }>()
   for (const r of without) {
-    const cur = byCustomer.get(r.party_id) ?? { name: r.party_name, count: 0, total: 0 }
+    // Branch delivery challans (stock transfers on the same GSTIN) have no customer.
+    if (!r.party_id) continue
+    const cur = byCustomer.get(r.party_id) ?? { name: r.party_name ?? '', count: 0, total: 0 }
     cur.count += 1
     cur.total = sumAmounts([cur.total, signed(r, Number(r.total))])
     byCustomer.set(r.party_id, cur)

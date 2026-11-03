@@ -150,3 +150,95 @@ Tests: `supabase/tests/10_hr_screens.sql` (18).
 | `api.msg_inbound` (view, invoker) | Received messages with `from_masked`, party, window expiry (RLS: Admin, or accounts of that company). |
 
 Tests: `supabase/tests/11_staff_help.sql` (25).
+
+## Phase 4: inventory and purchase (built)
+
+Migrations: `20261103004000_inventory_core.sql`, `004100_inventory_api.sql`, `004200_transfers.sql`, `004300_purchase.sql`, `004400_inventory_purchase_views.sql`. All additive (one relaxation: `sales.documents.party_id` may be null **only** for `delivery_challan`, enforced by check `sales_documents_party_required`). Money `numeric(18,2)`, quantities `numeric(18,3)`, unit cost `numeric(18,4)`.
+
+### Stock tables (`inv`, `prod`)
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `inv.lots` | company_id, product_id, lot_no (unique per company+item), supplier_lot_no, mfg_date, expiry_date, source `goods_receipt\|production\|opening\|return\|adjustment`, status `quarantine\|available\|hold\|rejected`, needs_test, grn_id, received_by/at, released_by/at | One row per batch. A GRN lot gets `lot_no` = given lot or `<GRN no>-<line>`. |
+| `inv.stock_ledger` | id bigint, company_id, product_id, lot_id, place_id, bucket `available\|quarantine\|hold\|in_transit\|rejected`, qty (signed, ≠ 0), unit_cost, value, move_type, source_table, source_id, doc_no, move_date, note, negative_allowance_id, reverses_id, client_request_id, created_by | **Append-only** (update/delete/truncate refused by `app.reject_change`, errcode P0001); inserts only inside `app.stock_post` (else 42501 `stock.direct_write`). move_type: opening, receipt, issue, issue_in, return, release, reject, adjustment, transit_out, transit_in, transfer_in, transfer_return, write_off, scrap_in, regrind, scrap_sale, reversal. |
+| `inv.stock_balances` | company_id, product_id, lot_id, place_id, bucket, qty, negative_allowance_id; unique nulls-not-distinct (company, item, lot, place, bucket) | Kept by `app.stock_post` in the same transaction. Check `qty >= 0 or negative_allowance_id is not null`. Direct writes refused (42501). |
+| `inv.negative_stock_allowances` | company_id, product_id, place_id (null = every place), reason (≥ 5 chars), valid_from/to, granted_by, revoked_at/by, revoke_reason | Admin (`settings.manage`) only; logged in `audit.user_log` (`setting_changed`). |
+| `inv.negative_stock_uses` | allowance_id, ledger_id, company_id, product_id, place_id, qty_after, used_by, at | Append-only; one row per movement that left a balance below zero (+ `admin_action` user-log event). |
+| `inv.reservations` | company_id, product_id, lot_id, place_id, qty, source_table, source_id, source_line_id, status `active\|consumed\|released` | Transfers reserve at `reserve_transfer`; `app.stock_take` refuses to take reserved stock for anything else (`stock.reserved`). |
+| `inv.reorder_levels` | company_id, product_id, place_id (null = company level), min_qty, reorder_qty, max_qty | `api.item_stock.below_reorder` uses the company-level row. |
+| `inv.cycle_counts` | company_id, place_id, doc_no (`CNT/…`), count_date, blind, status `counting\|submitted\|posted\|cancelled`, submitted_by, approved_by (≠ submitted_by) | |
+| `inv.count_lines` | count_id, product_id, lot_id, bucket, system_qty (frozen at start), counted_qty, counted_by/at, reason | System quantity hidden in `api.stock_count_lines` while a blind count is open. |
+| `inv.stock_issues` | company_id, doc_no (`ST/…`), kind `issue\|return`, product_id, lot_id, from_place_id, to_place_id, qty, target_kind `production\|cost_centre\|batch\|job\|maintenance\|other`, target_ref, cost_centre, against_issue_id, bucket, reason, issue_date | Append-only. |
+| `inv.scrap_sales` | company_id, sales_document_id (unique; a posted `sales_invoice`), place_id, slip_path, qty, sold_by | Append-only; stock out once per invoice. |
+| `inv.transfers` | company_id, doc_no (`TR/…`), transfer_date, from/to_place_id, from/to_gstin_id, gst_doc_kind `delivery_challan\|tax_invoice` (= same GSTIN or not, checked), sales_document_id, status (see state machine), needed_by, note, vehicle_no, carrier_name, requested_by, approved_by, reserved_by, picked_by, handed_over_at, carried_by, dispatched_at, received_by, witness_by, reconciled_by, closed_by, cancelled_by + timestamps, cancel_reason | Checks: approved_by ≠ requested_by; carried_by ≠ picked_by; received_by ≠ picked_by; witness_by ≠ received_by; closed_by ∉ {picked_by, carried_by}. No delete. |
+| `inv.transfer_lines` | transfer_id, line_no, product_id, lot_id, qty_requested, qty_approved, note | |
+| `inv.transfer_items` | transfer_id, line_id, product_id, lot_id, qty_dispatched, qty_accepted, qty_quarantined, qty_returned, qty_lost, **qty_in_transit (generated = dispatched − accepted − quarantined − returned − lost)**, unit_cost, counted_by/at | Check `transfer_items_balance`: in transit never below zero. |
+| `inv.transfer_events` | transfer_id, action, from_status, to_status, actor, detail jsonb, at | Append-only history of every step. |
+| `prod.lab_tests` | company_id, lot_id, kind `incoming`, result `pass\|fail\|hold`, parameters jsonb, remarks, test_date, tested_by | Append-only. Extended in Phase 5. |
+| `prod.regrind_entries` | company_id, entry_date, kind `scrap_in\|regrind_reuse`, product_id (an `is_scrap` item), source_product_id, place_id, qty, machine, mould, shift, note, recorded_by | Append-only. |
+
+Item flags (additive on `master.products`): `needs_incoming_test boolean` (GRN → quarantine), `is_scrap boolean`.
+
+### Purchase tables (`purch`)
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `purch.requests` | company_id, doc_no (`PR/…`), request_date, department, for_job, needed_by, reason, attachment_path, est_total, status `draft\|submitted\|approved\|refused\|ordered\|closed\|cancelled`, requested_by, decided_by (≠ requested_by), decided_at, decision_note | |
+| `purch.request_lines` | request_id, line_no, product_id (optional), description, qty, uom, est_rate, suggested_party_id, note | |
+| `purch.rfqs` / `purch.rfq_lines` / `purch.rfq_suppliers` | rfq: doc_no (`RFQ/…`), rfq_date, request_id, due_date, status `open\|closed\|cancelled`; lines: product_id, description, qty, uom, request_line_id | |
+| `purch.quotations` / `purch.quotation_lines` | quotation: rfq_id, party_id (unique per RFQ), quote_ref, quote_date, valid_until, terms_days, delivery_days, status `received\|selected\|rejected`; lines: rfq_line_id, qty, rate, discount | |
+| `purch.orders` | company_id, gstin_id, doc_no (`PO/…`, null while draft), party_id, request_id, quotation_id, order_date, delivery_date, place_id, place_of_supply, terms_days, msme, taxable, cgst, sgst, igst, round_off, total, status `draft\|issued\|confirmed\|part_received\|received\|closed\|cancelled`, price_flags jsonb, price_rise_accepted_by, created_by, issued_by/at, confirmed_at, cancelled_at, cancel_reason | Check: `not msme or terms_days <= 45`. Tax from `app.compute_tax` (HSN table by date). |
+| `purch.order_lines` | order_id, line_no, product_id, description, hsn_code, uom, qty, rate, discount, taxable, gst_rate, cgst, sgst, igst, total, qty_received, request_line_id | |
+| `purch.goods_receipts` | company_id, gstin_id, doc_no (`GRN/…`), party_id, order_id, place_id, receipt_date, supplier_invoice_no/date, eway_bill_no, vehicle_no, direct_purchase, approved_by, status, notes, received_by | Check: an order, or a direct purchase with approver. No delete. |
+| `purch.grn_lines` | grn_id, line_no, order_line_id, product_id, qty, uom, rate, lot_id, supplier_lot_no, bucket `quarantine\|available`, qty_accepted, qty_rejected | No delete. |
+| `purch.bill_captures` | company_id, photo_path (bucket `bills`, `<company_id>/<file>`), source `phone\|whatsapp\|email\|pdf\|upload`, status `uploaded\|read\|matched\|mismatch\|drafted\|posted\|rejected`, extracted jsonb, party_id, order_id, grn_id, bill_id, match_result jsonb, uploaded_by/at, read_at, matched_by/at, reject_reason | |
+| `purch.price_history` | company_id, product_id, party_id, rate (per unit after discount, before GST), qty, uom, source `bill\|order`, source_id, rate_date | Append-only. Order rates at issue; bill rates when a purchase bill posts (trigger `purchase_bill_posted`). |
+| `purch.bills` (+ columns) | order_id, grn_id, capture_id | Phase 3 table, linked additively. |
+
+Storage: private bucket `bills` (20 MB). Read needs `purchase.view` or `purchase_bills.view`, upload needs `purchase.create` or `purchase_bills.create`, **for the company in the first folder of the path** (`app.storage_company(name)`).
+
+WhatsApp templates (drafts; Meta approval is the owner's step): `po_issued` (event `purchase.po_issued`: supplier, doc_no, delivery_date, company) and `payment_advice` (event `purchase.payment_advice`: supplier, amount, doc_no, bills, company).
+
+### Helpers (`app`)
+
+| Helper | Contract |
+|---|---|
+| `app.stock_post(company, product, lot, place, bucket, qty, move_type, source_table, source_id, doc_no, date, unit_cost?, note?) → ledger id` | The only writer of stock. Transaction advisory lock on (company, item, place) + `FOR UPDATE` on the balance row; refuses below zero (`stock.insufficient`, P0001) unless `app.negative_allowance` returns an allowance (then logs the use). Checks place company (`stock.place_other_company`) and lot (`stock.lot_mismatch`). |
+| `app.stock_take(company, product, lot, place, bucket, qty, move_type, source_table, source_id, doc_no, date, note?, own_reservation?) → [{lot_id, qty, unit_cost}]` | Takes from the given lot or earliest expiry first; refuses stock reserved for others (`stock.reserved`). |
+| `app.avg_cost(company, product)` | Weighted average from the ledger (valuation method is an open CA question). |
+| `app.negative_allowance(company, product, place)` | Active allowance id or null. |
+| `app.internal_doc_no(company, doc_type, date)` | Non-GST numbering (PR, RFQ, PO, GRN, TR, ST, CNT); creates the FY series on first use. |
+| `app.check_stock_date(company, date)` | Future date refused, back-date setting, FY and closed month. |
+| `app.transfer_challan(transfer, date)` / `app.check_transfer_invoice(transfer, doc)` | GST document for a transfer (see below). |
+| `app.order_price_flags(order)` | Lines dearer than the last rate (threshold setting `purchase.price_alert_pct`; unset = every increase). |
+| `app.last_rate`, `app.setting_num`, `app.storage_company` | |
+
+### State machines
+
+- **Transfer:** `requested` →(approve, another person)→ `approved` →(reserve, `inventory.edit`)→ `reserved` →(pick, `transfer.pick`)→ `picked` →(hand over: picker)→ `handed_over` →(hand over: carrier, another login; stock `available` at source → `in_transit` at destination; challan or invoice)→ `in_transit` →(blind receipt, not the picker; a carrier who receives needs a witness)→ `received` →(reconcile: found/returned, `transfer.approve`; finance write-off with `transfer.write_off`)→ `reconciled` (nothing in transit) →(close, never picker or carrier)→ `closed`. `cancelled` from any state before `in_transit` (reservations released). Balance rule: dispatched = accepted + quarantined + returned + approved loss + in transit; close needs in transit = 0 (`transfer.unbalanced`).
+- **GST for transfers (AGENTS rule 7):** same GSTIN → a posted `delivery_challan` in `sales.documents` (no party, `tax_class = without_gst`, `lawful_reason = challan_not_sold`, numbered from the GSTIN's `delivery_challan` series) made at dispatch. Other GSTIN → dispatch refused until a **posted tax invoice** from the sending GSTIN, billed to a party whose GSTIN is the receiving GSTIN, with IGST when the states differ and covering every dispatched item, is linked (`transfer.invoice_*`).
+- **Lot:** `quarantine` →(test pass by someone other than the receiver; release by someone other than the receiver)→ `available`; `quarantine` →(test fail; reject)→ `rejected`.
+- **Purchase request:** `draft` → `submitted` → `approved`/`refused` (another person, approval limits `core.approval_limits` doc_type `purchase_request` when set) → `ordered` (when its PO is issued).
+- **PO:** `draft` →(issue: `purchase.approve`, not the drafter, price increase accepted)→ `issued` → `confirmed` → `part_received` / `received` (by GRNs); `cancelled` before any receipt.
+- **Bill capture:** `uploaded` → `read` (fields set) → `matched` / `mismatch` → `drafted` (purchase bill draft; mismatch only by Admin) → `posted` (when the bill posts); `rejected`.
+- **Cycle count:** `counting` → `submitted` → `posted` (by someone who neither counted nor submitted; differences become `adjustment` movements) / `cancelled`.
+
+### Events to `msg.outbox`
+
+`purchase.po_issued` (issue_purchase_order; doc_type `purch.orders`, stage `issued`) and `purchase.payment_advice` (post_payment to a supplier; doc_type `acct.vouchers`, stage `payment_advice`). Through `app.enqueue_message`: status `queued` only for a party contact with a WhatsApp number **and consent**; otherwise one `skipped` row with `skip_reason` (`no verified WhatsApp number` / `no consent recorded`) is kept as the record. Idempotency key = doc + stage + number, so a retry queues nothing new.
+
+### Rights seeded
+
+New: `transfer.view/create/approve/pick/carry/receive/close`, `transfer.write_off` (special, finance), `qc.test`, `qc.release`. Role mapping (existing roles): buyer_logistics (purchase view/create/edit, inventory.view, transfer view/create/carry, purchase_bills.view); factory_manager (inventory view/create/edit/approve, purchase view/approve, transfer view/approve/close); finance_head (inventory/purchase view, purchase.approve, transfer view/write_off/close, purchase_bills view/create); accountant (transfer.view); md, gm (view + purchase.approve + transfer.approve); production_manager (inventory view/create, purchase view/create, transfer view/create/receive); injection_manager, mould_manager, assembly (inventory view/create, purchase view/create); supervisor (inventory view/create, transfer view/pick); factory_staff (transfer view/pick); qc_releaser, quality (inventory.view, qc.test, qc.release); chemist (qc.test); shop_staff (transfer view/create/receive, inventory.view); sales_manager (transfer view/approve, inventory.view); driver (transfer view/carry).
+
+### RLS
+
+RLS on every new table; select only (all writes through `api` RPCs). Stock tables: `inventory.view` (lots also purchase.view / qc.*; transfers also `transfer.view`); purchase tables: `purchase.view` (requests also the requester; orders/GRNs also `inventory.create`/`inventory.view`; captures also `purchase_bills.view` or the uploader; price history also `purchase_bills.view`). Cost and value columns in views show only with `cost.view`.
+
+### Law register
+
+`MSME-1` → built (test `13_purchase.sql`); `GST-3` enforced_in updated for transfers (challan / IGST invoice); new `STK-1` (no negative stock without a logged allowance).
+
+### Tests
+
+`supabase/tests/12_inventory.sql` (50), `supabase/tests/13_purchase.sql` (45); `scripts/concurrency-check.mjs` (two real connections race for the last unit). **250/250 pgTAP pass in total.**

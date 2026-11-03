@@ -55,7 +55,7 @@ export function initialFromDoc(doc: SalesDoc, lines: SalesDocLine[], products: P
       gstinId: doc.gstin_id,
       docType: (DOC_TYPES as readonly string[]).includes(doc.doc_type) ? (doc.doc_type as DocType) : 'sales_invoice',
       docDate: doc.doc_date,
-      partyId: doc.party_id,
+      partyId: doc.party_id ?? '',
       pos: doc.place_of_supply,
       lawfulReason: doc.lawful_reason ?? '',
       againstId: doc.against_id ?? '',
@@ -375,7 +375,7 @@ export function InvoiceEditor({
       return c.name.toLowerCase().includes(q) || (c.gstin ?? '').toLowerCase().includes(q) || (c.trade_name ?? '').toLowerCase().includes(q)
     })
     .map((c) => ({ value: c.id, label: c.gstin ? `${c.name} · ${c.gstin}` : c.name }))
-  if (!editable && doc && !custList.some((c) => c.id === doc.party_id)) custOptions.push({ value: doc.party_id, label: doc.party_name })
+  if (!editable && doc?.party_id && !custList.some((c) => c.id === doc.party_id)) custOptions.push({ value: doc.party_id, label: doc.party_name ?? '' })
 
   const typeOptions = DOC_TYPES.filter((d) => isAdmin || !ADMIN_ONLY_TYPES.includes(d) || d === header.docType).map((d) => ({ value: d, label: t(`invoice.types.${d}`) }))
   const stateChip =
@@ -421,7 +421,7 @@ export function InvoiceEditor({
             </Button>
           ) : null}
           {status === 'posted' && doc?.doc_type === 'sales_invoice' && canCreate ? (
-            <Button onClick={() => onNew({ docType: 'credit_note', companyId, gstinId: doc.gstin_id, partyId: doc.party_id, againstId: doc.id })}>{t('invoice.actions.creditNote')}</Button>
+            <Button onClick={() => onNew({ docType: 'credit_note', companyId, gstinId: doc.gstin_id, partyId: doc.party_id ?? undefined, againstId: doc.id })}>{t('invoice.actions.creditNote')}</Button>
           ) : null}
           {canCancel && currentId && status !== 'cancelled' ? (
             <Button

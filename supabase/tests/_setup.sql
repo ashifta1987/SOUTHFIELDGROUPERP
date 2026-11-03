@@ -127,3 +127,49 @@ begin
   return s || jsonb_build_object('cash', v_cash, 'bank', v_bank, 'cust', v_cust, 'cust_tn', v_cust_tn, 'supp', v_supp, 'prod', v_prod, 'prod_free', v_prod_free,
                                  'person', v_person, 'staff_user', v_staff_user);
 end $$;
+
+
+-- Phase 4 seed on top of seed3: places (stores, line, quarantine, a shop on the same GSTIN, a shop on a Tamil Nadu GSTIN
+-- of company A), a place in company B, synthetic items (one needs an incoming test, one plain, one scrap), the
+-- challan series, a second supplier without WhatsApp consent, company A's own TN registration as a party (for the
+-- IGST transfer invoice), and one synthetic user per job (company A only).
+create or replace function tests.seed4(s jsonb) returns jsonb
+language plpgsql as $$
+declare
+  v_a uuid := (s ->> 'company_a')::uuid; v_b uuid := (s ->> 'company_b')::uuid; v_ga uuid := (s ->> 'gstin_a')::uuid; v_ba uuid := (s ->> 'branch_a')::uuid;
+  v_fy uuid := (s ->> 'fy_a')::uuid; v_shop_br uuid; v_tn_g uuid; v_tn_br uuid; v_bb uuid;
+  v_stores uuid; v_line uuid; v_qp uuid; v_shop uuid; v_tn uuid; v_pb uuid; v_rm1 uuid; v_rm2 uuid; v_scrap uuid; v_supp2 uuid; v_tn_party uuid;
+  u jsonb := '{}'::jsonb; r record;
+begin
+  insert into core.financial_years (company_id, label, starts_on, ends_on) values (v_a, '2027-28', '2027-04-01', '2028-03-31'), (v_a, '2028-29', '2028-04-01', '2029-03-31')
+  on conflict do nothing;
+  insert into core.branches (company_id, gstin_id, code, name, kind) values (v_a, v_ga, 'S1', 'Test Shop Same GSTIN', 'shop') returning id into v_shop_br;
+  insert into core.gstins (company_id, gstin) values (v_a, tests.gstin('33', 'AAAAA1111A')) returning id into v_tn_g;
+  insert into core.branches (company_id, gstin_id, code, name, kind) values (v_a, v_tn_g, 'S2', 'Test Shop Other State', 'shop') returning id into v_tn_br;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_ba, 'TST', 'Test Stores', 'stores') returning id into v_stores;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_ba, 'TLN', 'Test Line', 'wip') returning id into v_line;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_ba, 'TQN', 'Test Quarantine', 'quarantine') returning id into v_qp;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_shop_br, 'TSH', 'Test Shop Stock', 'stores') returning id into v_shop;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_a, v_tn_br, 'TTN', 'Test TN Shop Stock', 'stores') returning id into v_tn;
+  insert into core.branches (company_id, code, name, kind) values (v_b, 'B1', 'Test B Factory', 'factory') returning id into v_bb;
+  insert into core.places (company_id, branch_id, code, name, kind) values (v_b, v_bb, 'TBS', 'Test B Stores', 'stores') returning id into v_pb;
+  insert into master.products (code, name, hsn_code, uom, status, kind, needs_incoming_test) values ('TRM1', 'Test Raw Material Tested', '99999001', 'KGS', 'active', 'raw_material', true) returning id into v_rm1;
+  insert into master.products (code, name, hsn_code, uom, status, kind) values ('TRM2', 'Test Raw Material Plain', '99999001', 'KGS', 'active', 'raw_material') returning id into v_rm2;
+  insert into master.products (code, name, hsn_code, uom, status, kind, is_scrap) values ('TSCR', 'Test Scrap', '99999001', 'KGS', 'active', 'other', true) returning id into v_scrap;
+  insert into core.doc_series (company_id, gstin_id, doc_type, fy_id, prefix) values (v_a, v_ga, 'delivery_challan', v_fy, 'TDC');
+  insert into master.parties (legal_name, gst_status, state_code, is_supplier, kyc_status) values ('Test Supplier Plain', 'unregistered', '32', true, 'verified') returning id into v_supp2;
+  insert into master.party_companies (party_id, company_id, is_supplier) values (v_supp2, v_a, true);
+  insert into master.party_contacts (party_id, name, whatsapp, whatsapp_consent, is_primary) values
+    ((s ->> 'supp')::uuid, 'Test Supplier Contact', '+919000000202', true, true), (v_supp2, 'Test Supplier Two Contact', '+919000000203', false, true);
+  insert into master.parties (legal_name, gst_status, gstin, pan, state_code, is_customer, kyc_status)
+  values ('Test Company A Tamil Nadu registration', 'registered', tests.gstin('33', 'AAAAA1111A'), 'AAAAA1111A', '33', true, 'verified') returning id into v_tn_party;
+  insert into master.party_companies (party_id, company_id, is_customer) values (v_tn_party, v_a, true);
+  for r in select * from (values ('store', 'production_manager'), ('picker', 'factory_staff'), ('carrier', 'driver'), ('receiver', 'shop_staff'),
+                                 ('finance', 'finance_head'), ('custodian', 'factory_manager'), ('tester', 'qc_releaser'), ('buyer', 'buyer_logistics')) x(k, role) loop
+    u := u || jsonb_build_object(r.k, tests.create_user('test.p4' || r.k || '@example.test'));
+    insert into core.user_roles (user_id, role_key, company_id) values ((u ->> r.k)::uuid, r.role, v_a);
+  end loop;
+  return s || u || jsonb_build_object('stores', v_stores, 'line', v_line, 'qplace', v_qp, 'shop', v_shop, 'tn_shop', v_tn, 'place_b', v_pb, 'rm1', v_rm1, 'rm2', v_rm2,
+                                      'scrap', v_scrap, 'supp2', v_supp2, 'tn_party', v_tn_party, 'gstin_tn', v_tn_g);
+end $$;
+grant execute on all functions in schema tests to authenticated;
