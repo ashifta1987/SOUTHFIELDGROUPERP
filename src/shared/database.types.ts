@@ -31,6 +31,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"attendance": {
+                  Row: {
+                    "company_id": string,"hours": number | null,"id": string,"ot_hours": number,"person_id": string,"person_name": string,"status": string,"work_date": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"backup_runs": {
                   Row: {
                     "checksum": string | null,"finished_at": string | null,"id": string,"kind": string,"location": string,"note": string | null,"recorded_by_name": string | null,"size_bytes": number | null,"started_at": string,"status": string
@@ -47,6 +55,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"bank_lines": {
+                  Row: {
+                    "account_id": string,"amount": number,"balance": number | null,"company_id": string,"description": string | null,"id": string,"matched_at": string | null,"matched_doc_no": string | null,"matched_voucher_id": string | null,"ref": string | null,"status": string,"txn_date": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"branches": {
                   Row: {
                     "address": string | null,"code": string,"company_id": string,"company_name": string,"gstin": string | null,"gstin_id": string | null,"id": string,"kind": string,"name": string,"place_count": number | null,"status": string
@@ -58,6 +74,14 @@ export type Database = {
                 },"bug_items": {
                   Row: {
                     "amount": number | null,"area": string,"batch_code": string | null,"batch_id": string | null,"code": string,"company_id": string | null,"company_name": string | null,"created_at": string,"evidence": NonNullable<Json>,"fixed_at": string | null,"fixed_by": string | null,"fixed_by_name": string | null,"id": string,"kind": string,"other_id": string | null,"ref_id": string | null,"ref_table": string | null,"resolution": string | null,"severity": string,"status": string,"suggested_fix": string | null,"title": string,"who_fixes": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"cash_given": {
+                  Row: {
+                    "amount": number,"company_id": string,"given_on": string,"id": string,"person_id": string,"person_name": string,"purpose": string,"recovered": boolean | null,"voucher_id": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -191,12 +215,34 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"gl_lines": {
+                  Row: {
+                    "account_id": string,"account_name": string,"company_id": string,"cr": number,"doc_no": string,"dr": number,"entry_date": string,"id": number,"narration": string | null,"party_id": string | null,"tax_class": string,"voucher_id": string,"voucher_type": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"gstins": {
                   Row: {
                     "company_id": string,"company_name": string,"einvoice_enabled": boolean,"gstin": string,"id": string,"is_principal": boolean,"legal_name": string | null,"registered_on": string | null,"state_code": string | null,"status": string,"trade_name": string | null
                   }
                   ComputedFields: never
                   Relationships: [
+                    
+                  ]
+                },"help_pages": {
+                  Row: {
+                    "language": string,"rule_code": string | null,"screen": string | null,"slug": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "language"?: string | null,"rule_code"?: string | null,"screen"?: string | null,"slug"?: string | null,"title"?: string | null,"updated_at"?: string | null
+                         }
+                        Update: {
+                           "language"?: string | null,"rule_code"?: string | null,"screen"?: string | null,"slug"?: string | null,"title"?: string | null,"updated_at"?: string | null
+                         }
+                        Relationships: [
                     
                   ]
                 },"hsn_codes": {
@@ -269,6 +315,64 @@ export type Database = {
                   }
                   ComputedFields: never
                   Relationships: [
+                    
+                  ]
+                },"money_accounts": {
+                  Row: {
+                    "account_masked": string | null,"bank_name": string | null,"company_id": string,"group_id": string,"id": string,"ifsc": string | null,"kind": string,"name": string,"opening_balance": number,"opening_dc": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"msg_allow_list": {
+                  Row: {
+                    "note": string | null,"number": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "note"?: string | null,"number"?: string | null
+                         }
+                        Update: {
+                           "note"?: string | null,"number"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"msg_channels": {
+                  Row: {
+                    "company_id": string,"display_name": string,"id": string,"phone_number_id": string | null,"provider": string,"quality_rating": string | null,"status": string,"waba_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"display_name"?: string | null,"id"?: string | null,"phone_number_id"?: string | null,"provider"?: string | null,"quality_rating"?: string | null,"status"?: string | null,"waba_id"?: string | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"display_name"?: string | null,"id"?: string | null,"phone_number_id"?: string | null,"provider"?: string | null,"quality_rating"?: string | null,"status"?: string | null,"waba_id"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"msg_outbox": {
+                  Row: {
+                    "attempts": number,"category": string,"company_id": string,"created_at": string,"doc_id": string | null,"doc_type": string | null,"est_cost": number | null,"event": string,"id": string,"language": string,"last_error": string | null,"party_id": string | null,"party_name": string | null,"send_after": string,"skip_reason": string | null,"status": string,"template_name": string,"to_masked": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"msg_templates": {
+                  Row: {
+                    "active": boolean,"approval_status": string,"body": string,"category": string,"event": string,"header_type": string,"id": string,"language": string,"name": string,"params": NonNullable<Json>,"version": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "active"?: boolean | null,"approval_status"?: string | null,"body"?: string | null,"category"?: string | null,"event"?: string | null,"header_type"?: string | null,"id"?: string | null,"language"?: string | null,"name"?: string | null,"params"?: Json | null,"version"?: number | null
+                         }
+                        Update: {
+                           "active"?: boolean | null,"approval_status"?: string | null,"body"?: string | null,"category"?: string | null,"event"?: string | null,"header_type"?: string | null,"id"?: string | null,"language"?: string | null,"name"?: string | null,"params"?: Json | null,"version"?: number | null
+                         }
+                        Relationships: [
                     
                   ]
                 },"open_bills": {
@@ -363,6 +467,30 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"payables": {
+                  Row: {
+                    "amount": number | null,"bill_date": string | null,"bill_ref": string | null,"company_id": string | null,"days_overdue": number | null,"due_date": string | null,"id": string | null,"kind": string | null,"msme_category": string | null,"msme_due": boolean | null,"open_amount": number | null,"party_id": string | null,"party_name": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"payroll_runs": {
+                  Row: {
+                    "approved_at": string | null,"approved_by": string | null,"approved_by_name": string | null,"company_id": string,"id": string,"month": string,"prepared_at": string,"prepared_by": string,"prepared_by_name": string | null,"status": string,"totals": NonNullable<Json>,"voucher_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"payslips": {
+                  Row: {
+                    "advance_recovery": number,"allowances": number,"basic": number,"company_id": string,"days_in_month": number,"deductions": number,"gross": number,"half_days": number,"id": string,"leave_days": number,"month": string,"net": number,"ot_hours": number,"ot_pay": number,"payable_days": number,"person_id": string,"person_name": string,"present": number,"round_off": number,"run_id": string,"run_status": string,"weekly_off": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"people": {
                   Row: {
                     "aadhaar_masked": string | null,"companies": Json | null,"dob": string | null,"id": string,"name": string,"pan": string | null,"person_code": string | null,"phone_masked": string | null,"status": string
@@ -415,6 +543,14 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"problem_reports": {
+                  Row: {
+                    "code": string,"created_at": string,"error_ref": string | null,"id": string,"reply": string | null,"screen": string | null,"status": string,"user_id": string,"user_name": string | null,"what_happened": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"product_groups": {
                   Row: {
                     "company_id": string | null,"id": string,"kind": string,"name": string,"parent_id": string | null,"product_count": number | null,"tally_name": string | null
@@ -451,6 +587,36 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"purchase_bill_lines": {
+                  Row: {
+                    "account_id": string | null,"bill_id": string,"cgst": number,"description": string,"discount": number,"gst_rate": number,"hsn_code": string | null,"id": string,"igst": number,"line_no": number,"product_id": string | null,"qty": number,"rate": number,"sgst": number,"taxable": number,"total": number,"uom": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "account_id"?: string | null,"bill_id"?: string | null,"cgst"?: number | null,"description"?: string | null,"discount"?: number | null,"gst_rate"?: number | null,"hsn_code"?: string | null,"id"?: string | null,"igst"?: number | null,"line_no"?: number | null,"product_id"?: string | null,"qty"?: number | null,"rate"?: number | null,"sgst"?: number | null,"taxable"?: number | null,"total"?: number | null,"uom"?: string | null
+                         }
+                        Update: {
+                           "account_id"?: string | null,"bill_id"?: string | null,"cgst"?: number | null,"description"?: string | null,"discount"?: number | null,"gst_rate"?: number | null,"hsn_code"?: string | null,"id"?: string | null,"igst"?: number | null,"line_no"?: number | null,"product_id"?: string | null,"qty"?: number | null,"rate"?: number | null,"sgst"?: number | null,"taxable"?: number | null,"total"?: number | null,"uom"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"purchase_bills": {
+                  Row: {
+                    "bill_date": string,"cgst": number,"company_id": string,"created_at": string,"doc_no": string | null,"due_date": string | null,"gstin_id": string,"id": string,"igst": number,"itc_eligible": boolean,"msme_category": string | null,"msme_due": boolean,"party_id": string,"party_name": string,"place_of_supply": string,"reverse_charge": boolean,"round_off": number,"settled": number | null,"sgst": number,"status": string,"supplier_bill_date": string,"supplier_bill_no": string,"taxable": number,"terms_days": number,"total": number,"voucher_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"receivables": {
+                  Row: {
+                    "amount": number | null,"bill_date": string | null,"bill_ref": string | null,"bucket": string | null,"company_id": string | null,"days_overdue": number | null,"due_date": string | null,"id": string | null,"kind": string | null,"open_amount": number | null,"party_id": string | null,"party_name": string | null,"tax_class": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"rights": {
                   Row: {
                     "action": string,"admin_only": boolean,"grantable_by_permission": boolean,"hint": string | null,"key": string,"kind": string,"label": string,"module": string,"never_grantable": boolean,"sort": number
@@ -477,6 +643,28 @@ export type Database = {
                            "key"?: string | null,"label"?: string | null,"mfa_required"?: boolean | null,"rights"?: never,"sign_in"?: string | null,"sort"?: number | null,"view_kind"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"sales_document_lines": {
+                  Row: {
+                    "cess": number,"cgst": number,"description": string,"discount": number,"document_id": string,"gst_rate": number,"hsn_code": string | null,"id": string,"igst": number,"line_no": number,"product_id": string | null,"qty": number,"rate": number,"sgst": number,"taxable": number,"total": number,"uom": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "cess"?: number | null,"cgst"?: number | null,"description"?: string | null,"discount"?: number | null,"document_id"?: string | null,"gst_rate"?: number | null,"hsn_code"?: string | null,"id"?: string | null,"igst"?: number | null,"line_no"?: number | null,"product_id"?: string | null,"qty"?: number | null,"rate"?: number | null,"sgst"?: number | null,"taxable"?: number | null,"total"?: number | null,"uom"?: string | null
+                         }
+                        Update: {
+                           "cess"?: number | null,"cgst"?: number | null,"description"?: string | null,"discount"?: number | null,"document_id"?: string | null,"gst_rate"?: number | null,"hsn_code"?: string | null,"id"?: string | null,"igst"?: number | null,"line_no"?: number | null,"product_id"?: string | null,"qty"?: number | null,"rate"?: number | null,"sgst"?: number | null,"taxable"?: number | null,"total"?: number | null,"uom"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"sales_documents": {
+                  Row: {
+                    "against_id": string | null,"amount_in_words": string | null,"cess": number,"cgst": number,"company_id": string,"company_name": string,"created_at": string,"doc_date": string,"doc_no": string | null,"doc_type": string,"due_date": string | null,"eway_bill_no": string | null,"gstin": string,"gstin_id": string,"id": string,"igst": number,"irn": string | null,"lawful_reason": string | null,"notes": string | null,"our_state": string | null,"party_gstin": string | null,"party_id": string,"party_name": string,"place_of_supply": string,"posted_at": string | null,"reason": string | null,"round_off": number,"settled": number | null,"sgst": number,"status": string,"tax_class": string,"taxable": number,"terms_days": number,"total": number,"voucher_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"settings_current": {
@@ -514,6 +702,22 @@ export type Database = {
                 },"special_grants": {
                   Row: {
                     "code": string,"company_id": string | null,"company_name": string | null,"ends_at": string,"granted_at": string,"granted_by": string,"granted_by_name": string | null,"id": string,"max_uses": number | null,"params": NonNullable<Json>,"reason": string,"revoke_reason": string | null,"revoked_at": string | null,"right_key": string,"right_label": string,"starts_at": string,"state": string | null,"user_id": string,"user_name": string | null,"uses": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"staff": {
+                  Row: {
+                    "active": boolean | null,"department_id": string | null,"department_name": string | null,"designation": string | null,"has_login": boolean | null,"join_date": string | null,"language": string | null,"name": string,"pay_basis": string | null,"pay_company_id": string | null,"pay_company_name": string | null,"person_code": string | null,"person_id": string,"phone_masked": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"staff_requests": {
+                  Row: {
+                    "amount": number | null,"company_id": string | null,"created_at": string,"decided_at": string | null,"decision_note": string | null,"from_date": string | null,"id": string,"kind": string,"person_id": string,"person_name": string,"reason": string,"requested_by": string,"status": string,"to_date": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -579,11 +783,27 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"vouchers": {
+                  Row: {
+                    "amount": number,"cash_reason": string | null,"company_id": string,"doc_no": string,"grant_code": string | null,"grant_id": string | null,"id": string,"mode": string | null,"narration": string | null,"party_id": string | null,"party_name": string | null,"posted_at": string,"posted_by_name": string | null,"reversed_by_id": string | null,"reverses_id": string | null,"source_id": string | null,"source_table": string | null,"status": string,"tax_class": string,"voucher_date": string,"voucher_type": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Functions: {
-            "add_hsn_rate":
+            "account_ledger":
+{ Args: { "p_account_id": string,"p_from": string,"p_to": string }; Returns: {
+              "balance": number,"cr": number,"doc_no": string,"dr": number,"entry_date": string,"narration": string,"voucher_id": string,"voucher_type": string
+            }[]
+                           },
+"add_hsn_rate":
 { Args: { "p_ca_confirmed": boolean,"p_cess": number,"p_client_request_id": string,"p_effective_from": string,"p_hsn": string,"p_note": string,"p_rate": number,"p_tax_class": string }; Returns: Json
+                           },
+"add_money_account":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "add_party_bank_account":
 { Args: { "p_account_no": string,"p_bank_name": string,"p_client_request_id": string,"p_ifsc": string,"p_party_id": string,"p_verified_by": string }; Returns: Json
@@ -591,8 +811,22 @@ export type Database = {
 "add_party_document":
 { Args: { "p_client_request_id": string,"p_expires_on": string,"p_kind": string,"p_party_id": string,"p_storage_path": string }; Returns: Json
                            },
+"add_person":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"answer_problem_report":
+{ Args: { "p_client_request_id": string,"p_id": string,"p_reply": string,"p_status": string }; Returns: Json
+                           },
+"approve_payroll":
+{ Args: { "p_client_request_id": string,"p_run_id": string }; Returns: Json
+                           },
 "assign_role":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_reason": string,"p_role": string,"p_user_id": string,"p_valid_to": string }; Returns: Json
+                           },
+"bank_match_candidates":
+{ Args: { "p_line_id": string }; Returns: {
+              "amount": number,"doc_no": string,"party_name": string,"voucher_date": string,"voucher_id": string,"voucher_type": string
+            }[]
                            },
 "bug_fixer_open_count":
 { Args: Record<PropertyKey, never>; Returns: number
@@ -600,11 +834,20 @@ export type Database = {
 "bug_resolve":
 { Args: { "p_action": string,"p_bug_id": string,"p_client_request_id": string,"p_note": string }; Returns: Json
                            },
+"cancel_message":
+{ Args: { "p_client_request_id": string,"p_id": string,"p_reason": string }; Returns: Json
+                           },
+"cancel_sales_document":
+{ Args: { "p_client_request_id": string,"p_document_id": string,"p_reason": string }; Returns: Json
+                           },
 "check_gstin":
 { Args: { "p_gstin": string }; Returns: Json
                            },
 "classify_open_bills":
 { Args: { "p_bill_ids": (string)[],"p_client_request_id": string,"p_tax_class": string }; Returns: Json
+                           },
+"create_problem_report":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "decide_bank_change":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_request_id": string }; Returns: Json
@@ -612,11 +855,26 @@ export type Database = {
 "decide_special_permission":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_max_uses": number,"p_request_id": string }; Returns: Json
                            },
+"decide_staff_request":
+{ Args: { "p_approve": boolean,"p_client_request_id": string,"p_note": string,"p_request_id": string }; Returns: Json
+                           },
+"explain_error":
+{ Args: { "p_ref": string }; Returns: Json
+                           },
+"give_staff_cash":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "grant_special_permission":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_ends_at": string,"p_max_uses": number,"p_params": Json,"p_reason": string,"p_right": string,"p_starts_at": string,"p_user_id": string }; Returns: Json
                            },
+"help_page":
+{ Args: { "p_language": string,"p_slug": string }; Returns: Json
+                           },
 "import_approve":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"import_bank_lines":
+{ Args: { "p_account_id": string,"p_import_ref": string,"p_lines": Json }; Returns: Json
                            },
 "import_create_batch":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -629,6 +887,9 @@ export type Database = {
                            },
 "import_undo":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
+                           },
+"link_person_user":
+{ Args: { "p_client_request_id": string,"p_person_id": string,"p_user_id": string }; Returns: Json
                            },
 "list_users":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -643,6 +904,12 @@ export type Database = {
                            },
 "log_user_event":
 { Args: { "p_detail": Json,"p_event": string }; Returns: undefined
+                           },
+"mark_attendance":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_date": string,"p_entries": Json }; Returns: Json
+                           },
+"match_bank_line":
+{ Args: { "p_client_request_id": string,"p_ignore": boolean,"p_line_id": string,"p_voucher_id": string }; Returns: Json
                            },
 "me":
 { Args: Record<PropertyKey, never>; Returns: Json
@@ -659,6 +926,30 @@ export type Database = {
 "party_duplicates":
 { Args: { "p_exclude": string,"p_gstin": string,"p_name": string,"p_pan": string,"p_phone": string }; Returns: Json
                            },
+"payslip":
+{ Args: { "p_payslip_id": string }; Returns: Json
+                           },
+"post_journal":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"post_payment":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"post_purchase_bill":
+{ Args: { "p_bill_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"post_receipt":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"post_sales_document":
+{ Args: { "p_client_request_id": string,"p_document_id": string }; Returns: Json
+                           },
+"prepare_payroll":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_month": string }; Returns: Json
+                           },
+"preview_tax":
+{ Args: { "p_date": string,"p_gstin_id": string,"p_lines": Json,"p_party_id": string,"p_place_of_supply": string,"p_without_gst": boolean }; Returns: Json
+                           },
 "record_backup_run":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -674,14 +965,34 @@ export type Database = {
 "request_special_permission":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_from": string,"p_params": Json,"p_reason": string,"p_right": string,"p_to": string }; Returns: Json
                            },
+"reverse_voucher":
+{ Args: { "p_client_request_id": string,"p_reason": string,"p_voucher_id": string }; Returns: Json
+                           },
 "revoke_special_permission":
 { Args: { "p_client_request_id": string,"p_grant_id": string,"p_reason": string }; Returns: Json
                            },
 "run_checks":
 { Args: { "p_client_request_id": string,"p_company_id": string }; Returns: Json
                            },
+"save_purchase_draft":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"save_sales_draft":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"search_help":
+{ Args: { "p_language": string,"p_query": string,"p_screen": string }; Returns: {
+              "rank": number,"rule_code": string,"screen": string,"slug": string,"snippet": string,"title": string
+            }[]
+                           },
+"set_allow_list":
+{ Args: { "p_client_request_id": string,"p_note": string,"p_number": string,"p_remove": boolean }; Returns: Json
+                           },
 "set_party_kyc":
 { Args: { "p_client_request_id": string,"p_note": string,"p_party_id": string,"p_status": string }; Returns: Json
+                           },
+"set_posting_rule":
+{ Args: { "p_account_id": string,"p_client_request_id": string,"p_company_id": string,"p_event": string,"p_note": string }; Returns: Json
                            },
 "set_price":
 { Args: { "p_client_request_id": string,"p_effective_from": string,"p_min_qty": number,"p_price": number,"p_price_list_id": string,"p_product_id": string }; Returns: Json
@@ -698,6 +1009,20 @@ export type Database = {
 "set_tally_group_map":
 { Args: { "p_account_group_id": string,"p_client_request_id": string,"p_company_id": string,"p_tally_group": string }; Returns: Json
                            },
+"staff_me":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"statement_of_account":
+{ Args: { "p_company_id": string,"p_from": string,"p_party_id": string,"p_to": string }; Returns: Json
+                           },
+"submit_staff_request":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"trial_balance":
+{ Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: {
+              "account_id": string,"account_name": string,"closing": number,"cr": number,"dr": number,"group_name": string,"nature": string,"opening": number
+            }[]
+                           },
 "update_user_profile":
 { Args: { "p": Json,"p_client_request_id": string,"p_user_id": string }; Returns: Json
                            },
@@ -708,6 +1033,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_branch":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_channel":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_company":
@@ -726,6 +1054,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_gstin":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_help_page":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_hsn":
@@ -750,6 +1081,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_product_group":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_staff_profile":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "view_bank_account":

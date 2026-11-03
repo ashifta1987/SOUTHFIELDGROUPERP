@@ -62,3 +62,4 @@ await safe("update master.products set status = 'inactive' where name like 'E2E%
 await safe("update master.parties set status = 'inactive' where legal_name like 'E2E%' and status <> 'merged'")
 console.log(`E2E companies: removed ${removed}, switched off ${switchedOff}`)
 await c.end()
+
