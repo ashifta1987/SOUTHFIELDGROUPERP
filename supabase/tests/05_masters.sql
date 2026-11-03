@@ -32,14 +32,14 @@ select lives_ok($$ select api.add_party_bank_account(gen_random_uuid(), (select 
 select throws_ok($$ select api.add_party_bank_account(gen_random_uuid(), (select id from master.parties where legal_name = 'Test Customer 01'), '999988887777', 'TEST0001234', 'Test Bank', 'cancelled_cheque') $$,
   '22023', null, 'a second account cannot be added directly; it needs a change request');
 select api.request_bank_change(gen_random_uuid(), (select id from master.parties where legal_name = 'Test Customer 01'), '999988887777', 'TEST0001234', 'Test Bank', 'Test: party changed bank');
-select throws_ok($$ select api.decide_bank_change(gen_random_uuid(), (select id from master.bank_change_requests limit 1), true) $$,
+select throws_ok($$ select api.decide_bank_change(gen_random_uuid(), (select r.id from master.bank_change_requests r join master.parties p on p.id = r.party_id where p.legal_name = 'Test Customer 01'), true) $$,
   '42501', null, 'the requester cannot approve their own bank change');
 select tests.logout();
 select tests.login((select (v ->> 'admin2')::uuid from s));
-select throws_ok($$ select api.decide_bank_change(gen_random_uuid(), (select id from master.bank_change_requests limit 1), true) $$,
+select throws_ok($$ select api.decide_bank_change(gen_random_uuid(), (select r.id from master.bank_change_requests r join master.parties p on p.id = r.party_id where p.legal_name = 'Test Customer 01'), true) $$,
   '22023', null, 'approval waits for the call-back to a known number');
-select api.record_bank_callback(gen_random_uuid(), (select id from master.bank_change_requests limit 1), '+919000000001', 'Test: confirmed with the known contact');
-select lives_ok($$ select api.decide_bank_change(gen_random_uuid(), (select id from master.bank_change_requests limit 1), true) $$, 'a second person approves after the call-back');
+select api.record_bank_callback(gen_random_uuid(), (select r.id from master.bank_change_requests r join master.parties p on p.id = r.party_id where p.legal_name = 'Test Customer 01'), '+919000000001', 'Test: confirmed with the known contact');
+select lives_ok($$ select api.decide_bank_change(gen_random_uuid(), (select r.id from master.bank_change_requests r join master.parties p on p.id = r.party_id where p.legal_name = 'Test Customer 01'), true) $$, 'a second person approves after the call-back');
 select tests.logout();
 
 -- Full account numbers are never selectable by clients

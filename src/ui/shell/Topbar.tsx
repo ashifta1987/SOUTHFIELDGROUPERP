@@ -54,7 +54,7 @@ export function Topbar({ onMenu, onHelp, drawerId, drawerOpen }: { onMenu: () =>
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  const companyRows = companies.data?.status === 'ready' ? companies.data.data : []
+  const companyRows = companies.data?.status === 'ready' ? companies.data.data.filter((c) => (c as { status?: string }).status !== 'inactive') : []
   const gstinCount = companyRows.reduce((n, c) => n + (c.gstin_count ?? 0), 0)
   const companyLabel =
     companies.data?.status === 'ready' && companyRows.length > 0

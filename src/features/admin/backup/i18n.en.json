@@ -1,1 +1,142 @@
-{}
+{
+  "backup": {
+    "title": "Backup",
+    "subtitle": "Encrypted · two locations, both in India · required daily for a private limited company’s electronic books",
+    "exportAll": "Export all data (Excel)",
+    "backupNow": "Backup now",
+    "noRight": "You don't have the right to see backups. Ask Admin for “Backup”.",
+    "secondAdmin": {
+      "chip": "Second Admin not set",
+      "body": "Restores need a second Admin to confirm, and backup alerts go to both. Add one in Users and rights.",
+      "add": "Add second Admin"
+    },
+    "schedule": {
+      "title": "Schedule",
+      "daily": "Database backup",
+      "dailyValue": "Supabase, every day · Mumbai",
+      "pitr": "Point-in-time recovery",
+      "pitrValue": "Supabase PITR · Mumbai",
+      "dump": "Second copy",
+      "dumpValue": "Every night · encrypted pg_dump + file sync",
+      "includes": "Includes",
+      "includesValue": "Database, PDFs, photos, signatures",
+      "runner": "The nightly copy runs on a runner hosted in India, never on GitHub-hosted runners."
+    },
+    "where": {
+      "title": "Where copies are kept",
+      "copy1": "Copy 1",
+      "copy1Value": "Supabase · Mumbai (ap-south-1)",
+      "copy2": "Copy 2",
+      "copy2Value": "Second location in India",
+      "copy2Choose": "not recorded yet",
+      "encryption": "Encryption",
+      "on": "On",
+      "rule": "Copies may be kept only in India (Hyderabad ap-south-2, Mumbai, or an office server). The server refuses any other location."
+    },
+    "keep": {
+      "title": "How long they are kept",
+      "daily": "Daily backups",
+      "monthly": "Monthly backups",
+      "yearEnd": "Year-end backups",
+      "notSet": "Not set",
+      "days_one": "{{count}} day",
+      "days_other": "{{count}} days",
+      "months_one": "{{count}} month",
+      "months_other": "{{count}} months",
+      "years_one": "{{count}} year",
+      "years_other": "{{count}} years",
+      "drill": "Restore test",
+      "drillValue": "Once a month",
+      "lastDrill": "Last restore drill",
+      "never": "None recorded",
+      "settingsHint": "Retention is set by Admin in Settings (backup.daily_days, backup.monthly_months, backup.year_end_years)."
+    },
+    "tally": {
+      "title": "Load a Tally backup · Admin only",
+      "ready": "Ready for your files",
+      "s1": "The file is stored encrypted, on servers in India.",
+      "s2": "It is restored in TallyPrime on the import computer, in its own folder, never over your live Tally.",
+      "s3": "Ledgers, stock items, vouchers and stock are read from that copy into an import batch.",
+      "s4": "Totals are checked against Tally: trial balance, day book count and opening bills. Every difference goes to the Bug fixer.",
+      "s5": "Admin approves; the load is one batch that can be undone until it is approved.",
+      "note": "A Tally backup opens only in TallyPrime, so the import computer needs a TallyPrime licence. XML and Excel exports load directly. Loading the same file twice is caught by Tally’s IDs.",
+      "open": "Open Import data",
+      "bugFixer": "Open the Bug fixer"
+    },
+    "files": {
+      "title": "Tally files read so far",
+      "caption": "Import batches",
+      "company": "Company",
+      "file": "File",
+      "what": "What is in it",
+      "status": "Status",
+      "rows_one": "{{count}} row",
+      "rows_other": "{{count}} rows",
+      "empty": "No files loaded yet. Upload a Tally export or backup on Import data.",
+      "noRight": "Import batches are visible with the “Import data” right."
+    },
+    "batchStatus": {
+      "uploaded": "Uploaded",
+      "awaiting_bridge": "Waiting for bridge",
+      "staged": "Read",
+      "processed": "Checked",
+      "approved": "Approved",
+      "undone": "Undone",
+      "failed": "Failed"
+    },
+    "restore": {
+      "title": "Restore · Admin only",
+      "s1": "Pick a backup by date and time.",
+      "s2": "It is restored into a separate project first.",
+      "s3": "Balances and recent entries are compared with live.",
+      "s4": "Only then is it promoted to live, confirmed by a second Admin.",
+      "note": "Every restore and restore drill is recorded below and in the user log.",
+      "start": "Start restore · needs second Admin"
+    },
+    "history": {
+      "title": "Backup history",
+      "caption": "Backup and restore runs",
+      "record": "Record a backup / restore drill",
+      "when": "Started",
+      "kind": "Kind",
+      "location": "Location",
+      "size": "Size",
+      "result": "Result",
+      "by": "Recorded by",
+      "empty": "No backups recorded yet. Each run shows here with its time, size, location and result.",
+      "emptyAdmin": "No backups recorded yet. Record the first backup or restore drill."
+    },
+    "kind": {
+      "supabase_daily": "Supabase daily",
+      "pitr": "Point-in-time recovery",
+      "pg_dump": "Nightly pg_dump",
+      "storage_sync": "File sync",
+      "restore_drill": "Restore drill",
+      "restore": "Restore"
+    },
+    "runStatus": {
+      "running": "Running",
+      "ok": "OK",
+      "failed": "Failed"
+    },
+    "form": {
+      "title": "Record a backup or restore drill",
+      "description": "What ran, where the copy is kept and how it went. Locations outside India are refused.",
+      "kind": "Kind",
+      "status": "Result",
+      "location": "Location (in India)",
+      "locationHelp": "For example: S3 ap-south-2 Hyderabad (India), or the office server and its town (India).",
+      "startedAt": "Started",
+      "finishedAt": "Finished",
+      "sizeBytes": "Size in bytes",
+      "checksum": "Checksum",
+      "note": "Note",
+      "save": "Record",
+      "errLocation": "Name the location.",
+      "errSize": "Enter whole bytes, or leave empty."
+    },
+    "rules": {
+      "backup.outside_india": "Backups may be kept only in India. Name the Indian location, e.g. “Hyderabad ap-south-2 (India)”."
+    }
+  }
+}

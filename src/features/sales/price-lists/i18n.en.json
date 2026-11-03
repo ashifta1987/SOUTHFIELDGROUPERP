@@ -1,1 +1,77 @@
-{}
+{
+  "priceLists": {
+    "title": "Price lists",
+    "subtitle": "{{company}} · wholesale, retail, distributor and online prices, each from a date · MRP from Product master",
+    "subtitleNone": "Wholesale, retail, distributor and online prices, each from a date",
+    "noRight": "You can read the price lists. Adding lists and changing prices is an Admin right — ask Admin.",
+    "newList": "New price list",
+    "editList": "Edit list",
+    "addPrice": "Add price",
+    "change": "Change price",
+    "changeFor": "Change price · {{name}}",
+    "lists": "Lists",
+    "itemCount_one": "{{count}} product",
+    "itemCount_other": "{{count}} products",
+    "incl": "Including GST",
+    "excl": "Before GST",
+    "kind": {
+      "wholesale": "Wholesale",
+      "retail": "Retail",
+      "distributor": "Distributor",
+      "export": "Export",
+      "online": "Online",
+      "other": "Other"
+    },
+    "noListsTitle": "No price lists for this company",
+    "noListsAdmin": "Add the first list, then set a price for each product.",
+    "noLists": "Admin adds the price lists.",
+    "pickTitle": "Choose a list",
+    "pickBody": "Prices show here once a list is chosen.",
+    "itemsCaption": "Prices on {{name}}",
+    "noItemsTitle": "No prices on this list yet",
+    "noItemsAdmin": "Use Add price to set the first price from a date.",
+    "noItems": "Admin sets the prices on this list.",
+    "note": "A price takes effect from its date; earlier prices stay in the history. A price that includes GST can never be above the product's MRP.",
+    "col": {
+      "code": "Code",
+      "product": "Product",
+      "mrp": "MRP ₹",
+      "priceIncl": "Price ₹ (incl. GST)",
+      "priceExcl": "Price ₹ (before GST)",
+      "minQty": "From quantity",
+      "from": "From",
+      "actions": "Actions"
+    },
+    "newListTitle": "New price list",
+    "editListTitle": "Edit price list",
+    "listHelp": "Say whether the prices on this list include GST. The bill works the tax out the same way every time.",
+    "priceTitle": "Set a price · {{name}}",
+    "priceHelpIncl": "This list's prices include GST, so a price above the product's MRP is refused.",
+    "priceHelpExcl": "This list's prices are before GST; the bill adds GST at the rate for the product's HSN.",
+    "setPrice": "Set price",
+    "f": {
+      "name": "List name",
+      "kind": "Kind",
+      "incl": "Prices include GST",
+      "inclHint": "Tick when the printed price already includes GST (like MRP).",
+      "active": "List in use",
+      "product": "Product",
+      "choose": "Choose a product",
+      "noMrp": "This product has no MRP yet.",
+      "mrpIs": "MRP today: ₹{{mrp}}",
+      "priceIncl": "Price including GST",
+      "priceExcl": "Price before GST",
+      "minQty": "From quantity",
+      "minQtyHelp": "Leave empty for any quantity",
+      "from": "From"
+    },
+    "errName": "Enter a name for the list.",
+    "errProduct": "Choose a product.",
+    "errPrice": "Enter the price in rupees, e.g. 85.00.",
+    "errMinQty": "Enter a quantity, e.g. 12.",
+    "rules": {
+      "aboveMrp": "This price includes GST and is above the product's MRP. A bill can never go above the printed MRP (Legal Metrology).",
+      "aboveMrpNext": "Enter a price at or below MRP, or set a new MRP on Product master first."
+    }
+  }
+}

@@ -1,1 +1,62 @@
-{}
+{
+  "biochemProducts": {
+    "title": "Biochem products",
+    "subtitle": "Finished goods and perfumes of {{company}} · MRP as printed · GST rate from the HSN table for today",
+    "subtitleNone": "Finished goods and perfumes · MRP as printed · GST rate from the HSN table for today",
+    "noBiochem": "No company is marked with the Biochem logo yet, so choose the company to show. Admin sets the logo on Companies.",
+    "kpi": {
+      "label": "Biochem products summary",
+      "products": "Finished products",
+      "productsSub": "Finished goods and perfumes linked to this company",
+      "ready": "Ready for a bill",
+      "readySub": "Every label check passes",
+      "rate": "GST rate not confirmed",
+      "rateSub": "No HSN, no rate, or the CA hasn't confirmed it",
+      "mrp": "No MRP",
+      "mrpSub": "A tax-inclusive price can't be checked against MRP",
+      "licence": "No licence number",
+      "licenceSub": "Needed on soap, wash and cosmetics labels"
+    },
+    "tableTitle": "Products, MRP and label checks",
+    "tableHint": "Checks are what the label and the bill need before the first sale",
+    "col": { "product": "Product", "pack": "Pack", "mrp": "MRP ₹", "hsn": "HSN", "gst": "GST", "check": "Check" },
+    "noGroup": "Not in a group yet",
+    "groupCount_one": "{{count}} product",
+    "groupCount_other": "{{count}} products",
+    "allPass": "Label checks pass",
+    "fail": {
+      "hsn": "No HSN",
+      "ca": "Rate not CA confirmed",
+      "mrp": "No MRP",
+      "netQty": "No net quantity",
+      "licence": "No licence number"
+    },
+    "fix": "Fix in Product master",
+    "fixFor": "Fix in Product master · {{name}}",
+    "toMaster": "Open Product master →",
+    "emptyTitle": "No finished products for this company yet",
+    "emptyBodyAdmin": "Add products on Product master, tick this company, and set the HSN and MRP.",
+    "emptyBody": "Admin adds the products on Product master.",
+    "tableNote": "HSN codes are chosen per product; the CA confirms each GST rate before the first bill. The checks here are a guide — the bill itself is checked again on the server.",
+    "before": {
+      "title": "Before these go on a bill",
+      "t1": "Net quantity on the label and the bill",
+      "b1": "The net quantity printed on the pack and the one on the bill must be the same, in the same unit. Litres and kilograms are never swapped.",
+      "t2": "A product code for every fragrance and colour",
+      "b2": "Each fragrance, colour and pack size needs its own code so stock and sales add up.",
+      "t3": "Cosmetics licence number",
+      "b3": "Soap bars, hand wash and body wash are cosmetics. The manufacturing licence number goes on each of these products and on their labels.",
+      "t4": "Label details",
+      "b4": "Maker's name and address, net quantity, MRP including all taxes, month of manufacture, expiry and the customer care line, on every pack."
+    },
+    "bill": {
+      "title": "What the bill does with these",
+      "t1": "Rate from HSN",
+      "b1": "The GST rate comes from the HSN table for the bill date. A bill can't change the rate.",
+      "t2": "Never above MRP",
+      "b2": "A price that includes tax is stopped at the printed MRP.",
+      "t3": "No \"without GST\" for taxable goods",
+      "b3": "Taxable goods always go on a tax invoice. A bill without GST needs a lawful reason and only Admin can make one."
+    }
+  }
+}

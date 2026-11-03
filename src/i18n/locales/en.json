@@ -231,7 +231,9 @@
       "org.company_missing": "That company doesn't exist.",
       "org.branch_missing": "That branch doesn't exist.",
       "request.id_missing": "The request had no ID. Reload the page and try again.",
-      "auth.required": "Your session has ended. Sign in again."
+      "auth.required": "Your session has ended. Sign in again.",
+      "mrp.same_date": "An MRP already starts on this date. MRP history is never edited; choose the next date.",
+      "masters.possible_duplicate": "A similar record already exists. Check the list; create anyway only if it really is different."
     },
     "invalidValue": "One of the values is not in the right format. Check the highlighted fields.",
     "saveFailed": "Could not save. Nothing was changed.",

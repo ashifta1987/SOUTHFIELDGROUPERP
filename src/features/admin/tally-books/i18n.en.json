@@ -1,1 +1,146 @@
-{}
+{
+  "tallyBooks": {
+    "title": "What {{name}}’s Tally books change",
+    "titleNoCompany": "Tally books",
+    "adminOnly": "Admin only",
+    "subtitle": "Loaded from TallyPrime exports through Import data · every figure below comes from the loaded batches",
+    "subtitleLast": "Last load {{code}} on {{date}} · {{batches}} batches · before audit, depreciation and tax",
+    "plan": "Plan the import",
+    "noRight": "Tally books are for Admin and the CA. Ask Admin if you need them.",
+    "noCompany": "No company matches this page yet. Add the company on Companies (with its logo) or pick one below.",
+    "readOnly": "Read-only access: the CA can see everything here but changes nothing.",
+    "kpi": {
+      "label": "What was loaded",
+      "ledgers": "Ledgers read",
+      "groups": "Groups read",
+      "items": "Stock items read",
+      "vouchers": "Vouchers loaded",
+      "waiting": "Tally groups to map",
+      "fromTally": "from Tally",
+      "adminCa": "Admin and CA only",
+      "toMap": "ledgers wait until mapped"
+    },
+    "batches": {
+      "title": "Batches for this company",
+      "caption": "Import batches",
+      "code": "Batch",
+      "file": "File",
+      "rows": "Rows",
+      "bugs": "Open bugs",
+      "status": "Status",
+      "when": "When",
+      "empty": "Nothing loaded yet for this company. Upload a Tally export on Import data."
+    },
+    "read": {
+      "title": "What was read from Tally",
+      "caption": "Tally records by type",
+      "type": "Type",
+      "count": "Records",
+      "alter": "Latest Tally change ID",
+      "empty": "No Tally records yet."
+    },
+    "coa": {
+      "title": "Chart of accounts",
+      "caption": "Account groups",
+      "add": "Add account group",
+      "name": "Group",
+      "nature": "Nature",
+      "party": "Party group",
+      "tally": "Tally groups mapped",
+      "accounts": "Accounts",
+      "edit": "Edit",
+      "empty": "No account groups yet. Add the ERP groups (e.g. debtors, creditors, bank, sales) before mapping Tally groups.",
+      "dialogAdd": "Add account group",
+      "dialogEdit": "Edit account group",
+      "dialogDescription": "Groups of the ERP chart of accounts for this company. Tally groups are mapped onto these.",
+      "parent": "Under (optional)",
+      "noParent": "Top level",
+      "partyNone": "Not a party group",
+      "errName": "Enter the group name.",
+      "noManage": "Adding groups needs the “Settings” right."
+    },
+    "nature": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "income": "Income",
+      "expense": "Expense",
+      "equity": "Equity"
+    },
+    "partyGroup": {
+      "debtors": "Debtors (customers)",
+      "creditors": "Creditors (suppliers)"
+    },
+    "map": {
+      "title": "Tally group mapping",
+      "intro": "A Tally group is never created automatically. Map each one to an ERP account group; ledgers under it load when the batch is loaded again.",
+      "caption": "Tally groups waiting for a mapping",
+      "group": "Tally group",
+      "batch": "Batch",
+      "erpGroup": "ERP account group",
+      "selectFor": "ERP account group for {{group}}",
+      "choose": "Choose a group",
+      "map": "Map",
+      "mapAria": "Map {{group}}",
+      "none": "Every Tally group seen so far is mapped.",
+      "needGroups": "Add an account group in the Chart of accounts first.",
+      "mapped": "Mapped so far",
+      "mappedCaption": "Tally groups already mapped",
+      "noMapped": "No mappings yet.",
+      "reload": "Load waiting ledgers again",
+      "reloadAria": "Load waiting ledgers again for {{code}}",
+      "waiting_one": "{{code}}: {{count}} row waits for a mapping.",
+      "waiting_other": "{{code}}: {{count}} rows wait for a mapping.",
+      "reloaded": "Batch {{code}} loaded again: {{summary}}.",
+      "noReload": "No rows are waiting for a mapping."
+    },
+    "accounts": {
+      "title": "Accounts and opening balances",
+      "caption": "Accounts",
+      "name": "Account",
+      "group": "Group",
+      "opening": "Opening",
+      "dc": "Dr / Cr",
+      "asOf": "As of",
+      "status": "Status",
+      "dr": "Dr",
+      "cr": "Cr",
+      "empty": "No accounts loaded yet. They appear once their Tally group is mapped and the batch is loaded.",
+      "more": "Showing the first {{count}} accounts."
+    },
+    "accountStatus": {
+      "to_review": "To review",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "bills": {
+      "title": "Opening bills",
+      "caption": "Opening bills",
+      "select": "Select",
+      "selectBill": "Select bill {{ref}}",
+      "account": "Account",
+      "ref": "Bill",
+      "date": "Bill date",
+      "due": "Due",
+      "amount": "Amount",
+      "age": "Age",
+      "tax": "GST",
+      "empty": "No opening bills loaded yet.",
+      "buckets": "Bills by age",
+      "unknown": "No date",
+      "days": "{{bucket}} days",
+      "markTaxable": "Mark selected: with GST",
+      "markWithout": "Mark selected: without GST",
+      "selected_one": "{{count}} bill selected",
+      "selected_other": "{{count}} bills selected",
+      "adminNote": "Until Admin classifies them, opening bills are “unclassified” and only Admin sees them. A bill without GST also needs its lawful reason.",
+      "confirmTitle": "Mark {{count}} bills without GST?",
+      "confirmEffect": "These opening bills become “without GST”: only Admin and the CA will see them, and each still needs its lawful reason.",
+      "more": "Showing the first {{count}} bills."
+    },
+    "taxClass": {
+      "taxable": "With GST",
+      "without_gst": "Without GST",
+      "unclassified": "Unclassified"
+    }
+  }
+}

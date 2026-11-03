@@ -1572,3 +1572,9 @@ textarea {
   padding: 10px 13px;
   font-size: 14px;
 }
+
+/* Cards inside a two-up row share the width unless they set their own flex */
+.sf-grid-2 > * {
+  flex: 1 1 320px;
+  min-width: 0;
+}

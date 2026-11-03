@@ -51,15 +51,14 @@ test.describe('signed in as Admin', () => {
     await expectNoSeriousA11y(page)
   })
 
-  test('sidebar opens Sales and reaches Customers; register shows empty state and Phase 2 controls', async ({ page }) => {
+  test('sidebar opens Sales and reaches the Customers register', async ({ page }) => {
     await signInWithEmail(page, creds.admin)
     await page.getByRole('button', { name: 'Sales' }).click()
     await page.getByRole('link', { name: 'Customers', exact: true }).first().click()
     await expect(page).toHaveURL(/\/sales\/customers$/)
     await expect(page.getByRole('heading', { level: 1, name: 'Customers' })).toBeVisible()
     await expect(page.locator('.sf-sidebar a[aria-current="page"]')).toHaveText('Customers')
-    await expect(page.getByRole('button', { name: /Add customer/ })).toBeDisabled()
-    await expect(page.getByText('No customers yet')).toBeVisible()
+    await expect(page.getByRole('button', { name: /Add customer/ }).or(page.getByRole('link', { name: /Add customer/ })).first()).toBeEnabled()
     await expect(page.getByRole('navigation', { name: /Workflow: Selling/ })).toBeVisible()
     await expectNoSeriousA11y(page)
   })

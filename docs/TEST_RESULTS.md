@@ -31,3 +31,12 @@
 | Build | `pnpm build` | Pass |
 
 Notes: pgTAP runs through `scripts/pgtap.mjs` against the DEV project because Docker (needed for `supabase start` / `supabase test db`) is not installed on this computer. Playwright tests create synthetic `E2E…` rows in DEV; `scripts/e2e-cleanup.mjs` removes them (history rows stay, by design).
+
+## Phase 2 — 03-11-2026
+
+| Check | Command | Result |
+|---|---|---|
+| Lint / types | `pnpm lint`, `pnpm typecheck` | Pass |
+| Unit tests | `pnpm test` | **39 passed** (adds 9 Tally XML parser tests) |
+| pgTAP (DEV, rolled back) | `pnpm db:test` | **73 passed, 0 failed** — adds `05_masters` (16) and `06_import` (15): same file twice creates nothing, rename under same GUID → alias + review item, one person across both companies, near-duplicate → Bug fixer item and no new party, unmapped group → "Map this head", voucher changed after loading → "Changed in Tally" with the loaded entry untouched, opening bills hidden from the GST view |
+| End to end + axe | `npx playwright test --workers=1` | **38 passed**, 5 skipped (screenshot specs) |

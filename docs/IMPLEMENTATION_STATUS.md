@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phase 1 — Foundation: complete → awaiting owner review.** Phase 0 approved by the owner on 03-11-2026 ("resume"). Phase 2 not started. |
+| Current phase | **Phase 2 — Masters and data load: complete → awaiting owner review.** Phase 1 approved by the owner on 03-11-2026 ("start phase 2"). Phase 3 not started. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,23 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 2 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md`, `DATA_MIGRATION.md` | Done |
+| 2 | Migrations `20261103001000…1400` on DEV: units (UQC), HSN codes + effective-dated rates (none seeded), product groups/products/MRP history/aliases, parties with KYC (GSTIN check digit, PAN inside GSTIN, duplicates), contacts with WhatsApp consent, addresses, masked bank accounts with two-person bank change + call-back, documents (private `kyc` bucket), credit terms, price lists (no price above MRP when tax-inclusive), one group-level staff list, chart of accounts, bill-wise opening outstanding (unclassified until Admin classifies), posting rules table | Done |
+| 3 | Tally import engine in Postgres: GUID → strong keys → normalised names; aliases; "to review"; same file twice = skipped; changed/deleted in Tally; map heads; unbalanced vouchers; reconciliation; approve/undo; merges | Done |
+| 4 | Tally XML parser (browser, format only) + Excel lists | Done (9 unit tests) |
+| 5 | Bug fixer queue with resolve actions and "Run checks again" | Done |
+| 6 | Backup: policy, runs and restore drills recorded (India-only locations enforced) | Done; automated nightly dump needs an India-hosted runner (owner) |
+| 7 | Screens: Import data, Tally books (Biochem, Plastics), Bug fixer, Backup, Product master, Biochem products, Price lists, Customers, Customer KYC, Suppliers | Done, live data |
+| 8 | pgTAP **73/73** (incl. all six §25A import tests); Playwright **38 passed** (DB round-trip + axe) | Done |
+| 9 | Tally bridge Edge Function `tally-bridge` | Code written; **not deployed**; import PC not chosen |
+| 10 | Stop for owner review | **Waiting for the owner** |
+
+Known Phase 2 gaps: GSTIN live verification and monthly recheck need the GSP (Phase 8) — format + check digit + PAN + state are enforced now; supplier return-filing status also needs the GSP; opening stock quantities are read but stock loads with the stock ledger (Phase 4); vouchers are kept as loaded and post with the GL in Phase 3; nightly encrypted pg_dump needs an India-hosted runner; E2E test rows (companies/parties/products named "E2E …") remain in DEV.
 
 ## Phase 1 result (03-11-2026)
 
@@ -221,3 +238,6 @@ Differences from `design-reference/` that remain after Phase 0, and nearest-patt
 
 | Users | The owner's own Admin account doesn't exist yet: create it in Supabase (Authentication → Add user) with `app_metadata` `{"role":"owner"}`, or deploy `admin-users` and add it from the Users screen | Owner | Review accounts `phase0.*@southfield.test` are synthetic and can be removed after |
 | Settings | Values for `cash.receipt_block_amount`, `cash.payment_warn_amount`, `entries.backdate_days`, `work.hours` are left unset until the owner/CA set them on Settings (the cash RPCs in Phase 3 will refuse to post until the cash limits are set) | Owner / CA | Unset; never invented |
+| Opening bills | Opening bills from Tally load as *unclassified* (visible only to Admin/CA) until Admin marks each as with GST or without GST. Should unclassified default to "with GST"? | Owner / CA | Unclassified = hidden from the GST view (safest) |
+| MSME selling rule | Is Southfield a registered micro/small enterprise? If yes, set `msme.selling_rule = true` per company (terms > 45 days are then refused) | Owner / CA | Off until set |
+| Import PC | Which Windows PC with TallyPrime runs the Tally bridge? | Owner | TBK files are stored and wait (`awaiting_bridge`) |
