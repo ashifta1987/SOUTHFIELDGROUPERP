@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phases 4 and 5 complete on DEV. Phase 6 — Delivery and sales: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
+| Current phase | **Phases 4–6 complete on DEV. Phase 7 — Remaining operations: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,17 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 6 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` / `API_DOCUMENTATION.md` ("Phase 6") | Done |
+| 2 | Migrations `20261103006000…6700` on DEV: sales orders with credit exposure and the 7-stage credit flow, MD exceptions by another person; dispatch, trips (e-way number before start; stock leaves at start), proof of delivery (private `pod` bucket), failed/short deliveries back to quarantine; vehicles; route sales with beats, 150 m geofence, on-duty-only GPS (notice first), 90-day purge (pg_cron), salesman reads limited to GST bills (Q-12), collections with cash limits, cash handover and day end (mismatch → Bug fixer); customer care (complaints with QC hold, coverage tiers, private label, agents and commission), own shops (counter sale, day close), exports (LUT invoice Admin only, containers, packing list), online channels and listings; GSTR-1, GSTR-3B, ITC register, Schedule III with mapping confirmed by CA note; WhatsApp payment reminders (7/3/0/3/7/14, consent only, disputed/proof pauses, pg_cron daily), cost caps, inbox tasks; help data tools under the user's own rights; customer price lists | Done |
+| 3 | Screens: Quotations & orders, Credit customers, Customer care and agents, Shops and supermarkets, Own shops, Online channels, Online listings, Export orders, Mixer grinder costing (not built — no tables), GST, Financials, Schedule III statements, WhatsApp (inbox tasks, cost caps, reminders), Dispatch board, Trips, Vehicles & drivers, Vehicle file, Route sales; salesman app (`/field/*`, offline queue); driver app (`/driver/*`) | Done, live data |
+| 4 | pgTAP **496/496**; Playwright full suite — see `TEST_RESULTS.md` | Done |
+
+Known Phase 6 gaps: quotations/enquiries and mixer-grinder costing have no tables; credit stages 5–6 need five different people (covered by pgTAP, e2e reaches stage 5); marketplace TCS reconciliation, van-stock counts and vehicle payload checks not built; route map not drawn (last GPS point shown); vehicle papers and driver licences not uploaded; library shows the product master only; a salesman has one duty session across companies (on duty in one company means "on duty" everywhere — by design, one person one working day); GSTR-2B match waits for the GSP (Phase 8); help "insights" and the AI evaluation set wait for the AI provider.
 
 ## Phase 5 result (03-11-2026)
 
@@ -250,6 +261,11 @@ Conventions: tables are schema-qualified and planned; contracts are finalised in
 | Q-P5-4 | Schedule II useful lives, residual value and depreciation method per asset class. | Fields on `core.assets` (useful_life_years, residual_pct); no depreciation is computed until the CA confirms (Phase 7/8 asset register). |
 | Q-P5-5 | Which licence kinds each process family needs (soap/hand wash/body wash → cosmetics manufacturing; detergents/cleaners/perfumes?). | The production manager sets `licence_kind` per family; a family with a licence kind cannot produce without a valid licence. Licence numbers and dates are entered by Admin only (Q-16). |
 | Q-P5-6 | Scrap credit rate for component costing. | Scrap is weighed in at cost 0; component cost shows no scrap credit until scrap carries a value (scrap sales carry the real credit). |
+| Q-35 | Credit exposure = open receivables + approved credit orders not yet billed; may non-Admin users see the `hidden_items` flag (it reveals that bills without GST exist)? | As stated; flag shown. |
+| Q-36 | `sales.salesman_discount_pct`, per-state `eway.threshold_amount`, `gst.b2cl_invoice_value`, coverage tiers, agent commission % and base (taxable or with GST). | Unset → any discount needs the office; every dispatch needs an e-way number; B2C large explained as not set; no tiers/commission seeded. |
+| Q-37 | Export invoices under LUT are stored as `without_gst` (Admin-only); should there be a separate zero-rated class visible to accounts? Export lines still pass the domestic MRP check. | Admin-only until decided. |
+| Q-38 | Schedule III mapping of account groups and how the CA confirms it (CA login is read-only). | Admin records the CA's confirmation with a note. |
+| Q-39 | Reminders cover GST bills only; should bills without GST get reminders through an Admin-only route? Message rates and monthly caps per company. | GST bills only; no caps or rates seeded. |
 | Q-30 | Minimum cash/bank balance for the Cash flow "days below minimum" indicator. | No `cash.min_balance` setting created; the indicator stays hidden until set. |
 
 ## Translations awaiting native review

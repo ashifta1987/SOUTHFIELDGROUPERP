@@ -488,6 +488,163 @@ The Phase 3 `api.trial_balance(company, from, to)` serves the trial balance tab.
 | `api.msg_message_rates` | id, category, est_cost, effective_from, set_at |
 | `api.msg_cost_by_month` | company_id, month, category, event, messages, delivered_or_sent, skipped, est_cost |
 
+## Phase 7 RPCs (the rest of operations)
+
+Every changing RPC follows the same pattern:
+
+- It is `api.*`, security definer, and takes `p_client_request_id uuid` first.
+- It is idempotent: a repeat call returns the first result.
+- It locks the rows it changes and checks rights, state and the period.
+- History is written by triggers.
+
+Errors carry a rule code in the hint. Amounts are `numeric(18,2)` and quantities `numeric(18,3)`.
+
+### Job work (screen JobWork)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.issue_job_work_challan(crid, p jsonb)` | `{company_id, job_worker_party_id, process, goods_kind inputs\|capital_goods\|moulds_tools, from_place_id, sent_on?, note?, lines:[{product_id, lot_id?, qty}]}` | `{id, doc_no, challan_id, challan_no, return_by, jw_place_id}` | `production.create`. Moves stock to the job worker's place. Posts a delivery challan (`challan_not_sold`) from the sending GSTIN's series. `return_by` comes from `jobwork.return_years` (null for moulds_tools). Rule codes: `jobwork.*` (party, party_other_company, process, goods_kind, no_lines, no_gstin, limit_not_set), `stock.*`, `period.*`, `numbering.no_series` |
+| `api.receive_job_work(crid, p_order_id, p jsonb)` | `{received_on?, challan_ref?, to_place_id? (default: sending place), lines:[{line_id, kind finished\|returned\|scrap\|loss, product_id?, qty, input_qty?, bucket? available\|quarantine}]}` | `{order_id, status, balance:[{line_id, product_id, sent, settled, balance}]}` | `production.create`. `input_qty` defaults to qty for `returned`, and for `finished` when it is the same item. It is required for a finished different item. Refuses `jobwork.over_balance`, `jobwork.closed`, `jobwork.date`, `jobwork.returned_item`, `jobwork.returned_qty`, `jobwork.loss_qty`, `jobwork.scrap_item`, `jobwork.input_qty` |
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_job_work_orders` | id, company_id, company_name, doc_no, challan_no, challan_document_id, sent_on, return_by, goods_kind, process, status, job_worker_party_id, job_worker_name, from_place_id, from_place_name, jw_place_id, note, goods, qty_sent, qty_back, qty_balance, days_left, **overdue**, return_state `returned\|overdue\|no_limit\|at_job_worker`, value_out (cost.view), created_by, created_at |
+| `api.v_job_work_lines` | id, order_id, line_no, product_id, product_code, product_name, uom, lot_id, lot_no, qty_sent, qty_settled, balance, unit_cost (cost.view) |
+| `api.v_job_work_receipts` | id, order_id, line_id, kind, product_id, product_name, qty, input_qty, to_place_id, to_place_name, value (cost.view), received_on, challan_ref, received_by_name |
+
+ITC-04 data (sent and received, by date) comes from these views. The ITC-04 file format is a Phase 8 / CA item.
+
+### Maintenance (screen Maintenance; OperatorCheck feeds it)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.raise_repair_request(crid, p)` | `{asset_id \| mould_id, title, description?, photo_path?, priority? urgent\|normal\|low, is_breakdown?, broke_down_at?}` | `{id, doc_no, status}` | `production.create` or `assets.manage`. A breakdown sets the asset to `repair` and adds an asset event. Rule codes: `repair.what`, `repair.title`, `date.future` |
+| `api.update_repair_request(crid, p_request_id, p)` | `{status? assigned\|waiting_parts\|cancelled, assigned_to?, outside_vendor?, purchase_request_id?, priority?}` | `{id, status}` | `assets.manage` |
+| `api.close_repair_request(crid, p_request_id, p)` | `{resolution, restored_at?, labour_cost?, outside_cost?}` | `{id, status:'done', downtime_minutes}` | `assets.manage`. Downtime runs from breakdown to restore. The machine goes back to active. Rule codes: `repair.resolution`, `repair.restore_before_breakdown` |
+| `api.issue_spares(crid, p)` | `{company_id \| repair_request_id, asset_id?, place_id, issued_on?, lines:[{product_id, qty, lot_id?}]}` | `{doc_no, value}` | `assets.manage`. Moves stock through the ledger (`issue`) |
+| `api.upsert_maintenance_schedule(crid, p)` | `{id?, asset_id, title, interval_days, next_due_on?, checklist?, active?}` | `{id}` | `assets.manage` |
+| `api.record_maintenance_done(crid, p_schedule_id, p)` | `{done_on?, note?, cost?}` | `{id, next_due_on}` | `assets.manage` or `production.create` |
+| `api.maintenance_summary(p_company_id)` | — | `{machines, checked_today, open_requests{status:n}, done_this_month, breakdown_hours_month, schedules_overdue, spend_month (cost.view)}` | invoker |
+
+A ✗ on `api.record_machine_check` now also opens an urgent `operator_check` repair request (trigger).
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_repair_requests` | id, doc_no, asset_id, asset_code, asset_name, mould_id, mould_code, source, machine_check_id, title, description, photo_path, priority, is_breakdown, broke_down_at, restored_at, downtime_minutes (live while open), status, assigned_to, assigned_to_name, outside_vendor, purchase_request_id, resolution, labour_cost / outside_cost / spares_value (cost.view), raised_by_name, closed_at, created_at |
+| `api.v_spares_issues` | id, doc_no, repair_request_id, asset_code, product_code, product_name, uom, qty, value (cost.view), issued_on, issued_by_name |
+| `api.v_maintenance_schedules` | id, asset_id, asset_code, asset_name, title, interval_days, checklist, last_done_on, next_due_on, active, days_to_due, **overdue** |
+
+### Licences and documents (screen Licences; Admin)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.upsert_licence(crid, p)` (extended) | Phase 5 fields + `{title, portal_url, owner_person_id, is_blocking, blocks:['production'\|'packing'], renewal_status, renewal_applied_on}` | `{id}` | `settings.manage`. Rule codes: `licence.blocks`, `licence.owner` |
+| `api.renew_licence(crid, p_licence_id, p)` | `{valid_from, valid_to, licence_no?, document_path?, note?}` | `{id, renewal_id, valid_to}` | `settings.manage`. The old dates go to `core.licence_renewals`. Rule codes: `licence.not_later`, `licence.dates`, `licence.cancelled`, `licence.duplicate`, `licence.document_folder` |
+| `api.add_licence_document(crid, p_licence_id, p)` | `{path: '<company_id>/licences/…', kind?, valid_to?}` | `{id}` | `settings.manage`. Upload to the `documents` bucket first. Rule codes: `licence.document_folder`, `licence.document_path` |
+| `api.run_licence_reminders(crid, p_company_id, p_date?)` | — | `{date, reminders, superseded, expired_items}` | `settings.manage` ("send now"). The daily job does the same for every company. |
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_licence_register` | id, company_id, company_name, branch_id, branch_name, kind, title, label, licence_no, issued_by, portal_url, valid_from, valid_to, status, renewal_status, renewal_applied_on, is_blocking, blocks, owner_person_id, owner_name, document_path, note, **state** `valid\|expiring\|expired\|no_expiry\|suspended\|cancelled`, days_to_expiry, blocks_something, documents, reminders_done (days array for the current expiry), created_at, updated_at |
+| `api.v_licence_documents` | id, licence_id, kind, path, valid_to, uploaded_by_name, created_at |
+| `api.v_licence_renewals` | id, licence_id, old_licence_no, old_valid_from, old_valid_to, new_licence_no, new_valid_from, new_valid_to, note, renewed_by_name, renewed_at |
+| `api.v_licence_reminders` | id, licence_id, label, licence_no, valid_to, days_before, due_on, status, message_status, run_date |
+
+### Asset register (screen AssetRegister)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.depreciation_readiness(p_company_id)` | — | `{method, useful_life_years, residual_pct, assets_without_life[], assets_without_dates[], assets_without_residual[], ready}` | `accounts.view` or `assets.view` |
+| `api.run_depreciation(crid, p_company_id, p_period_id)` | — | `{run_id, method, total, assets, voucher_id, doc_no, skipped[]}` | `accounts.create`. Rule codes: `depreciation.settings_missing`, `depreciation.life_not_set`, `depreciation.asset_dates_missing`, `depreciation.residual_not_set`, `depreciation.period_not_ended`, `depreciation.already_run`, `period.closed`, `posting.rule_missing` |
+| `api.dispose_asset(crid, p_asset_id, p)` | `{disposal_date?, proceeds, proceeds_account_id (when proceeds > 0), reason}` | `{id, voucher_id, doc_no, wdv, gain_loss}` | `accounts.create`. Rule codes: `asset.disposed`, `asset.no_cost`, `asset.disposal_reason`, `asset.proceeds_account`. The sale itself is billed through Sales with GST. |
+
+Existing Phase 5 asset RPCs are unchanged: `upsert_asset`, `record_asset_event`, `record_calibration`, `add_asset_document`. Asset files can now go in the `documents` bucket under `<company_id>/assets/…`.
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_asset_register` | id, code, name, kind, place_name, make, model, serial_no, purchase_date, put_to_use_date, useful_life_years, residual_pct, status, disposed_on, amc_until, cost / accumulated_depreciation / wdv (cost.view or accounts.view), depreciated_to, documents, open_repairs |
+| `api.v_depreciation_runs` | id, period_id, month_start, method, total, voucher_id, voucher_no, status, run_by_name, run_at, assets |
+| `api.v_depreciation_lines` | run_id, asset_code, asset_name, cost, residual, useful_life_years, opening_wdv, days, amount, closing_wdv |
+| `api.v_asset_disposals` | asset_code, disposal_date, proceeds, cost, accumulated_depreciation, wdv, gain_loss, reason, voucher_id |
+
+### Directors and investment, partners and profit sharing, partner requests (screens Directors, ProfitSharing, PartnerRequests; Admin)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.upsert_partner(crid, p)` | `{id?, company_id, person_id?, user_id? (portal), display_name, is_legal_partner, is_investment_partner, is_working_partner, is_director, director_interested, din?, shares?, share_pct, capital_account_id?, current_account_id?, loan_account_id?, language en\|ml, status}` | `{id}` | `partners.manage` (Admin). Rule codes: `partner.share_over_100`, `partner.account_other_company`. The portal role itself is assigned with `api.assign_role(…, 'investor', …)`. |
+| `api.record_partner_investment(crid, p)` | `{partner_id, kind, amount, invested_on?, agreement_ref?, project_id?, note?}` | `{id}` | `partners.manage`. Rule code: `partner.agreement_required` (project) |
+| `api.upsert_partner_project(crid, p)` | `{id?, company_id, name, status, started_on?, summary?, investor_figures?, visible_to_investors?}` | `{id}` | `partners.manage` |
+| `api.record_director_declaration(crid, p)` | `{partner_id, kind not_borrowed\|interest_disclosure\|other, declared_on, valid_to?, document_path?, note?}` | `{id}` | `partners.manage` |
+| `api.submit_partner_request(crid, p_kind, p)` | p_kind `withdraw\|loan_to_partner\|loan_from_partner\|info\|project_offer`; p `{partner_id (or company_id for the caller's own row), source (withdraw), amount, repay_months?, repay_from? land_rent\|incentive\|bank, project_id?, purpose?, note?}` | `{id, doc_no, status}` | `investor.portal` (own partner row) or `partners.manage` (on behalf). Rule codes: `partner_request.*` (kind, source, project, question), `partner.amount`, `partner.inactive` |
+| `api.withdraw_partner_request(crid, p_request_id)` | — | `{id, status}` | The requester only, while submitted |
+| `api.decide_partner_request(crid, p_request_id, p_decision approve\|reject, p_amount numeric = null, p_note text = null)` | Rejecting needs a note. Approving a loan to a partner needs the board resolution reference in the note. | `{id, status, checks}` | Admin with `partners.manage`; never the requester or the partner themselves (`sod.own_request`). Withdraw: `partner.over_due`, `partner.account_not_set`. Loan to a director or interested party: `companies_act.s185`. Other loans: `companies_act.s186_limit_not_set`, `companies_act.s186_limit`, `partner.board_resolution_required`. Loan from a director: `companies_act.director_declaration` |
+| `api.pay_partner_request(crid, p_request_id, p)` | `{bank_account_id, paid_on?}` | `{id, status:'paid', voucher_id, doc_no}` | `partners.manage`. Approved withdrawals only. Payment voucher Dr partner current account / Cr bank |
+| `api.record_director_loan(crid, p)` | `{partner_id, direction given\|taken, movement advance\|repayment, amount, loan_date?, bank_account_id, request_id?}` | `{id, voucher_id, doc_no, legal_basis}` | Admin. Runs the same s.185 / s.186 / declaration checks. Rule codes: `loan.over_repaid`, `loan.request`. Posts to the loan account and the bank |
+| `api.save_profit_share_minutes(crid, p)` | `{id?, company_id, fy_id, meeting_date, minutes_ref, document_path?, basis:{incentives:[{partner_id, pct}]}}` | `{id, status}` | `partners.manage`. Rule codes: `minutes.*` |
+| `api.approve_profit_share_minutes(crid, p_minutes_id)` | — | `{id, status}` | A second Admin (`sod.own_minutes`) |
+| `api.compute_profit_share(crid, p_minutes_id)` | — | `{run_id, net_profit, incentive_total, distributable, lines:[{partner_id, kind, pct, amount}]}` | Admin. Rule codes: `minutes.not_approved`, `profit_share.no_profit`, `profit_share.share_pct_not_100`, `profit_share.already_posted` |
+| `api.post_profit_share(crid, p_run_id, p_post_date date = today)` | — | `{run_id, status:'posted', voucher_id, doc_no}` | Admin. The date must be in an open month. Rule codes: `posting.rule_missing`, `partner.account_not_set` |
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_partners` | id, company_id, company_name, person_id, user_id, display_name, role flags, din, shares, share_pct, account ids, language, status, share_capital, investment, current_account_balance, loan_account_balance, declaration_on_file, portal_set_up |
+| `api.v_partner_requests` | id, company_name, doc_no, partner_id, partner_name, is_director, kind, source, project_id, amount, repay_months, repay_from, purpose, note, status, requested_by_name, created_at, decided_by_name, decided_at, decided_amount, decision_note, checks, voucher_id, paid_at, due_to_partner |
+| `api.v_partner_investments` | One row per recorded investment |
+| `api.v_partner_projects` | One row per project |
+| `api.v_director_declarations` | Includes `current` |
+| `api.v_director_loans` | Includes `outstanding_after` and voucher_no |
+| `api.v_profit_share_minutes` | One row per set of minutes |
+| `api.v_profit_share_runs` | Includes `lines` with partner names |
+
+### Investor portal (InvestorSignIn, InvestorGroup, PartnerHome, PartnerPerformance, PartnerInvestment, InvestorProjects, InvestorWithdraw, InvestorLoan, InvestorWorkingPartner)
+
+The investor role holds `home.view` and `investor.portal` only, with no transaction rights. It reads nothing through "can see the company". Everything below returns only the caller's own rows and aggregates: no party names, salaries or without-GST figures, unless Admin records the `investor.include_without_gst` policy.
+
+| Call | Returns |
+|---|---|
+| `api.investor_me()` | `{user_id, display_name, portal, can_transact:false, partners:[{partner_id, company_id, company, name, legal_partner, investment_partner, working_partner, director, shares, share_pct, language}], open_requests}` |
+| `api.investor_group_summary(p_on date = today)` | `{as_of, companies:[{partner_id, company_id, company, shares, share_pct, share_capital, investment, net_worth_book, value_of_my_shares, profit_share_posted, my_loan_account, money_in_12m, buyers_paying_12m (count of posted receipts, not distinct buyers)}], totals:{share_capital, investment, value_of_my_shares}}` |
+| `api.v_investor_partners` | partner_id, company_id, company_name, display_name, role flags, shares, share_pct, language, share_capital, investment |
+| `api.v_investor_requests` | id, company_id, company_name, doc_no, kind, source, project_id, amount, repay_months, repay_from, purpose, status, created_at, decided_at, decided_amount, decision_note, paid_at |
+| `api.v_investor_profit_shares` | company_id, company_name, fy_label, minutes_ref, kind, pct, amount, posted_at |
+| `api.v_investor_projects` | id, company_id, company_name, name, status, started_on, summary, investor_figures, updated_at (projects Admin marked visible) |
+| `api.v_investor_money_in` | company_id, company_name, month, mode, receipts, amount (posted receipts, last 12 months) |
+
+Requests (withdraw, loan, project interest, information) go through `api.submit_partner_request` and `api.withdraw_partner_request`.
+
+### Month-end close (screen MonthClose)
+
+| RPC | Input | Returns | Right · rules |
+|---|---|---|---|
+| `api.open_close_checklist(crid, p_company_id, p_period_id, p jsonb = '{}')` | `{doer_user_id?, checker_user_id?}` | `{id, due_on, tasks}` | `close.manage`. due_on = the `close.due_day` (10th) of the next month. Tasks come from `close.default_tasks`. Rule codes: `close.exists`, `period.already_closed`, `sod.doer_is_checker` |
+| `api.add_close_task(crid, p_checklist_id, p)` | `{title, area?, sort?, doer_user_id?, checker_user_id?}` | `{id}` | `close.manage` |
+| `api.assign_close_task(crid, p_task_id, p)` | `{doer_user_id?, checker_user_id?}` | `{id}` | `close.manage`. Doer ≠ checker |
+| `api.complete_close_task(crid, p_task_id, p_action done\|check\|return, p_note = null)` | — | `{id, status}` | The assigned doer or checker, or `close.manage` when unassigned. The doer never checks (`sod.doer_is_checker`). Rule codes: `close.not_doer`, `close.not_checker`, `close.task_state`, `close.note` |
+| `api.carry_close_task(crid, p_task_id, p_reason)` | — | `{id, status:'carried', new_task_id}` | `close.manage`. Moves the task to next month's checklist |
+| `api.close_period(crid, p_company_id, p_period_id)` | — | `{period_id, status:'closed'}` | `close.manage`. Rule codes: `close.no_checklist`, `close.tasks_open`, `close.month_not_over`, `period.already_closed` |
+| `api.reopen_period(crid, p_company_id, p_period_id, p_reason)` | reason of at least 10 characters | `{period_id, status:'open', relock_at}` | **Admin only** (`period.reopen_admin_only`). Rule codes: `period.reason_required`, `period.not_closed`. Logged |
+
+**Views:**
+
+| View | Columns |
+|---|---|
+| `api.v_close_checklists` | id, company_name, period_id, month_start, period_status, due_on, status, days_left, tasks, open_tasks, done_tasks, checked_tasks, carried_tasks |
+| `api.v_close_tasks` | id, checklist_id, title, area, sort, status, doer_user_id, doer_name, checker_user_id, checker_name, done_by, done_at, done_note, checked_by, checked_at, check_note, carried_to_task_id, carry_reason, my_turn |
+| `api.v_period_status` | period_id, company_id, fy_id, month_start, status, closed_at, closed_by_name, checklist_id, due_on, last_action, last_reason, relock_at, last_action_at |
+
+**After the close:** no entry dated in a closed month can be posted by any route. That includes Admin and any special grant: `app.fy_for` and the triggers on the GL and the stock ledger refuse it with `period.closed`.
+
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.
@@ -497,6 +654,8 @@ Phase 4: `stock.*` (insufficient, reserved, qty, bucket, place_missing, place_ot
 Phase 5: `licence.*` (missing, expired, no_number, dates), `prod.*` (no_approved_formula, bulk_by_weight, packaging_in_nos, pack_in_nos, packaging_whole, not_in_formula, no_bulk_qty, no_fill_weight, no_good_packs, not_issued, recon_decrease, **recon_mismatch**, components_short, qty, family_name, family_missing), `formula.*`, `batch.*` (missing, state, has_issues), `weighing.*` (missing, state, pending), `qc.out_of_spec`, `qc.no_test`, `qc.sample_state`, `qc.use_batch_release`, `qc.qty_mismatch`, `qc.not_inspection_lot`, `asset.*` (calibration_due, not_in_use, missing, …), `mould.*`, `shift.*`, `bom.*`, `pack.*` (incl. gst_treatment_unset), `print.*`, `rnd.*`, `work.*`, `cost.rate`, `check.empty`, **`sod.own_formula`**, **`sod.own_weighing`**, **`sod.self_release`**, **`sod.inspector_maker`**, `sod.own_approval`.
 
 Phase 6: `order.*` (channel, payment, product, no_rate, no_price_list, price_locked, discount_over_authority, kyc_cash_only, private_label_missing, private_label_pending, missing, state, not_confirmed), `credit.*` (over_limit, exception_until, exception_amount, application_open, limit_amount, missing, state, wrong_stage, decision, same_person, kyc_not_verified, review_date, terms_required, status, no_approval), `party.not_linked`, `vehicle.*` (missing, not_active, document_expired), `dispatch.*` (place, over_order, no_lines, document, document_short, state, already_invoiced, eway_format, no_invoice, eway_required, missing), `trip.*` (missing, state, dispatch, no_stops, stop_missing, open_stops), `pod.*` (already, receiver, proof, bad_path, qty, short_reason), `stock.lot_on_hold`, `gps.*` (off_duty, notice_required, outside_duty), `duty.already_on`, `visit.*` (open, unplanned_reason, no_location, out_of_fence, missing, not_pending, closed, outcome, no_order_reason), `field.*` (not_my_customer, bad_path, cheque_photo, reference, handover_pending, handover_missing, handover_state, unsynced, cash_not_handed_over), `query.*`, `promise.date`, `complaint.*` (lot, description, missing, closed, status, not_alone, hold_open), `qc.already_on_hold`, `qc.hold_missing`, `qc.hold_closed`, `qc.decision`, `lot.missing`, `coverage.tier`, `private_label.*`, `shop.*` (missing, no_customer, branch, place, day_closed), `export.*` (missing, not_overseas, fx_rate, container_no, container_missing, lut_expired), `listing.*` (channel, blocked), `online.unknown_item`, `schedule3.*` (group, line), `task.*` (missing, status, closed, finance_only), `msg.*` (inbound_missing, window_closed, not_consented, empty).
+
+Phase 7: `jobwork.*` (party, party_other_company, process, goods_kind, no_lines, no_gstin, limit_not_set, missing, closed, date, line, kind, returned_item, returned_qty, loss_qty, scrap_item, input_qty, **over_balance**), `repair.*` (what, title, missing, closed, status, purchase_request, resolution, restore_before_breakdown), `spares.no_lines`, `schedule.*`, `licence.*` (blocks, owner, missing_row, cancelled, **not_later**, duplicate, document_path, document_folder; **expired** now also from blocking licences), `depreciation.*` (**settings_missing**, **life_not_set**, asset_dates_missing, residual_not_set, period_not_ended, already_run), `asset.*` (disposed, no_cost, disposal_reason, proceeds, proceeds_account), `partner.*` (missing, name, inactive, amount, account_not_set, account_other_company, share_over_100, agreement_required, project, bank, over_due, board_resolution_required), `partner_request.*` (kind, source, project, question, missing, state, decision, reason), **`companies_act.s185`**, **`companies_act.s186_limit_not_set`**, **`companies_act.s186_limit`**, **`companies_act.director_declaration`**, `loan.*` (kind, request, over_repaid), `minutes.*` (missing, not_draft, fy, ref, partner, pct, pct_over_100, not_approved), `profit_share.*` (missing, state, no_profit, share_pct_not_100, already_posted), **`sod.own_minutes`**, **`sod.doer_is_checker`**, `close.*` (exists, missing, closed, title, task_missing, task_state, not_doer, not_checker, note, action, reason, no_checklist, tasks_open, month_not_over), `period.*` (**closed**: no grant overrides, missing, already_closed, not_closed, **reopen_admin_only**, reason_required).
 
 ## Edge Functions
 

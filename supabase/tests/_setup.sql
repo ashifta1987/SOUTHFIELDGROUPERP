@@ -249,4 +249,44 @@ begin
   select id into v_shop_br from core.branches where company_id = v_a and code = 'S1';
   return s || u || jsonb_build_object('cash_in_hand', v_cih, 'term30', v_term, 'price_list', v_pl, 'lot1', v_lot, 'lot2', v_lot2, 'shop_branch', v_shop_br);
 end $$;
+
+-- Phase 7 seed on top of seed5: two investor-portal users, a licence owner with a verified number, a job worker (supplier),
+-- a spares item and stock of the plain raw material at the stores, an asset with a cost for depreciation, an equity group,
+-- partner current and loan accounts, and the Phase 7 posting rules (all synthetic; no rates or limits are seeded — the
+-- tests record the CA settings they need).
+create or replace function tests.seed7(s jsonb) returns jsonb
+language plpgsql as $$
+declare
+  v_a uuid := (s ->> 'company_a')::uuid; u jsonb := '{}'::jsonb; r record; v_jw uuid; v_oil uuid; v_dep uuid; v_owner uuid; v_owner_user uuid; g_eq uuid; g_liab uuid; g_asset uuid;
+  v_acc uuid; e text; acc jsonb := '{}'::jsonb;
+begin
+  for r in select * from (values ('investor1'), ('investor2')) x(k) loop
+    u := u || jsonb_build_object(r.k, tests.create_user('test.p7' || r.k || '@example.test', 'investor'));
+  end loop;
+  v_owner_user := tests.create_user('test.p7owner@example.test');
+  insert into master.people (name, status, user_id, phone) values ('Test Licence Owner', 'active', v_owner_user, '+919000000701') returning id into v_owner;
+  insert into master.parties (legal_name, gst_status, state_code, is_supplier, kyc_status) values ('Test Job Worker', 'unregistered', '32', true, 'verified') returning id into v_jw;
+  insert into master.party_companies (party_id, company_id, is_supplier) values (v_jw, v_a, true);
+  insert into master.products (code, name, hsn_code, uom, status, kind) values ('TOIL', 'Test Hydraulic Oil', '99999001', 'LTR', 'active', 'consumable') returning id into v_oil;
+  perform app.stock_post(v_a, v_oil, null, (s ->> 'stores')::uuid, 'available', 50, 'opening', 'tests.seed7', null, 'OPEN', current_date, 200);
+  perform app.stock_post(v_a, (s ->> 'rm2')::uuid, null, (s ->> 'stores')::uuid, 'available', 100, 'opening', 'tests.seed7', null, 'OPEN', current_date, 50);
+  insert into core.assets (company_id, code, name, kind, status, cost, put_to_use_date) values (v_a, 'TDEP', 'Test Compressor With Cost', 'utility', 'active', 120000, '2026-04-01')
+  returning id into v_dep;
+  insert into acct.account_groups (company_id, name, nature) values (v_a, 'Test Equity', 'equity') returning id into g_eq;
+  insert into acct.account_groups (company_id, name, nature) values (v_a, 'Test Partner accounts', 'liability') returning id into g_liab;
+  insert into acct.account_groups (company_id, name, nature) values (v_a, 'Test Fixed assets', 'asset') returning id into g_asset;
+  foreach e in array array['depreciation.expense', 'depreciation.accumulated', 'asset.cost', 'asset.disposal_gain_loss', 'profit_share.incentive', 'profit_share.distribution'] loop
+    insert into acct.accounts (company_id, group_id, name, status, kind)
+    values (v_a, case when e in ('depreciation.accumulated', 'asset.cost') then g_asset when e like 'profit_share.%' then g_eq else (select group_id from acct.accounts where id = (s ->> 'cash')::uuid) end,
+            'Test ' || e, 'active', 'other') returning id into v_acc;
+    insert into acct.posting_rules (company_id, event, account_id) values (v_a, e, v_acc);
+  end loop;
+  foreach e in array array['p1_current', 'p1_loan', 'p2_current', 'p2_loan'] loop
+    insert into acct.accounts (company_id, group_id, name, status, kind) values (v_a, g_liab, 'Test partner ' || e, 'active', 'capital') returning id into v_acc;
+    acc := acc || jsonb_build_object(e, v_acc);
+  end loop;
+  insert into acct.accounts (company_id, group_id, name, status, kind) values (v_a, g_eq, 'Test Share capital', 'active', 'capital') returning id into v_acc;
+  acc := acc || jsonb_build_object('share_capital', v_acc);
+  return s || u || acc || jsonb_build_object('licence_owner', v_owner, 'licence_owner_user', v_owner_user, 'job_worker', v_jw, 'oil', v_oil, 'dep_asset', v_dep);
+end $$;
 grant execute on all functions in schema tests to authenticated;

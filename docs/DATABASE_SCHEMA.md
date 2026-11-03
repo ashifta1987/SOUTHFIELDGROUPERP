@@ -408,3 +408,219 @@ On for every new table; select only. Orders/lines/promises/queries/contact attem
 ### Tests
 
 `supabase/tests/17_delivery_sales.sql` (57), `18_gst_reports.sql` (38), `19_field_sales.sql` (33); `_setup.sql` gains `tests.seed6`.
+
+## Phase 7: the rest of operations (database built; screens next)
+
+Migrations (all additive):
+
+- `20261103007000_phase7_core.sql`: tables, guards, RLS, the closed-period lock, the investor read rule, the `documents` bucket, rights and settings
+- `007100_phase7_ops_api.sql`: job work, maintenance, licences, depreciation and disposals
+- `007200_phase7_partners_close_api.sql`: partners, directors, the investor portal and the month-end close
+- `007300_phase7_views.sql`: views and the law register
+- `007400_phase7_setting_keys.sql`: the Companies Act setting keys
+
+**Widened (non-destructive):**
+
+- `core.places.kind` adds `job_worker`.
+- `inv.stock_ledger.move_type` adds `job_work_out` and `job_work_in`.
+- `core.licences.kind` adds `gst_registration`, `company_registration`, `pan_tan`, `udyam`, `iec`, `lut`, `epf`, `esi`, `shops_establishment`, `trademark`, `iso`, `bis`, `weighing_verification` and `spirit_permit`.
+
+**New defaulted or nullable columns:**
+
+- On `core.licences`:
+  - `title`, `portal_url`, `owner_person_id` (→ `master.people`)
+  - `is_blocking` (default false)
+  - `blocks text[]`: a subset of `production` and `packing`
+  - `renewal_status`: `ok|renewal_due|applied|renewed|lapsed`
+  - `renewal_applied_on`
+- On `core.assets`: `disposed_on`.
+
+**Numbering.** Doc types `job_work` (JW), `repair_request` (RR), `spares_issue` (SP) and `partner_request` (PRQ). Numbers come from `app.p7_doc_no`.
+
+**Settings seeded** (values from the prompt or the Act; the CA confirms):
+
+- `licence.reminder_days` = `[90, 30, 7]`
+- `close.due_day` = 10
+- `jobwork.return_years` = `{"inputs": 1, "capital_goods": 3, "moulds_tools": null}`
+- `close.default_tasks`: task titles from the MonthClose design
+
+**Settings read but not seeded.** The CA decides each one and Admin records it with `api.set_setting`. When a setting is unset, the action is refused with a rule code. Nothing is assumed.
+
+| Setting | Value | Meaning |
+|---|---|---|
+| `depreciation.method` | `"slm"` or `"wdv"` | Depreciation method |
+| `depreciation.useful_life_years` | `{asset_kind: years}` | Useful life by asset kind. The asset's own `useful_life_years` wins. |
+| `depreciation.residual_pct` | number | Residual value %. The asset's own `residual_pct` wins. Needed above 0 for WDV. |
+| `companies_act.director_loan_exception` | `{basis, resolution_ref?, …}` | The allowed s.185 exception |
+| `companies_act.loan_limit` | number | The s.186 limit |
+| `investor.include_without_gst` | boolean, default false | Admin-approved policy to include without-GST figures in investor aggregates |
+| `close.reopen_hours` | number | Relock a reopened month after this many hours |
+| `close.auto_lock` | boolean, default false | Lock months on their due date. Open tasks move to the next month. |
+
+**Closed periods** (a change to Phase 3 behaviour; decision D-P7-1):
+
+- `app.fy_for` refuses a closed month whatever grant is held (`period.closed`).
+- The triggers `closed_period_guard` on `acct.gl_entries` and `inv.stock_ledger` refuse any row dated in a closed month.
+- The trigger `periods_guard` on `core.periods` allows closed → open only inside `api.reopen_period`.
+- `core.rights.period.reopen` is now `admin_only` and not grantable.
+
+**Investor read rule** (decision D-P7-2): `app.can_read_company` ignores the `investor` role. A new helper, `app.is_partner_user(partner_id)`, checks that the partner row belongs to the caller.
+
+### Tables
+
+| Table | Key columns | Notes |
+|---|---|---|
+| `core.licence_documents` | company_id, licence_id, kind `licence_copy\|application\|renewal_receipt\|inspection\|other`, path (`documents` bucket `<company_id>/licences/…`), valid_to, uploaded_by | **Append-only** |
+| `core.licence_renewals` | licence_id, old_licence_no / old_valid_from / old_valid_to, new_licence_no / new_valid_from / new_valid_to, document_id, note, renewed_by/at | **Append-only** renewal history |
+| `core.licence_reminders` | licence_id, valid_to, days_before, due_on, status `queued\|skipped\|alert_only\|superseded`, outbox_id, run_date | **Append-only**. **Unique (licence_id, valid_to, days_before)**: a reminder is never sent twice. |
+| `prod.job_worker_places` | (company_id, party_id) PK, place_id (unique, kind `job_worker`) | Created on first job work for that job worker |
+| `prod.job_work_orders` | company_id, doc_no (`JW/…`), gstin_id, job_worker_party_id, process, goods_kind `inputs\|capital_goods\|moulds_tools`, from_place_id, jw_place_id, sent_on, return_by (null = no limit, > sent_on), challan_document_id (→ `sales.documents`), challan_no, status `sent\|part_received\|received\|cancelled` | |
+| `prod.job_work_lines` | order_id, line_no, product_id, lot_id, qty_sent (18,3) > 0, unit_cost, qty_settled (≤ qty_sent) | Balance = qty_sent − qty_settled. Only `receive_job_work` changes it, under a row lock. |
+| `prod.job_work_receipts` | order_id, line_id, kind `finished\|returned\|scrap\|loss`, product_id, qty, input_qty, to_place_id, value, received_on, challan_ref | **Append-only**. `loss` has qty 0. |
+| `prod.repair_requests` | company_id, doc_no (`RR/…`), asset_id or mould_id, source `operator_check\|manual\|breakdown\|preventive`, machine_check_id (unique), title, description, photo_path, priority, is_breakdown, broke_down_at, restored_at, downtime_minutes, status `new\|assigned\|waiting_parts\|done\|cancelled`, assigned_to, outside_vendor, purchase_request_id, labour_cost, outside_cost, resolution, raised_by, closed_by/at | A failed operator check opens one (trigger `machine_check_repair`) |
+| `prod.spares_issues` | company_id, doc_no (`SP/…`), repair_request_id, asset_id, product_id, place_id, qty, value, issued_on | **Append-only**. The stock moves through `app.stock_take` (`issue`). |
+| `prod.maintenance_schedules` | asset_id, title, interval_days > 0, checklist, last_done_on, next_due_on, active | |
+| `prod.maintenance_logs` | schedule_id, asset_id, done_on, note, cost, done_by | **Append-only** |
+| `acct.depreciation_runs` | company_id, period_id, method, total, voucher_id, status `posted\|reversed`, run_by/at | One posted run per company and month (partial unique index) |
+| `acct.depreciation_lines` | run_id, asset_id, cost, residual, useful_life_years, opening_wdv, days, amount, closing_wdv | **Append-only** |
+| `core.asset_disposals` | asset_id (unique), disposal_date, proceeds, cost, accumulated_depreciation, wdv, gain_loss, reason, voucher_id | **Append-only** |
+| `acct.partners` | company_id, person_id, user_id (the portal sign-in), display_name, is_legal_partner / is_investment_partner / is_working_partner / is_director / director_interested, din (8 digits), shares, share_pct (0–100), capital_account_id / current_account_id / loan_account_id (→ `acct.accounts`), language `en\|ml`, status | Unique (company_id, user_id) and (company_id, person_id) |
+| `acct.partner_projects` | company_id, name, status `idea\|being_built\|running\|closed`, started_on, summary, investor_figures jsonb (only what Admin shows), visible_to_investors | |
+| `acct.partner_investments` | partner_id, kind `share_capital\|capital_account\|project\|other`, amount, invested_on, agreement_ref, project_id | **Append-only** memo. `project` needs the project and the agreement. |
+| `acct.partner_requests` | company_id, doc_no (`PRQ/…`), partner_id, kind `withdraw\|loan_to_partner\|loan_from_partner\|info\|project_offer`, source `land_rent\|incentive\|dividend\|investment`, project_id, amount, repay_months, repay_from, purpose, note, status `submitted\|approved\|rejected\|paid\|withdrawn`, requested_by, decided_by (≠ requested_by, check), decided_at, decided_amount, decision_note, checks jsonb, voucher_id, paid_at | |
+| `acct.director_declarations` | partner_id, kind `not_borrowed\|interest_disclosure\|other`, declared_on, valid_to, document_path | **Append-only** |
+| `acct.director_loans` | partner_id, direction `given\|taken`, movement `advance\|repayment`, amount, loan_date, bank_account_id, request_id, declaration_id, legal_basis jsonb, voucher_id | **Append-only** |
+| `acct.profit_share_minutes` | company_id, fy_id, meeting_date, minutes_ref, document_path, basis `{incentives: [{partner_id, pct}]}`, status `draft\|approved\|superseded`, created_by, approved_by (≠ created_by, check) | |
+| `acct.profit_share_runs` | minutes_id, fy_id, net_profit, incentive_total, distributable, status `computed\|posted\|superseded`, voucher_id | One posted run per set of minutes |
+| `acct.profit_shares` | run_id, partner_id, kind `incentive\|share`, pct, amount | **Append-only**. A rounding row (pct 0) may follow the largest share. |
+| `acct.close_checklists` | company_id, period_id (unique), due_on, status `open\|closed` | |
+| `acct.close_tasks` | checklist_id, title, area, sort, doer_user_id, checker_user_id (≠ doer, check), status `open\|done\|checked\|carried`, done_by/at/note, checked_by (≠ done_by, check)/at/note, carried_to_task_id, carry_reason | |
+| `acct.period_events` | period_id, action `closed\|reopened\|relocked\|auto_closed`, reason, relock_at, by_user, at | **Append-only** |
+
+### Stock movements
+
+| Event | Out of | Into | Move type |
+|---|---|---|---|
+| Job work out | sending place (`available`) | job worker's place (`available`, still our stock) | `job_work_out` |
+| Job work back: `returned` | job worker's place | the receiving place (same lots and cost) | `job_work_in` |
+| Job work back: `finished` | job worker's place (the input used) | the receiving place: the processed item, valued at the input it used | `job_work_in` |
+| Job work back: `scrap` | — | the receiving place: the scrap item at zero cost | `scrap_in` |
+| Job work back: `loss` | job worker's place (the input used) | nothing comes back | `write_off` |
+| Spares | the chosen place | — | `issue` |
+
+### State machines
+
+**Job work order:**
+
+- `sent` → `part_received` → `received`
+- Overdue = `return_by < today` with a balance left.
+- `app.job_work_overdue_run` opens one Bug fixer item per overdue order (area `tax`, for the CA).
+
+**Repair request:**
+
+- `new` → `assigned` / `waiting_parts` → `done` (needs a resolution).
+- `cancelled` is possible from any open state.
+- A breakdown sets the asset to `repair`.
+- When the request is done, downtime = restored_at − broke_down_at, and the asset goes back to `active` if no other breakdown is open.
+
+**Partner request:**
+
+- `submitted` → `approved` / `rejected` (Admin, never the requester or the partner themselves) → `paid`.
+  - A withdrawal is paid with `pay_partner_request`.
+  - A loan is paid with `record_director_loan` and its `request_id`.
+- `submitted` → `withdrawn` (by the requester).
+
+**Close task:**
+
+- `open` → `done` (the doer) → `checked` (the checker; never the person who did it). A checker can `return` it to `open` with a note.
+- An open or done task can be `carried` to the next month's checklist.
+
+**Period:**
+
+- `open` → `closed` (`api.close_period`: every task checked or carried, and the month has ended).
+- `closed` → `open` only through `api.reopen_period` (Admin, a reason of at least 10 characters, logged in `acct.period_events` and `audit.user_log`).
+- Relocks after `close.reopen_hours` through the hourly pg_cron job `period-relock`.
+
+### Rules enforced (where)
+
+- **Licence reminders** (`app.licence_reminders_run`, pg_cron `phase7-daily` at 02:00 UTC = 07:30 IST):
+  - Each crossed threshold gets one `core.licence_reminders` row per licence and expiry.
+  - Only the tightest new threshold sends an internal alert to the licence owner: `msg.outbox` event `internal.licence_expiring`, template `licence_expiring`, params licence / licence_no / valid_to / days_left. No figures.
+  - On a late first run the larger thresholds are recorded as `superseded`.
+  - An expired licence that blocks something opens one Bug fixer item and moves `renewal_status` to `lapsed`.
+- **Blocking licences** (`app.check_blocking_licences(company, place, activity, date)`):
+  - A licence kind that Admin marked `is_blocking` for `production` or `packing` must have a valid licence covering the place's branch on the date. Otherwise `licence.expired`.
+  - Called from `app.check_licence` (every Biochem production entry), from trigger `shift_licence_guard` (injection shifts) and from trigger `packing_licence_guard` (a batch moving to packing).
+  - The Phase 5 cosmetics family check is unchanged.
+- **Depreciation** (`api.run_depreciation`):
+  - Refuses with `depreciation.settings_missing`, `depreciation.life_not_set`, `depreciation.asset_dates_missing` or `depreciation.residual_not_set` (WDV).
+  - Also refuses `period.closed`, `depreciation.period_not_ended` and `depreciation.already_run`.
+  - SLM: (cost − residual) ÷ life × days in use ÷ days in the FY.
+  - WDV: opening WDV × (1 − (residual%)^(1/life)) × days ÷ days in the FY.
+  - The charge is capped at cost − residual − accumulated.
+  - Only assets with a cost and a put-to-use (or purchase) date count.
+  - One journal: Dr `depreciation.expense`, Cr `depreciation.accumulated`.
+- **Disposal**: Dr `depreciation.accumulated`, Dr the proceeds account, Cr `asset.cost`; the gain or loss goes to `asset.disposal_gain_loss`.
+- **Companies Act** (`app.check_partner_loan`, `app.director_declaration`): see LAW_RULES CA-185, CA-186 and DIR-1. A loan approval also needs the board resolution reference in the note.
+- **Profit share**:
+  - Net profit = Σ(cr − dr) on income and expense accounts within the FY (every class of entry; Admin only).
+  - Incentives (% of net profit) come first. The rest goes by `share_pct`, which must total 100.
+  - Posted Dr `profit_share.incentive` / `profit_share.distribution`, Cr each partner's current account.
+- **Withdrawals**: no more than the partner's current-account credit balance (`app.account_credit_balance`, opening included).
+
+### Posting rules used (data; Admin maps them with the CA)
+
+`depreciation.expense`, `depreciation.accumulated`, `asset.cost`, `asset.disposal_gain_loss`, `profit_share.incentive`, `profit_share.distribution`. Missing → `posting.rule_missing`.
+
+### Rights seeded
+
+- `partners.view` (finance_head, md)
+- `investor.portal` (investor)
+- `close.manage` (finance_head)
+- `partners.manage`: special, admin-only and never grantable
+- `period.reopen`: now admin-only and not grantable
+
+The investor role holds only `home.view` and `investor.portal`. Job work and maintenance use `production.create` / `production.view` and `assets.manage` / `assets.view`. Licences use `settings.manage`. Depreciation and disposals use `accounts.create`.
+
+### RLS
+
+**Licence tables:** `app.can_read_company` (never the investor).
+
+**Job work:** `production.view` or `inventory.view`.
+
+**Maintenance:**
+
+- `production.view` or `assets.view`.
+- Repair requests can also be read by the person who raised the request and by the assignee.
+
+**Depreciation and disposals:** `accounts.view` or `assets.view`.
+
+**Partners and directors:**
+
+- The partner rows and everything hanging off them can be read by their own portal user (`user_id = auth.uid()` / `app.is_partner_user`) or with `partners.view`.
+- Minutes and runs need `partners.view`.
+- Projects can be read with `partners.view`, or when they are visible to investors and the caller is a partner of that company.
+
+**Close:**
+
+- `accounts.view` or `close.manage`.
+- Tasks can also be read by the assigned doer or checker.
+
+**Storage bucket `documents`** (private): `<company_id>/licences/…` can be read by those who can see the company and written with `settings.manage`. `<company_id>/assets/…` can be read with `assets.view` or `production.view` and written with `assets.manage`.
+
+### Background jobs (pg_cron)
+
+| Job | Schedule (UTC) | Calls |
+|---|---|---|
+| `phase7-daily` | `0 2 * * *` | `app.phase7_daily()`: licence reminders and expiries, overdue job work |
+| `period-relock` | `15 * * * *` | `app.period_jobs()`: relocks reopened months whose window ended. If `close.auto_lock` is on, also locks months past their due date. |
+
+### Tests
+
+| File | Covers | Tests |
+|---|---|---|
+| `supabase/tests/21_jobwork_maintenance.sql` | Job work and maintenance | 28 |
+| `22_licences_assets.sql` | Licences and assets | 29 |
+| `23_partners_investor_close.sql` | Partners, the investor portal and the close | 42 |
+
+`_setup.sql` has a new seed, `tests.seed7`.

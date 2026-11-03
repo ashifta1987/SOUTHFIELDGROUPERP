@@ -29,20 +29,20 @@ Conventions:
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
 | Invoices `Invoice` | `/sales/invoices` | `src/features/sales/InvoicePage.tsx` | `sales.invoices`, `sales.invoice_lines`, `sales.invoice_tax_lines`, `master.hsn_rates`, `core.doc_series` | `api.preview_invoice_tax`, `api.post_sales_invoice`, `api.reverse_document` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
-| Quotations & orders `SalesOrders` | `/sales/quotations-and-orders` | `src/features/sales/SalesOrdersPage.tsx` | `sales.quotations`, `sales.orders`, `sales.order_lines`, `inv.reservations` | `api.create_quotation`, `api.confirm_sales_order`, `api.check_credit_exposure` | 6 | missing (repo was empty) |
+| Quotations & orders `SalesOrders` | `/sales/quotations-and-orders` | `src/features/sales/SalesOrdersPage.tsx` | `sales.quotations`, `sales.orders`, `sales.order_lines`, `inv.reservations` | `api.create_quotation`, `api.confirm_sales_order`, `api.check_credit_exposure` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Customers (second view) `CustomerKYC` | `/sales/customers/customer-kyc` | `src/features/sales/customer-kyc/CustomerKycPage.tsx` | `master.parties`, `master.party_companies`, `master.party_contacts`, `master.party_addresses`, `master.party_documents`, `master.gstin_checks`, `msg.contacts` | `api.propose_customer`, `api.verify_party_kyc`, `api.record_consent` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-customers.spec.ts; pgTAP 05_masters |
-| Shops and supermarkets `ShopSales` | `/sales/shops-and-supermarkets` | `src/features/sales/ShopSalesPage.tsx` | `sales.orders`, `sales.invoices`, `master.parties` | `api.confirm_sales_order`, `api.post_sales_invoice` | 6 | missing (repo was empty) |
+| Shops and supermarkets `ShopSales` | `/sales/shops-and-supermarkets` | `src/features/sales/ShopSalesPage.tsx` | `sales.orders`, `sales.invoices`, `master.parties` | `api.confirm_sales_order`, `api.post_sales_invoice` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Price lists `PriceList` | `/sales/price-lists` | `src/features/sales/price-lists/PriceListPage.tsx` | `master.price_lists`, `master.price_list_items`, `master.product_mrp_history` | `api.upsert_price_list`, `api.approve_price_change` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-pricelists.spec.ts |
-| Online channels `OnlineSales` | `/sales/online-channels` | `src/features/sales/OnlineSalesPage.tsx` | `sales.online_channels`, `sales.online_orders`, `acct.tcs_reconciliation` | `api.ingest_online_order` (via `store-webhooks`) | 6 | missing (repo was empty) |
+| Online channels `OnlineSales` | `/sales/online-channels` | `src/features/sales/OnlineSalesPage.tsx` | `sales.online_channels`, `sales.online_orders`, `acct.tcs_reconciliation` | `api.ingest_online_order` (via `store-webhooks`) | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Customers `Customers` | `/sales/customers` | `src/features/sales/CustomersPage.tsx` | `master.parties`, `master.party_companies`, `api.v_customer_outstanding` | `api.v_customers` (list), `api.propose_customer`, `api.archive_party` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-customers.spec.ts |
 | Invoices (second view) `CompanyPortal` | `/sales/invoices/company-portal` | `src/features/sales/AccountantRegisterPage.tsx` | `api.v_sales_register` (RLS: GST view) | `api.sales_register(p_filters)` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Invoices (second view) `SalesRegister` | `/sales/invoices/sales-register` | `src/features/sales/SalesRegisterPage.tsx` | `api.v_sales_register` (RLS: all view) | `api.sales_register(p_filters)`, `api.export_register` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Biochem products `BiochemProducts` | `/sales/biochem-products` | `src/features/sales/biochem-products/BiochemProductsPage.tsx` | `master.products`, `master.product_labels`, `master.product_mrp_history`, `master.hsn_rates` | `api.upsert_product`, `api.check_label` | 2 | **Built (Phase 2)**, live data; tests: e2e/phase2-products.spec.ts (data) |
-| Online listings `OnlineListings` | `/sales/online-listings` | `src/features/sales/OnlineListingsPage.tsx` | `sales.listings`, `master.products` | `api.publish_listing` (Admin) | 6 | missing (repo was empty) |
-| Route sales `RouteSales` | `/sales/route-sales` | `src/features/sales/RouteSalesPage.tsx` | `field.beats`, `field.visits`, `field.gps_points`, `field.cash_handovers` | `api.plan_beat`, `api.approve_out_of_geofence` | 6 | missing (repo was empty) |
-| Own shops `Outlets` | `/sales/own-shops` | `src/features/sales/OwnShopsPage.tsx` | `sales.shop_days`, `sales.invoices`, `inv.transfers` | `api.shop_day_close`, `api.cash_handover` | 6 | missing (repo was empty) |
-| Credit customers `CreditControl` | `/sales/credit-customers` | `src/features/sales/CreditControlPage.tsx` | `sales.credit_applications`, `sales.credit_approvals`, `sales.credit_exceptions`, `master.credit_terms` | `api.submit_credit_application`, `api.approve_credit_stage`, `api.grant_md_exception` | 6 | missing (repo was empty) |
-| Customer care and agents `SalesControls` | `/sales/customer-care-and-agents` | `src/features/sales/CustomerCarePage.tsx` | `sales.complaints`, `sales.complaint_events`, `sales.agents`, `sales.agent_commissions`, `sales.private_label_orders`, `msg.outbox` | `api.log_complaint`, `api.qc_hold_batch`, `api.close_complaint`, `api.schedule_reminders` | 6 | missing (repo was empty) |
+| Online listings `OnlineListings` | `/sales/online-listings` | `src/features/sales/OnlineListingsPage.tsx` | `sales.listings`, `master.products` | `api.publish_listing` (Admin) | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Route sales `RouteSales` | `/sales/route-sales` | `src/features/sales/RouteSalesPage.tsx` | `field.beats`, `field.visits`, `field.gps_points`, `field.cash_handovers` | `api.plan_beat`, `api.approve_out_of_geofence` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Own shops `Outlets` | `/sales/own-shops` | `src/features/sales/OwnShopsPage.tsx` | `sales.shop_days`, `sales.invoices`, `inv.transfers` | `api.shop_day_close`, `api.cash_handover` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Credit customers `CreditControl` | `/sales/credit-customers` | `src/features/sales/CreditControlPage.tsx` | `sales.credit_applications`, `sales.credit_approvals`, `sales.credit_exceptions`, `master.credit_terms` | `api.submit_credit_application`, `api.approve_credit_stage`, `api.grant_md_exception` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Customer care and agents `SalesControls` | `/sales/customer-care-and-agents` | `src/features/sales/CustomerCarePage.tsx` | `sales.complaints`, `sales.complaint_events`, `sales.agents`, `sales.agent_commissions`, `sales.private_label_orders`, `msg.outbox` | `api.log_complaint`, `api.qc_hold_batch`, `api.close_complaint`, `api.schedule_reminders` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | *Receipts* (no reference) | `/sales/receipts` | `src/features/sales/ReceiptsPage.tsx` | `sales.receipts`, `sales.receipt_allocations`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Purchase
@@ -97,17 +97,17 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Dispatch board `Dispatch` | `/logistics/dispatch-board` | `src/features/logistics/DispatchBoardPage.tsx` | `sales.dispatches`, `sales.trips` | `api.create_dispatch`, `api.assign_to_trip` | 6 | missing (repo was empty) |
-| Trips `Trip` | `/logistics/trips` | `src/features/logistics/TripPage.tsx` | `sales.trips`, `sales.trip_stops`, `sales.pods` | `api.start_trip`, `api.close_trip` | 6 | missing (repo was empty) |
-| Vehicles & drivers `Vehicles` | `/logistics/vehicles-and-drivers` | `src/features/logistics/VehiclesPage.tsx` | `ops.vehicles`, `hr.employees` | `api.upsert_vehicle` | 6 | missing (repo was empty) |
-| Vehicle file `VehicleFile` | `/logistics/vehicle-file` | `src/features/logistics/VehicleFilePage.tsx` | `ops.vehicle_events` (fuel, EMI, repairs, papers, accidents, fines) | `api.record_vehicle_event` | 6 | missing (repo was empty) |
+| Dispatch board `Dispatch` | `/logistics/dispatch-board` | `src/features/logistics/DispatchBoardPage.tsx` | `sales.dispatches`, `sales.trips` | `api.create_dispatch`, `api.assign_to_trip` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Trips `Trip` | `/logistics/trips` | `src/features/logistics/TripPage.tsx` | `sales.trips`, `sales.trip_stops`, `sales.pods` | `api.start_trip`, `api.close_trip` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Vehicles & drivers `Vehicles` | `/logistics/vehicles-and-drivers` | `src/features/logistics/VehiclesPage.tsx` | `ops.vehicles`, `hr.employees` | `api.upsert_vehicle` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Vehicle file `VehicleFile` | `/logistics/vehicle-file` | `src/features/logistics/VehicleFilePage.tsx` | `ops.vehicle_events` (fuel, EMI, repairs, papers, accidents, fines) | `api.record_vehicle_event` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 
 ## Exports
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Mixer grinder costing `MixerCosting` | `/exports/mixer-grinder-costing` | `src/features/exports/MixerCostingPage.tsx` | `prod.assembly_boms`, `sales.export_costings` | `api.v_fob_build_up` | 6 | missing (repo was empty) |
-| Export orders `ExportOrders` | `/exports/export-orders` | `src/features/exports/ExportOrdersPage.tsx` | `sales.export_orders`, `sales.containers`, `sales.invoices` | `api.create_export_order`, `api.check_packing_list` | 6 | missing (repo was empty) |
+| Mixer grinder costing `MixerCosting` | `/exports/mixer-grinder-costing` | `src/features/exports/MixerCostingPage.tsx` | `prod.assembly_boms`, `sales.export_costings` | `api.v_fob_build_up` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Export orders `ExportOrders` | `/exports/export-orders` | `src/features/exports/ExportOrdersPage.tsx` | `sales.export_orders`, `sales.containers`, `sales.invoices` | `api.create_export_order`, `api.check_packing_list` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 
 ## HR & payroll
 
@@ -133,14 +133,14 @@ Conventions:
 |---|---|---|---|---|---|---|
 | Cash book `CashBook` | `/accounts/cash-book` | `src/features/accounts/CashBookPage.tsx` | `acct.vouchers`, `acct.voucher_lines`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_receipt`, `api.post_payment`, `api.post_contra` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Bank `BankReco` | `/accounts/bank` | `src/features/accounts/BankRecoPage.tsx` | `acct.bank_accounts`, `acct.bank_statements`, `acct.bank_statement_lines`, `acct.bank_matches` | `api.stage_bank_lines` (via Edge Fn), `api.match_bank_line` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
-| Financials `Reports` | `/accounts/financials` | `src/features/accounts/FinancialsPage.tsx` | `acct.gl_entries`, `acct.accounts` | `api.trial_balance`, `api.profit_and_loss`, `api.balance_sheet`, `api.party_ledger`, `api.general_ledger`, `api.day_book` | 6 | missing (repo was empty) |
-| GST `GST` | `/accounts/gst` | `src/features/accounts/GstPage.tsx` | `acct.gst_workings`, `sales.invoices`, `purch.bills` | `api.build_gstr1`, `api.build_gstr3b`, `api.itc_match` | 6 | missing (repo was empty) |
+| Financials `Reports` | `/accounts/financials` | `src/features/accounts/FinancialsPage.tsx` | `acct.gl_entries`, `acct.accounts` | `api.trial_balance`, `api.profit_and_loss`, `api.balance_sheet`, `api.party_ledger`, `api.general_ledger`, `api.day_book` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| GST `GST` | `/accounts/gst` | `src/features/accounts/GstPage.tsx` | `acct.gst_workings`, `sales.invoices`, `purch.bills` | `api.build_gstr1`, `api.build_gstr3b`, `api.itc_match` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Month-end close `MonthClose` | `/accounts/month-end-close` | `src/features/accounts/MonthClosePage.tsx` | `acct.close_checklists`, `acct.close_tasks`, `core.periods` | `api.complete_close_task`, `api.close_period` | 7 | missing (repo was empty) |
 | Cash flow and reminders `CashFlow` | `/accounts/cash-flow-and-reminders` | `src/features/accounts/CashFlowPage.tsx` | `acct.gl_entries`, `acct.bill_allocations` | `api.cash_flow_forecast` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | Directors and investment `Directors` | `/accounts/directors-and-investment` | `src/features/accounts/DirectorsPage.tsx` | `acct.partners`, `acct.director_loans`, `acct.director_declarations` | `api.record_director_loan` (s.185 check) | 7 | missing (repo was empty) |
 | Partners and profit sharing `ProfitSharing` | `/accounts/partners-and-profit-sharing` | `src/features/accounts/ProfitSharingPage.tsx` | `acct.profit_share_minutes`, `acct.profit_shares` | `api.compute_profit_share`, `api.post_profit_share` | 7 | missing (repo was empty) |
 | Partner requests `PartnerRequests` | `/accounts/partner-requests` | `src/features/accounts/PartnerRequestsPage.tsx` | `acct.partner_requests` | `api.decide_partner_request` | 7 | missing (repo was empty) |
-| Schedule III statements `ScheduleIIIBiochem` | `/accounts/schedule-iii-statements` | `src/features/accounts/ScheduleIIIPage.tsx` | `acct.gl_entries`, `acct.schedule3_map` | `api.schedule3_statements(p_company_id, p_fy)` | 6 | missing (repo was empty) |
+| Schedule III statements `ScheduleIIIBiochem` | `/accounts/schedule-iii-statements` | `src/features/accounts/ScheduleIIIPage.tsx` | `acct.gl_entries`, `acct.schedule3_map` | `api.schedule3_statements(p_company_id, p_fy)` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 | Cash book (second view) `CashBookCheck` | `/accounts/cash-book/cash-book-check` | `src/features/accounts/CashBookCheckPage.tsx` | `acct.gl_entries`, `ops.import_rows`, `ops.bug_items` | `api.cash_book_check(p_company_id, p_from, p_to)` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 
 ## Admin
@@ -182,20 +182,20 @@ Conventions:
 | IsmailHome `IsmailHome` | `/me/factory-manager` | `src/features/me/FactoryManagerHomePage.tsx` | `prod.injection_shifts`, `prod.quality_inspections` | `api.v_factory_today` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
 | CashEntry `CashEntry` | `/me/cash-entry` | `src/features/me/CashEntryPage.tsx` | `acct.vouchers`, `acct.gl_entries` | `api.check_cash_limit`, `api.post_payment` | 3 | Built (Phase 3) — live data; see e2e/phase3-*.spec.ts |
 | LabPanel `LabPanel` | `/lab` | `src/features/lab/LabPanelPage.tsx` | `prod.lab_samples`, `prod.lab_tests`, `prod.rnd_trials`, `prod.instruments` | `api.record_lab_result`, `api.qc_release_batch` | 5 | Built (Phase 5) — live data; see e2e/phase5-*.spec.ts |
-| SalesmanApp `SalesmanApp` | `/field/today` | `src/features/field/SalesmanTodayPage.tsx` | `field.beats`, `field.visits`, `field.salesman_customers` | `api.check_in_visit`, `api.check_out_visit` | 6 | missing (repo was empty) |
+| SalesmanApp `SalesmanApp` | `/field/today` | `src/features/field/SalesmanTodayPage.tsx` | `field.beats`, `field.visits`, `field.salesman_customers` | `api.check_in_visit`, `api.check_out_visit` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 
 ### Salesman portal pages without reference screens (§15A, §UX-4.2)
 
 | Page | Route (proposed) | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| Customer page (Account / Queries / Reference / Visit tabs) | `/field/customers/:id` | `src/features/field/SalesmanCustomerPage.tsx` | `api.v_salesman_customer_account` (respects `salesman_balance_scope`), `field.queries`, `field.visits` | `api.record_promise_to_pay`, `api.send_statement_whatsapp`, `api.log_query` | 6 | missing (repo was empty) |
-| Customers list | `/field/customers` | `src/features/field/SalesmanCustomersPage.tsx` | `field.salesman_customers` | — | 6 | missing (repo was empty) |
-| Take order | `/field/customers/:id/order` | `src/features/field/TakeOrderPage.tsx` | `sales.orders`, `field.van_stock` | `api.confirm_sales_order`, `api.check_credit_exposure` | 6 | missing (repo was empty) |
-| Collect payment | `/field/customers/:id/collect` | `src/features/field/CollectPaymentPage.tsx` | `sales.receipts`, `sales.receipt_allocations` | `api.check_cash_limit`, `api.post_receipt` | 6 | missing (repo was empty) |
-| Queries inbox | `/field/queries` | `src/features/field/QueriesInboxPage.tsx` | `field.queries`, `sales.complaints` | `api.log_query` | 6 | missing (repo was empty) |
-| Reference library | `/field/library` | `src/features/field/LibraryPage.tsx` | `master.products`, `master.price_lists`, `core.licences` (Admin-allowed copies) | — | 6 | missing (repo was empty) |
-| My day | `/field/my-day` | `src/features/field/MyDayPage.tsx` | `field.visits`, `sales.receipts` | `api.v_my_day` | 6 | missing (repo was empty) |
-| End day | `/field/end-day` | `src/features/field/EndDayPage.tsx` | `field.cash_handovers`, `field.day_closes` | `api.cash_handover` (two logins), `api.end_salesman_day` | 6 | missing (repo was empty) |
+| Customer page (Account / Queries / Reference / Visit tabs) | `/field/customers/:id` | `src/features/field/SalesmanCustomerPage.tsx` | `api.v_salesman_customer_account` (respects `salesman_balance_scope`), `field.queries`, `field.visits` | `api.record_promise_to_pay`, `api.send_statement_whatsapp`, `api.log_query` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Customers list | `/field/customers` | `src/features/field/SalesmanCustomersPage.tsx` | `field.salesman_customers` | — | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Take order | `/field/customers/:id/order` | `src/features/field/TakeOrderPage.tsx` | `sales.orders`, `field.van_stock` | `api.confirm_sales_order`, `api.check_credit_exposure` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Collect payment | `/field/customers/:id/collect` | `src/features/field/CollectPaymentPage.tsx` | `sales.receipts`, `sales.receipt_allocations` | `api.check_cash_limit`, `api.post_receipt` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Queries inbox | `/field/queries` | `src/features/field/QueriesInboxPage.tsx` | `field.queries`, `sales.complaints` | `api.log_query` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| Reference library | `/field/library` | `src/features/field/LibraryPage.tsx` | `master.products`, `master.price_lists`, `core.licences` (Admin-allowed copies) | — | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| My day | `/field/my-day` | `src/features/field/MyDayPage.tsx` | `field.visits`, `sales.receipts` | `api.v_my_day` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| End day | `/field/end-day` | `src/features/field/EndDayPage.tsx` | `field.cash_handovers`, `field.day_closes` | `api.cash_handover` (two logins), `api.end_salesman_day` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 
 ## Staff app (phone)
 
@@ -212,8 +212,8 @@ Conventions:
 
 | Screen (ref) | Route | Component | Main tables | RPCs (planned) | Phase | Status |
 |---|---|---|---|---|---|---|
-| DriverTrip `DriverTrip` | `/driver/trip` | `src/features/driver/DriverTripPage.tsx` | `sales.trips`, `sales.trip_stops` | `api.v_my_trip`, `api.start_trip` | 6 | missing (repo was empty) |
-| DriverPOD `DriverPOD` | `/driver/pod` | `src/features/driver/DriverPodPage.tsx` | `sales.pods`, storage `documents` | `api.record_pod` | 6 | missing (repo was empty) |
+| DriverTrip `DriverTrip` | `/driver/trip` | `src/features/driver/DriverTripPage.tsx` | `sales.trips`, `sales.trip_stops` | `api.v_my_trip`, `api.start_trip` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
+| DriverPOD `DriverPOD` | `/driver/pod` | `src/features/driver/DriverPodPage.tsx` | `sales.pods`, storage `documents` | `api.record_pod` | 6 | Built (Phase 6) — live data; see e2e/phase6-*.spec.ts |
 
 ## Investor portal
 

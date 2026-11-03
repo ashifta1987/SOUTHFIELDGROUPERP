@@ -1827,6 +1827,264 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"v_asset_disposals": {
+                  Row: {
+                    "accumulated_depreciation": number,"asset_code": string,"asset_id": string,"asset_name": string,"company_id": string,"cost": number,"created_at": string,"disposal_date": string,"disposed_by": string | null,"gain_loss": number,"id": string,"proceeds": number,"reason": string,"voucher_id": string | null,"wdv": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_asset_register": {
+                  Row: {
+                    "accumulated_depreciation": number | null,"amc_until": string | null,"code": string,"company_id": string,"company_name": string,"cost": number | null,"depreciated_to": string | null,"disposed_on": string | null,"documents": number | null,"id": string,"kind": string,"make": string | null,"model": string | null,"name": string,"open_repairs": number | null,"place_id": string | null,"place_name": string | null,"purchase_date": string | null,"put_to_use_date": string | null,"residual_pct": number | null,"serial_no": string | null,"status": string,"useful_life_years": number | null,"wdv": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_close_checklists": {
+                  Row: {
+                    "carried_tasks": number | null,"checked_tasks": number | null,"company_id": string,"company_name": string,"created_at": string,"days_left": number | null,"done_tasks": number | null,"due_on": string,"id": string,"month_start": string,"open_tasks": number | null,"period_id": string,"period_status": string,"status": string,"tasks": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_close_tasks": {
+                  Row: {
+                    "area": string,"carried_to_task_id": string | null,"carry_reason": string | null,"check_note": string | null,"checked_at": string | null,"checked_by": string | null,"checker_name": string | null,"checker_user_id": string | null,"checklist_id": string,"company_id": string,"created_at": string,"doer_name": string | null,"doer_user_id": string | null,"done_at": string | null,"done_by": string | null,"done_note": string | null,"id": string,"my_turn": boolean | null,"sort": number,"status": string,"title": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "area"?: string | null,"carried_to_task_id"?: string | null,"carry_reason"?: string | null,"check_note"?: string | null,"checked_at"?: string | null,"checked_by"?: string | null,"checker_name"?: never,"checker_user_id"?: string | null,"checklist_id"?: string | null,"company_id"?: string | null,"created_at"?: string | null,"doer_name"?: never,"doer_user_id"?: string | null,"done_at"?: string | null,"done_by"?: string | null,"done_note"?: string | null,"id"?: string | null,"my_turn"?: never,"sort"?: number | null,"status"?: string | null,"title"?: string | null
+                         }
+                        Update: {
+                           "area"?: string | null,"carried_to_task_id"?: string | null,"carry_reason"?: string | null,"check_note"?: string | null,"checked_at"?: string | null,"checked_by"?: string | null,"checker_name"?: never,"checker_user_id"?: string | null,"checklist_id"?: string | null,"company_id"?: string | null,"created_at"?: string | null,"doer_name"?: never,"doer_user_id"?: string | null,"done_at"?: string | null,"done_by"?: string | null,"done_note"?: string | null,"id"?: string | null,"my_turn"?: never,"sort"?: number | null,"status"?: string | null,"title"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"v_depreciation_lines": {
+                  Row: {
+                    "amount": number,"asset_code": string,"asset_id": string,"asset_name": string,"closing_wdv": number,"company_id": string,"cost": number,"days": number,"id": number,"opening_wdv": number,"residual": number,"run_id": string,"useful_life_years": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_depreciation_runs": {
+                  Row: {
+                    "assets": number | null,"company_id": string,"id": string,"method": string,"month_start": string,"period_id": string,"run_at": string,"run_by": string | null,"run_by_name": string | null,"status": string,"total": number,"voucher_id": string | null,"voucher_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_director_declarations": {
+                  Row: {
+                    "company_id": string,"created_at": string,"current": boolean | null,"declared_on": string,"document_path": string | null,"id": string,"kind": string,"note": string | null,"partner_id": string,"partner_name": string,"recorded_by": string | null,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_director_loans": {
+                  Row: {
+                    "amount": number,"bank_account_id": string,"company_id": string,"created_at": string,"declaration_id": string | null,"direction": string,"id": string,"legal_basis": NonNullable<Json>,"loan_date": string,"movement": string,"outstanding_after": number | null,"partner_id": string,"partner_name": string,"recorded_by": string | null,"request_id": string | null,"voucher_id": string | null,"voucher_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_investor_money_in": {
+                  Row: {
+                    "amount": number | null,"company_id": string | null,"company_name": string | null,"mode": string | null,"month": string | null,"receipts": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_investor_partners": {
+                  Row: {
+                    "company_id": string | null,"company_name": string | null,"display_name": string | null,"investment": number | null,"is_director": boolean | null,"is_investment_partner": boolean | null,"is_legal_partner": boolean | null,"is_working_partner": boolean | null,"language": string | null,"partner_id": string | null,"share_capital": number | null,"share_pct": number | null,"shares": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_investor_profit_shares": {
+                  Row: {
+                    "amount": number | null,"company_id": string | null,"company_name": string | null,"fy_label": string | null,"kind": string | null,"minutes_ref": string | null,"pct": number | null,"posted_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_investor_projects": {
+                  Row: {
+                    "company_id": string | null,"company_name": string | null,"id": string | null,"investor_figures": Json | null,"name": string | null,"started_on": string | null,"status": string | null,"summary": string | null,"updated_at": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_investor_requests": {
+                  Row: {
+                    "amount": number | null,"company_id": string | null,"company_name": string | null,"created_at": string | null,"decided_amount": number | null,"decided_at": string | null,"decision_note": string | null,"doc_no": string | null,"id": string | null,"kind": string | null,"paid_at": string | null,"project_id": string | null,"purpose": string | null,"repay_from": string | null,"repay_months": number | null,"source": string | null,"status": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_job_work_lines": {
+                  Row: {
+                    "balance": number | null,"company_id": string,"id": string,"line_no": number,"lot_id": string | null,"lot_no": string | null,"order_id": string,"product_code": string,"product_id": string,"product_name": string,"qty_sent": number,"qty_settled": number,"unit_cost": number | null,"uom": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_job_work_orders": {
+                  Row: {
+                    "challan_document_id": string | null,"challan_no": string | null,"company_id": string,"company_name": string,"created_at": string,"created_by": string | null,"days_left": number | null,"doc_no": string,"from_place_id": string,"from_place_name": string | null,"goods": string | null,"goods_kind": string,"id": string,"job_worker_name": string | null,"job_worker_party_id": string,"jw_place_id": string,"note": string | null,"overdue": boolean | null,"process": string,"qty_back": number | null,"qty_balance": number | null,"qty_sent": number | null,"return_by": string | null,"return_state": string | null,"sent_on": string,"status": string,"value_out": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_job_work_receipts": {
+                  Row: {
+                    "challan_ref": string | null,"company_id": string,"created_at": string,"id": string,"input_qty": number,"kind": string,"line_id": string,"order_id": string,"product_id": string | null,"product_name": string | null,"qty": number,"received_by": string | null,"received_by_name": string | null,"received_on": string,"to_place_id": string | null,"to_place_name": string | null,"value": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_licence_documents": {
+                  Row: {
+                    "company_id": string,"created_at": string,"id": string,"kind": string,"licence_id": string,"path": string,"uploaded_by": string | null,"uploaded_by_name": string | null,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"created_at"?: string | null,"id"?: string | null,"kind"?: string | null,"licence_id"?: string | null,"path"?: string | null,"uploaded_by"?: string | null,"uploaded_by_name"?: never,"valid_to"?: string | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"created_at"?: string | null,"id"?: string | null,"kind"?: string | null,"licence_id"?: string | null,"path"?: string | null,"uploaded_by"?: string | null,"uploaded_by_name"?: never,"valid_to"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"v_licence_register": {
+                  Row: {
+                    "blocks": (string)[],"blocks_something": boolean | null,"branch_id": string | null,"branch_name": string | null,"company_id": string,"company_name": string,"created_at": string,"days_to_expiry": number | null,"document_path": string | null,"documents": number | null,"id": string,"is_blocking": boolean,"issued_by": string | null,"kind": string,"label": string | null,"licence_no": string,"note": string | null,"owner_name": string | null,"owner_person_id": string | null,"portal_url": string | null,"reminders_done": Json | null,"renewal_applied_on": string | null,"renewal_status": string,"state": string | null,"status": string,"title": string | null,"updated_at": string,"valid_from": string,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_licence_reminders": {
+                  Row: {
+                    "company_id": string,"created_at": string,"days_before": number,"due_on": string,"id": number,"label": string | null,"licence_id": string,"licence_no": string,"message_status": string | null,"outbox_id": string | null,"run_date": string,"status": string,"valid_to": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_licence_renewals": {
+                  Row: {
+                    "company_id": string,"document_id": string | null,"id": string,"licence_id": string,"new_licence_no": string,"new_valid_from": string,"new_valid_to": string,"note": string | null,"old_licence_no": string,"old_valid_from": string,"old_valid_to": string | null,"renewed_at": string,"renewed_by": string | null,"renewed_by_name": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"document_id"?: string | null,"id"?: string | null,"licence_id"?: string | null,"new_licence_no"?: string | null,"new_valid_from"?: string | null,"new_valid_to"?: string | null,"note"?: string | null,"old_licence_no"?: string | null,"old_valid_from"?: string | null,"old_valid_to"?: string | null,"renewed_at"?: string | null,"renewed_by"?: string | null,"renewed_by_name"?: never
+                         }
+                        Update: {
+                           "company_id"?: string | null,"document_id"?: string | null,"id"?: string | null,"licence_id"?: string | null,"new_licence_no"?: string | null,"new_valid_from"?: string | null,"new_valid_to"?: string | null,"note"?: string | null,"old_licence_no"?: string | null,"old_valid_from"?: string | null,"old_valid_to"?: string | null,"renewed_at"?: string | null,"renewed_by"?: string | null,"renewed_by_name"?: never
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"v_maintenance_schedules": {
+                  Row: {
+                    "active": boolean,"asset_code": string,"asset_id": string,"asset_name": string,"checklist": NonNullable<Json>,"company_id": string,"created_at": string,"days_to_due": number | null,"id": string,"interval_days": number,"last_done_on": string | null,"next_due_on": string,"overdue": boolean | null,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_partner_investments": {
+                  Row: {
+                    "agreement_ref": string | null,"amount": number,"company_id": string,"created_at": string,"id": string,"invested_on": string,"kind": string,"note": string | null,"partner_id": string,"partner_name": string,"project_id": string | null,"recorded_by": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_partner_projects": {
+                  Row: {
+                    "company_id": string,"company_name": string,"created_at": string,"id": string,"investor_figures": NonNullable<Json>,"name": string,"started_on": string | null,"status": string,"summary": string | null,"updated_at": string,"visible_to_investors": boolean
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_partner_requests": {
+                  Row: {
+                    "amount": number | null,"checks": NonNullable<Json>,"company_id": string,"company_name": string,"created_at": string,"decided_amount": number | null,"decided_at": string | null,"decided_by": string | null,"decided_by_name": string | null,"decision_note": string | null,"doc_no": string,"due_to_partner": number | null,"id": string,"is_director": boolean,"kind": string,"note": string | null,"paid_at": string | null,"partner_id": string,"partner_name": string,"project_id": string | null,"purpose": string | null,"repay_from": string | null,"repay_months": number | null,"requested_by": string,"requested_by_name": string | null,"source": string | null,"status": string,"voucher_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_partners": {
+                  Row: {
+                    "capital_account_id": string | null,"company_id": string,"company_name": string,"created_at": string,"current_account_balance": number | null,"current_account_id": string | null,"declaration_on_file": boolean | null,"din": string | null,"director_interested": boolean,"display_name": string,"id": string,"investment": number | null,"is_director": boolean,"is_investment_partner": boolean,"is_legal_partner": boolean,"is_working_partner": boolean,"language": string,"loan_account_balance": number | null,"loan_account_id": string | null,"person_id": string | null,"portal_set_up": boolean | null,"share_capital": number | null,"share_pct": number,"shares": number | null,"status": string,"updated_at": string,"user_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_period_status": {
+                  Row: {
+                    "checklist_id": string | null,"closed_at": string | null,"closed_by": string | null,"closed_by_name": string | null,"company_id": string,"due_on": string | null,"fy_id": string,"last_action": string | null,"last_action_at": string | null,"last_reason": string | null,"month_start": string,"period_id": string,"relock_at": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_profit_share_minutes": {
+                  Row: {
+                    "approved_at": string | null,"approved_by": string | null,"approved_by_name": string | null,"basis": NonNullable<Json>,"company_id": string,"created_at": string,"created_by": string | null,"created_by_name": string | null,"document_path": string | null,"fy_id": string,"fy_label": string,"id": string,"meeting_date": string,"minutes_ref": string,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_profit_share_runs": {
+                  Row: {
+                    "company_id": string,"computed_at": string,"distributable": number,"fy_id": string,"id": string,"incentive_total": number,"lines": Json | null,"minutes_id": string,"minutes_ref": string,"net_profit": number,"posted_at": string | null,"status": string,"voucher_id": string | null,"voucher_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_repair_requests": {
+                  Row: {
+                    "asset_code": string | null,"asset_id": string | null,"asset_name": string | null,"assigned_to": string | null,"assigned_to_name": string | null,"broke_down_at": string | null,"closed_at": string | null,"closed_by": string | null,"company_id": string,"created_at": string,"description": string | null,"doc_no": string | null,"downtime_minutes": number | null,"id": string,"is_breakdown": boolean,"labour_cost": number | null,"machine_check_id": string | null,"mould_code": string | null,"mould_id": string | null,"outside_cost": number | null,"outside_vendor": string | null,"photo_path": string | null,"priority": string,"purchase_request_id": string | null,"raised_by": string | null,"raised_by_name": string | null,"resolution": string | null,"restored_at": string | null,"source": string,"spares_value": number | null,"status": string,"title": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"v_spares_issues": {
+                  Row: {
+                    "asset_code": string | null,"asset_id": string | null,"company_id": string,"created_at": string,"doc_no": string,"id": string,"issued_by": string | null,"issued_by_name": string | null,"issued_on": string,"place_id": string,"product_code": string,"product_id": string,"product_name": string,"qty": number,"repair_request_id": string | null,"uom": string,"value": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"vehicle_documents": {
                   Row: {
                     "days_left": number | null,"doc_no": string | null,"id": string,"kind": string,"path": string | null,"set_at": string,"set_by": string | null,"valid_to": string | null,"vehicle_id": string
@@ -1895,11 +2153,17 @@ export type Database = {
 "add_asset_document":
 { Args: { "p": Json,"p_asset_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"add_close_task":
+{ Args: { "p": Json,"p_checklist_id": string,"p_client_request_id": string }; Returns: Json
+                           },
 "add_container":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "add_hsn_rate":
 { Args: { "p_ca_confirmed": boolean,"p_cess": number,"p_client_request_id": string,"p_effective_from": string,"p_hsn": string,"p_note": string,"p_rate": number,"p_tax_class": string }; Returns: Json
+                           },
+"add_licence_document":
+{ Args: { "p": Json,"p_client_request_id": string,"p_licence_id": string }; Returns: Json
                            },
 "add_money_account":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -1940,11 +2204,17 @@ export type Database = {
 "approve_private_label":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_id": string,"p_note": string,"p_stage": string }; Returns: Json
                            },
+"approve_profit_share_minutes":
+{ Args: { "p_client_request_id": string,"p_minutes_id": string }; Returns: Json
+                           },
 "approve_purchase_request":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_note"?: string,"p_request_id": string }; Returns: Json
                            },
 "approve_transfer":
 { Args: { "p_client_request_id": string,"p_lines"?: Json,"p_note"?: string,"p_transfer_id": string }; Returns: Json
+                           },
+"assign_close_task":
+{ Args: { "p": Json,"p_client_request_id": string,"p_task_id": string }; Returns: Json
                            },
 "assign_role":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_reason": string,"p_role": string,"p_user_id": string,"p_valid_to": string }; Returns: Json
@@ -1996,6 +2266,9 @@ export type Database = {
 "capture_to_purchase_draft":
 { Args: { "p_capture_id": string,"p_client_request_id": string,"p_gstin_id"?: string }; Returns: Json
                            },
+"carry_close_task":
+{ Args: { "p_client_request_id": string,"p_reason": string,"p_task_id": string }; Returns: Json
+                           },
 "cash_book_summary":
 { Args: { "p_account_id": string,"p_from": string,"p_to": string }; Returns: Json
                            },
@@ -2029,6 +2302,12 @@ export type Database = {
 "close_complaint":
 { Args: { "p_client_request_id": string,"p_complaint_id": string,"p_resolution": string }; Returns: Json
                            },
+"close_period":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_period_id": string }; Returns: Json
+                           },
+"close_repair_request":
+{ Args: { "p": Json,"p_client_request_id": string,"p_request_id": string }; Returns: Json
+                           },
 "close_transfer":
 { Args: { "p_client_request_id": string,"p_transfer_id": string }; Returns: Json
                            },
@@ -2039,6 +2318,12 @@ export type Database = {
 { Args: { "p_company_id": string }; Returns: {
               "display_name": string,"role_keys": (string)[],"user_id": string
             }[]
+                           },
+"complete_close_task":
+{ Args: { "p_action": string,"p_client_request_id": string,"p_note"?: string,"p_task_id": string }; Returns: Json
+                           },
+"compute_profit_share":
+{ Args: { "p_client_request_id": string,"p_minutes_id": string }; Returns: Json
                            },
 "confirm_cash_handover":
 { Args: { "p": Json,"p_client_request_id": string,"p_handover_id": string }; Returns: Json
@@ -2073,14 +2358,26 @@ export type Database = {
 "create_trip":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"customer_price_list":
+{ Args: { "p_company_id": string,"p_party_id": string }; Returns: Json
+                           },
 "decide_bank_change":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_request_id": string }; Returns: Json
+                           },
+"decide_partner_request":
+{ Args: { "p_amount"?: number,"p_client_request_id": string,"p_decision": string,"p_note"?: string,"p_request_id": string }; Returns: Json
                            },
 "decide_special_permission":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_max_uses": number,"p_request_id": string }; Returns: Json
                            },
 "decide_staff_request":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_note": string,"p_request_id": string }; Returns: Json
+                           },
+"depreciation_readiness":
+{ Args: { "p_company_id": string }; Returns: Json
+                           },
+"dispose_asset":
+{ Args: { "p": Json,"p_asset_id": string,"p_client_request_id": string }; Returns: Json
                            },
 "end_salesman_day":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -2156,14 +2453,26 @@ export type Database = {
 "ingest_online_order":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"investor_group_summary":
+{ Args: { "p_on"?: string }; Returns: Json
+                           },
+"investor_me":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "invoice_dispatch":
 { Args: { "p": Json,"p_client_request_id": string,"p_dispatch_id": string }; Returns: Json
                            },
 "issue_batch_packaging":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_lines": Json }; Returns: Json
                            },
+"issue_job_work_challan":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "issue_purchase_order":
 { Args: { "p_accept_price_increase"?: boolean,"p_client_request_id": string,"p_order_id": string }; Returns: Json
+                           },
+"issue_spares":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "issue_stock":
 { Args: { "p_client_request_id": string,"p_from_place": string,"p_item_id": string,"p_lot_id": string,"p_qty": number,"p_target": Json }; Returns: Json
@@ -2202,6 +2511,9 @@ export type Database = {
 "log_user_event":
 { Args: { "p_detail": Json,"p_event": string }; Returns: undefined
                            },
+"maintenance_summary":
+{ Args: { "p_company_id": string }; Returns: Json
+                           },
 "mark_attendance":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_date": string,"p_entries": Json }; Returns: Json
                            },
@@ -2238,11 +2550,17 @@ export type Database = {
 "my_trip":
 { Args: Record<PropertyKey, never>; Returns: Json
                            },
+"open_close_checklist":
+{ Args: { "p"?: Json,"p_client_request_id": string,"p_company_id": string,"p_period_id": string }; Returns: Json
+                           },
 "open_financial_year":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_start_year": number }; Returns: Json
                            },
 "party_duplicates":
 { Args: { "p_exclude": string,"p_gstin": string,"p_name": string,"p_pan": string,"p_phone": string }; Returns: Json
+                           },
+"pay_partner_request":
+{ Args: { "p": Json,"p_client_request_id": string,"p_request_id": string }; Returns: Json
                            },
 "payslip":
 { Args: { "p_payslip_id": string }; Returns: Json
@@ -2276,6 +2594,9 @@ export type Database = {
                            },
 "post_payment":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"post_profit_share":
+{ Args: { "p_client_request_id": string,"p_post_date"?: string,"p_run_id": string }; Returns: Json
                            },
 "post_purchase_bill":
 { Args: { "p_bill_id": string,"p_client_request_id": string }; Returns: Json
@@ -2316,6 +2637,12 @@ export type Database = {
 "qc_release_hold":
 { Args: { "p_client_request_id": string,"p_decision": string,"p_hold_id": string,"p_note": string }; Returns: Json
                            },
+"raise_repair_request":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"receive_job_work":
+{ Args: { "p": Json,"p_client_request_id": string,"p_order_id": string }; Returns: Json
+                           },
 "receive_transfer":
 { Args: { "p_blind_counts": Json,"p_client_request_id": string,"p_transfer_id": string,"p_witness_id"?: string }; Returns: Json
                            },
@@ -2336,6 +2663,12 @@ export type Database = {
                            },
 "record_calibration":
 { Args: { "p": Json,"p_asset_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"record_director_declaration":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"record_director_loan":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "record_failed_delivery":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_stop_id": string }; Returns: Json
@@ -2358,6 +2691,9 @@ export type Database = {
 "record_machine_check":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"record_maintenance_done":
+{ Args: { "p": Json,"p_client_request_id": string,"p_schedule_id": string }; Returns: Json
+                           },
 "record_mould_service":
 { Args: { "p": Json,"p_client_request_id": string,"p_mould_id": string }; Returns: Json
                            },
@@ -2365,6 +2701,9 @@ export type Database = {
 { Args: { "p": Json,"p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
 "record_pad_print_job":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"record_partner_investment":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "record_pod":
@@ -2412,6 +2751,12 @@ export type Database = {
 "remove_shift_duty":
 { Args: { "p_assignment_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
                            },
+"renew_licence":
+{ Args: { "p": Json,"p_client_request_id": string,"p_licence_id": string }; Returns: Json
+                           },
+"reopen_period":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_period_id": string,"p_reason": string }; Returns: Json
+                           },
 "reply_inbound":
 { Args: { "p_client_request_id": string,"p_inbound_id": string,"p_text": string }; Returns: Json
                            },
@@ -2454,6 +2799,12 @@ export type Database = {
 "run_checks":
 { Args: { "p_client_request_id": string,"p_company_id": string }; Returns: Json
                            },
+"run_depreciation":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_period_id": string }; Returns: Json
+                           },
+"run_licence_reminders":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_date"?: string }; Returns: Json
+                           },
 "salesman_customer_account":
 { Args: { "p_company_id": string,"p_party_id": string }; Returns: Json
                            },
@@ -2464,6 +2815,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "save_mould_project":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"save_profit_share_minutes":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "save_purchase_draft":
@@ -2521,6 +2875,9 @@ export type Database = {
                            },
 "set_credit_status":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_reason": string,"p_status": string }; Returns: Json
+                           },
+"set_customer_price_list":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_price_list_id": string }; Returns: Json
                            },
 "set_customer_tier":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_tier": string }; Returns: Json
@@ -2611,6 +2968,9 @@ export type Database = {
 "submit_formula_version":
 { Args: { "p_client_request_id": string,"p_version_id": string }; Returns: Json
                            },
+"submit_partner_request":
+{ Args: { "p": Json,"p_client_request_id": string,"p_kind": string }; Returns: Json
+                           },
 "submit_private_label":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -2627,6 +2987,9 @@ export type Database = {
                            },
 "update_complaint":
 { Args: { "p": Json,"p_client_request_id": string,"p_complaint_id": string }; Returns: Json
+                           },
+"update_repair_request":
+{ Args: { "p": Json,"p_client_request_id": string,"p_request_id": string }; Returns: Json
                            },
 "update_user_profile":
 { Args: { "p": Json,"p_client_request_id": string,"p_user_id": string }; Returns: Json
@@ -2676,6 +3039,9 @@ export type Database = {
 "upsert_licence":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"upsert_maintenance_schedule":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "upsert_material_spec":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -2686,6 +3052,12 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_pack":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_partner":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_partner_project":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_party":
@@ -2732,6 +3104,9 @@ export type Database = {
                            },
 "withdraw_formula_version":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_version_id": string }; Returns: Json
+                           },
+"withdraw_partner_request":
+{ Args: { "p_client_request_id": string,"p_request_id": string }; Returns: Json
                            },
 "write_off_transfer_shortage":
 { Args: { "p_client_request_id": string,"p_items": Json,"p_reason": string,"p_transfer_id": string }; Returns: Json
