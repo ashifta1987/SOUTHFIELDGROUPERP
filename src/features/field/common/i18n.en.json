@@ -1,0 +1,134 @@
+{
+  "fieldCommon": {
+    "back": "Back",
+    "onDuty": "On duty",
+    "offDuty": "Off duty",
+    "offline": "No network · {{count}} waiting on this phone · sends by itself when back in signal",
+    "waiting": "{{count}} waiting on this phone · sending",
+    "failedWrite": "{{label}} was refused when it was sent: {{message}}",
+    "dismiss": "Dismiss",
+    "tabs": "Salesman app",
+    "tab": { "today": "Today", "customers": "Customers", "queries": "Queries", "myDay": "My day" },
+    "noCompany": "No company is set up for you yet. Ask Admin.",
+    "noRightTitle": "The salesman app is not on your login",
+    "noRight": "Ask Admin to give you the salesman role for this company.",
+    "serverSays": "({{detail}})",
+    "queued": "Saved on this phone · sends by itself when back in signal.",
+    "account": {
+      "title": "Account",
+      "loadFailed": "The account could not be loaded. Pull down to try again or ask Help.",
+      "asOf": "As of {{date}} {{time}}",
+      "gstOnly": "GST bills only",
+      "balance": "Balance due",
+      "overdue": "Overdue",
+      "age030": "Overdue 0–30 days",
+      "age3160": "Overdue 31–60 days",
+      "age6190": "Overdue 61–90 days",
+      "age90": "Overdue 90+ days",
+      "limit": "Credit limit",
+      "available": "Available credit",
+      "creditStatus": "Credit status",
+      "credit": { "none": "No credit", "active": "Active", "hold": "On hold", "review": "Under review" },
+      "blocked": "new credit blocked",
+      "lastPayment": "Last payment",
+      "noPayment": "none yet",
+      "promises": "Promises to pay",
+      "openBills": "Open bills",
+      "noBills": "No open bills.",
+      "due": "due {{date}}",
+      "daysOver_one": "{{count}} day overdue",
+      "daysOver_other": "{{count}} days overdue"
+    },
+    "promise": {
+      "title": "Record promise to pay",
+      "amount": "Amount promised",
+      "date": "Promised date",
+      "note": "Note (optional)",
+      "save": "Save promise",
+      "done": "Promise saved."
+    },
+    "statement": {
+      "send": "Send statement on WhatsApp",
+      "queuedMsg": "Statement queued for the customer's registered WhatsApp number. It goes out once the company's WhatsApp account is connected.",
+      "skipped": "Not sent: {{reason}}"
+    },
+    "checkIn": {
+      "button": "Check in here",
+      "withReason": "Check in with this reason",
+      "reason": "Why are you checking in from here? (the sales manager sees this)",
+      "unplannedReason": "This shop is not on today's route. Why are you visiting?",
+      "ok": "Checked in · {{distance}} m from the shop's pin (within {{radius}} m).",
+      "pending": "Checked in {{distance}} m from the shop's pin (limit {{radius}} m) · waiting for the sales manager's OK.",
+      "noPin": "Checked in · this shop has no saved pin yet · waiting for the sales manager's OK.",
+      "queued": "Check-in saved on this phone · the distance is checked when it is sent.",
+      "noFix": "The phone did not give a location. Turn on location for this app and try again."
+    },
+    "writes": {
+      "order": "Order",
+      "collection": "Collection",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "query": "Query",
+      "promise": "Promise to pay",
+      "location": "Location",
+      "startDuty": "Start of day"
+    },
+    "rules": {
+      "gps": {
+        "off_duty": "Start your day first. Location and visits are recorded only while you are on duty.",
+        "notice_required": "Read and accept the location notice to start the day.",
+        "outside_duty": "A location point falls outside your duty time and was not kept."
+      },
+      "duty": { "already_on": "Your day is already started." },
+      "visit": {
+        "open": "Check out of the last shop first.",
+        "unplanned_reason": "A visit that is not on today's route needs a reason.",
+        "no_location": "The phone did not give a location. Turn on location and try again.",
+        "out_of_fence": "You are outside the shop's check-in area. Give a reason; the sales manager will check it.",
+        "missing": "This visit was not found.",
+        "not_pending": "This check-in is not waiting for approval.",
+        "closed": "You have already checked out of this visit.",
+        "outcome": "Choose how the visit ended.",
+        "no_order_reason": "Give the reason there was no order."
+      },
+      "field": {
+        "not_my_customer": "This shop is not on your list. Ask the sales manager.",
+        "bad_path": "Photos must be kept in the company's private folder.",
+        "cheque_photo": "Take a photo of the cheque.",
+        "reference": "Enter the UPI or bank reference (at least 4 characters).",
+        "handover_pending": "Your last handover is waiting for the cashier to count.",
+        "handover_missing": "This handover was not found.",
+        "handover_state": "This handover is already counted.",
+        "unsynced": "Some work is still on this phone. Wait until it is sent, then end the day.",
+        "cash_not_handed_over": "Hand over the cash with you before ending the day."
+      },
+      "cash": {
+        "receipt_blocked": "Cash of ₹2 lakh or more from one customer in a day is refused. Take it by bank transfer or UPI.",
+        "limits_not_set": "The cash limits are not set. Ask Admin."
+      },
+      "order": {
+        "no_price_list": "This item is not on the customer's price list. Ask the office to add it.",
+        "price_locked": "Prices come from the customer's price list and cannot be changed in the app.",
+        "discount_over_authority": "This discount is above your authority. Ask the sales manager.",
+        "kyc_cash_only": "KYC is not complete for this customer: cash or advance orders only.",
+        "product": "Every line needs an item.",
+        "no_rate": "There is no price for this item."
+      },
+      "money": {
+        "amount": "Enter an amount above zero.",
+        "mode": "Choose cash, cheque, UPI or bank transfer.",
+        "account": "The collection account is not set up. Ask the accountant."
+      },
+      "posting": { "rule_missing": "The collection accounts are not set up. Ask the accountant." },
+      "period": { "no_fy": "No financial year is open for today. Ask the accountant." },
+      "promise": { "date": "The promised date cannot be in the past." },
+      "statement": { "admin_only": "This statement holds documents only Admin can send. Ask Admin to send it." },
+      "credit": { "over_limit": "The customer is over the credit limit." },
+      "price": { "above_mrp": "A price including tax is above the item's MRP. Ask the office." },
+      "party": { "not_linked": "This customer is not linked to the company." },
+      "query": { "document": "Link one of this customer's bills." },
+      "sod": { "own_request": "Another person must do this step." },
+      "rights": { "missing": "Your login does not allow this. Ask Admin." }
+    }
+  }
+}

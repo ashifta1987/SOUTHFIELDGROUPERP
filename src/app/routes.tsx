@@ -110,6 +110,15 @@ import { MixerGrinderCostingPage } from '@/features/exports/mixer-grinder-costin
 import { GstPage } from '@/features/accounts/gst/GstPage'
 import { FinancialsPage } from '@/features/accounts/financials/FinancialsPage'
 import { ScheduleIIIPage } from '@/features/accounts/schedule-iii/ScheduleIIIPage'
+import { DispatchBoardPage } from '@/features/logistics/dispatch-board/DispatchBoardPage'
+import { TripsPage } from '@/features/logistics/trips/TripsPage'
+import { VehiclesDriversPage } from '@/features/logistics/vehicles-and-drivers/VehiclesDriversPage'
+import { VehicleFilePage } from '@/features/logistics/vehicle-file/VehicleFilePage'
+import { RouteSalesPage } from '@/features/sales/route-sales/RouteSalesPage'
+import { FieldTodayPage } from '@/features/field/today/FieldTodayPage'
+import { FIELD_ROUTES } from '@/features/field/routes'
+import { DriverTripPage } from '@/features/driver/trip/DriverTripPage'
+import { DriverPodPage } from '@/features/driver/pod/DriverPodPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -222,6 +231,15 @@ const BUILT: Record<string, React.ReactNode> = {
   GST: <GstPage />,
   Reports: <FinancialsPage />,
   ScheduleIIIBiochem: <ScheduleIIIPage />,
+  // Phase 6 · logistics, route sales, salesman and driver apps
+  Dispatch: <DispatchBoardPage />,
+  Trip: <TripsPage />,
+  Vehicles: <VehiclesDriversPage />,
+  VehicleFile: <VehicleFilePage />,
+  RouteSales: <RouteSalesPage />,
+  SalesmanApp: <FieldTodayPage />,
+  DriverTrip: <DriverTripPage />,
+  DriverPOD: <DriverPodPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */
@@ -257,6 +275,8 @@ for (const s of SCREENS) {
   else if (s.route.startsWith('/staff/')) staff.push(route)
   else otherPhone.push(route)
 }
+// Salesman portal pages beyond its home (/field/today): customers, customer page, order, collect, queries, library, my day, end day.
+otherPhone.push(...FIELD_ROUTES)
 for (const item of ROUTES_WITHOUT_REFERENCE) {
   desktop.push({ path: item.route.slice(1), element: BUILT_ROUTES[item.route] ?? <PlannedPage /> })
 }

@@ -1,0 +1,47 @@
+{
+  "fieldToday": {
+    "title": "Salesman app",
+    "atShop": "You are at",
+    "since": "Checked in at {{time}}",
+    "waitingOk": "waiting for the sales manager's OK",
+    "openVisit": "Open the visit",
+    "nextShop": "Next shop · {{i}} of {{n}}",
+    "lastOrder": "last order {{date}}",
+    "lastVisit": "last visit {{date}}",
+    "fenceNote": "Check-in works within the distance Admin sets around the shop's pin (150 m unless changed). Further away needs a reason and the sales manager's OK.",
+    "tiles": {
+      "order": "Take order",
+      "orderNote": "From the shop's price list",
+      "collect": "Collect payment",
+      "collectNote": "Cash, cheque or UPI · receipt sent",
+      "noOrder": "No order",
+      "noOrderNote": "Reason and shelf notes at check-out",
+      "library": "Library",
+      "libraryNote": "Products, MRP, price lists"
+    },
+    "numbers": "Today's numbers",
+    "visited": "Shops visited",
+    "ofN": "{{done}} of {{n}}",
+    "ordersToday": "Orders today",
+    "cashWithMe": "Cash with me",
+    "target": "This month vs target",
+    "targetToSet": "target to set",
+    "route": "Today's route",
+    "noRoute": "No beat is planned for you today. The sales manager plans beats on Route sales.",
+    "done": "Visited",
+    "planned": "Planned",
+    "endDay": "End day · hand over cash",
+    "footnote": "Location is shared only while on duty · works offline and sends when back in signal",
+    "flags": { "overdue": "Overdue", "query": "Open query", "creditHold": "Credit hold", "kyc": "KYC missing" },
+    "notice": {
+      "title": "Before you start the day: location notice",
+      "when": "While you are on duty (from Start day until End day), this app records your location: at start, every few minutes, and at each check-in and check-out.",
+      "what": "It is used only to confirm shop visits and plan routes. It is never recorded off duty.",
+      "keep": "Location points are deleted after 90 days.",
+      "who": "Only you, the sales manager and Admin can see them.",
+      "ack": "I have read the location notice",
+      "start": "Start day",
+      "queued": "Start of day saved on this phone · sends when back in signal."
+    }
+  }
+}

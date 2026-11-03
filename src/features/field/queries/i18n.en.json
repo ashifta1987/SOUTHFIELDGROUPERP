@@ -1,0 +1,11 @@
+{
+  "fieldQueries": {
+    "title": "Queries inbox",
+    "none": "No open queries from your customers.",
+    "overdue_one": "Open {{count}} day",
+    "overdue_other": "Open {{count}} days",
+    "status": { "open": "Open", "in_progress": "In progress", "answered": "Answered" },
+    "next": "next: {{step}}",
+    "replied": "office replied"
+  }
+}

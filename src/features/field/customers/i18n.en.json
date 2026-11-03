@@ -1,0 +1,16 @@
+{
+  "fieldCustomers": {
+    "title": "My customers",
+    "search": "Search name, trade name or GSTIN",
+    "none": "No customers are assigned to you yet. The sales manager assigns shops on Route sales.",
+    "noMatch": "No customer matches this search.",
+    "lastOrder": "last order {{date}}",
+    "noOrder": "no orders yet",
+    "overdue": "Overdue",
+    "queries_one": "{{count}} open query",
+    "queries_other": "{{count}} open queries",
+    "creditHold": "Credit hold",
+    "kyc": "KYC missing",
+    "noPin": "No pin saved"
+  }
+}

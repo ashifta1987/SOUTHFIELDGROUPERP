@@ -1,0 +1,46 @@
+{
+  "driverCommon": {
+    "back": "Back",
+    "online": "Online",
+    "offline": "Offline",
+    "noNetwork": "No network. Delivery proof needs signal to upload; wait until you are back online.",
+    "tabs": "Driver app",
+    "tab": { "trip": "Current trip", "pod": "Proof of delivery" },
+    "noRightTitle": "The driver app is not on your login",
+    "noRight": "Ask Admin to give you the driver role.",
+    "rules": {
+      "trip": {
+        "missing": "This trip was not found.",
+        "state": "The trip is not in a state for this step.",
+        "no_stops": "The trip has no deliveries yet. Ask the dispatch desk.",
+        "stop_missing": "This stop was not found.",
+        "open_stops": "Record delivery or failure for every stop before closing the trip.",
+        "dispatch": "A delivery on this trip is not ready."
+      },
+      "pod": {
+        "already": "Proof of delivery is already recorded for this stop.",
+        "receiver": "Enter the receiver's name.",
+        "proof": "A signature or a photo is needed.",
+        "bad_path": "Proof files must be kept in the company's private folder.",
+        "qty": "Delivered quantity must be between zero and the quantity sent.",
+        "short_reason": "Say why the full quantity was not delivered."
+      },
+      "dispatch": {
+        "no_invoice": "A delivery on this trip has no posted invoice yet. The office makes it before the vehicle leaves.",
+        "eway_required": "A delivery on this trip needs its e-way bill number before the vehicle leaves."
+      },
+      "stock": {
+        "insufficient": "There is not enough stock at the dispatch place.",
+        "reserved": "The stock is reserved for other orders.",
+        "lot_on_hold": "A lot on QC hold cannot be dispatched."
+      },
+      "credit": { "over_limit": "A customer on this trip is over the credit limit. The office must collect or get an MD exception." },
+      "vehicle": {
+        "not_active": "This vehicle is not in service.",
+        "document_expired": "The vehicle's papers have expired. Ask the office."
+      },
+      "rights": { "reason_required": "Write why it could not be delivered (at least 5 characters)." },
+      "gps": { "off_duty": "Location is recorded only during your trip." }
+    }
+  }
+}

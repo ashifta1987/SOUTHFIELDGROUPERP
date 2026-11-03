@@ -1,0 +1,39 @@
+{
+  "fieldOrder": {
+    "title": "Take order",
+    "notMine": "This customer is not on your list.",
+    "credit": "Credit check",
+    "limit": "Credit limit",
+    "exposure": "Owed now + open orders (GST bills)",
+    "available": "Available",
+    "blocked": "The customer is at or over the credit limit. A credit order goes to the office for approval; cash or advance is not held.",
+    "hiddenItems": "The server checks the full account; some items are not shown in the app.",
+    "noCredit": "Credit figures are not available.",
+    "items": "Items",
+    "itemsFrom": "Items · {{name}}",
+    "noPriceList": "No price list is set for this customer. The office sets it on Route sales; until then orders cannot be taken here.",
+    "emptyList": "The customer's price list has no items yet.",
+    "rate": "Rate",
+    "mrp": "MRP",
+    "qtyOf": "Quantity of {{name}}",
+    "terms": "Payment and delivery",
+    "payment": "Payment",
+    "pay": { "credit": "Credit", "cash": "Cash", "advance": "Advance" },
+    "delivery": "Delivery date",
+    "badQty": "Quantities are whole numbers or up to 3 decimals.",
+    "confirm_one": "Confirm order · {{count}} item",
+    "confirm_other": "Confirm order · {{count}} items",
+    "serverNote": "Prices come from the price list. GST, totals and the credit check are done by the server; offline the order is kept on the phone and confirmed when sent.",
+    "result": {
+      "confirmed": "Order {{doc}} confirmed. The customer gets the confirmation on WhatsApp.",
+      "pending_credit": "Order {{doc}} is over the credit limit and waits for the office's approval.",
+      "pending_approval": "Order {{doc}} waits for approval."
+    },
+    "total": "Total",
+    "taxable": "before GST",
+    "overBy": "Available credit after this order:",
+    "deliveryOn": "Delivery on {{date}}",
+    "backToVisit": "Back to the visit",
+    "queued": "Order saved on this phone · it is confirmed when sent; prices and GST are final then."
+  }
+}

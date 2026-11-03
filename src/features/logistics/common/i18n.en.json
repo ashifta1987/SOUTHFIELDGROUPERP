@@ -1,0 +1,72 @@
+{
+  "logisticsCommon": {
+    "status": {
+      "planned": "Scheduled",
+      "dispatched": "In transit",
+      "delivered": "Delivered",
+      "part_delivered": "Part delivered",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "started": "In transit",
+      "closed": "Closed",
+      "pending": "Pending",
+      "arrived": "Arrived",
+      "active": "Active",
+      "repair": "In maintenance",
+      "inactive": "Inactive"
+    },
+    "check": { "done": "Done", "pending": "Pending", "na": "Not needed" },
+    "rules": {
+      "dispatch": {
+        "place": "Choose the place the goods leave from.",
+        "over_order": "More than the order still has open.",
+        "no_lines": "Nothing to dispatch on this order.",
+        "document": "Link a posted invoice of this customer and company.",
+        "document_short": "The invoice does not cover every dispatched item.",
+        "state": "This delivery has already left.",
+        "already_invoiced": "This delivery already has its invoice.",
+        "eway_format": "An e-way bill number has 12 digits.",
+        "no_invoice": "A delivery on this trip has no posted invoice yet. Make the invoice first.",
+        "eway_required": "A delivery on this trip needs its e-way bill number before the vehicle leaves.",
+        "missing": "This delivery was not found."
+      },
+      "trip": {
+        "missing": "This trip was not found.",
+        "state": "The trip is not in a state for this step.",
+        "dispatch": "Each stop must be a scheduled delivery of this company that is not on another trip.",
+        "no_stops": "Add the deliveries to the trip first.",
+        "stop_missing": "This stop was not found.",
+        "open_stops": "Record delivery or failure for every stop before closing the trip."
+      },
+      "pod": {
+        "already": "Proof of delivery is already recorded for this stop.",
+        "receiver": "The receiver's name is needed.",
+        "proof": "A signature or a photo is needed.",
+        "bad_path": "Proof files must be kept in the company's private folder.",
+        "qty": "Delivered quantity must be between zero and the quantity sent.",
+        "short_reason": "Say why the full quantity was not delivered."
+      },
+      "vehicle": {
+        "missing": "This vehicle was not found.",
+        "not_active": "This vehicle is not in service.",
+        "document_expired": "The vehicle has expired papers. Only Admin can override."
+      },
+      "order": { "not_confirmed": "Only a confirmed order can be dispatched (credit or approval hold?).", "missing": "The order was not found." },
+      "stock": {
+        "insufficient": "There is not enough stock at the dispatch place.",
+        "reserved": "The stock is reserved for other orders.",
+        "lot_on_hold": "A lot on QC hold cannot be dispatched."
+      },
+      "credit": { "over_limit": "A customer on this trip is over the credit limit; collect or ask for an MD exception." },
+      "rights": { "reason_required": "Write the reason (at least 5 characters)." },
+      "sod": { "own_request": "Another person must do this step." },
+      "visit": { "not_pending": "This check-in is not waiting for approval.", "missing": "This visit was not found." },
+      "field": {
+        "handover_missing": "This handover was not found.",
+        "handover_state": "This handover is not in a state for this step."
+      },
+      "party": { "not_linked": "This customer is not linked to the company." },
+      "price_list": { "other_company": "Choose an active price list of this company." }
+    }
+  }
+}

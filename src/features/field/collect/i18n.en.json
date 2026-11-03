@@ -1,0 +1,21 @@
+{
+  "fieldCollect": {
+    "title": "Collect payment",
+    "notMine": "This customer is not on your list.",
+    "heading": "Payment received",
+    "amount": "Amount",
+    "mode": "How was it paid?",
+    "modes": { "cash": "Cash", "cheque": "Cheque", "upi": "UPI to the company account", "bank": "Bank transfer" },
+    "chequeNo": "Cheque number",
+    "reference": "UPI or bank reference",
+    "chequePhoto": "Photo of the cheque",
+    "cashRule": "Cash of ₹2 lakh or more from one customer in a day is refused; take it by bank transfer or UPI.",
+    "collect": "Record payment and send receipt",
+    "uploadFailed": "The cheque photo could not be uploaded. Try again.",
+    "done": "Receipt {{doc}} issued. The customer gets it on WhatsApp.",
+    "onAccount": "On account:",
+    "balance": "Balance on GST bills now:",
+    "withMe": "This cash shows as \"with me\" until you hand it over at day end.",
+    "queued": "Payment saved on this phone · the receipt number comes when it is sent."
+  }
+}

@@ -383,6 +383,8 @@ Every changing RPC: `api.*`, security definer, `p_client_request_id uuid` first 
 | `api.my_day(p_company_id, p_date)` *(read)* | | {date, on_duty, visits_planned, visits_done, orders_total, collections_total, cash_with_me, cheques_with_me} | `field.sell` |
 | `api.route_sales_board(p_company_id, p_date)` *(read)* | | [{user_id, name, on_duty, visits [...], exceptions, orders_total, collected, cash_with_salesman, last_point}] | `field.manage` |
 | `api.purge_gps(crid)` | | {retention_days, points_deleted, visits_cleared, pods_cleared} | Admin (pg_cron runs `app.purge_gps` nightly) |
+| `api.set_customer_price_list(crid, p_company_id, p_party_id, p_price_list_id)` (migration 006700) | p_price_list_id null clears | {company_id, party_id, price_list_id} | `sales.edit` or `field.manage`; `party.not_linked`, `price_list.other_company` (active list of the same company). Sets `master.party_companies.price_list_id`, which salesman orders price from (audited by the table trigger) |
+| `api.customer_price_list(p_company_id, p_party_id)` *(read)* | | {price_list_id, name, tax_inclusive, items [{product_id, code, name, uom, min_qty, price, rate (net of GST via `app.list_rate`), mrp}]} | `app.can_sales_party` (sales/accounts view or the assigned salesman); `rights.missing` |
 
 ### Customer care, shops, exports, online (screens SalesControls, Outlets, ShopSales, ExportOrders, OnlineListings, OnlineSales)
 

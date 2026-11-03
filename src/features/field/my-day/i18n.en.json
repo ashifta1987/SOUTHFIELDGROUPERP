@@ -1,0 +1,21 @@
+{
+  "fieldMyDay": {
+    "title": "My day",
+    "today": "Today · {{date}}",
+    "visits": "Visits done",
+    "ofN": "{{done}} of {{n}}",
+    "orders": "Orders",
+    "collections": "Collections",
+    "cash": "Cash with me",
+    "cheques": "Cheques with me",
+    "target": "Target against achieved",
+    "targetToSet": "target to set",
+    "recent": "Collections",
+    "noCollections": "No collections yet.",
+    "modes": { "cash": "Cash", "cheque": "Cheque", "upi": "UPI", "bank": "Bank" },
+    "withMe": "with me",
+    "closes": "Past day ends",
+    "noCloses": "No day ended yet.",
+    "endDay": "End day · hand over cash"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "fieldEndDay": {
+    "title": "End day",
+    "withMe": "With me now",
+    "cash": "Cash with me",
+    "cheques": "Cheques with me",
+    "unsynced": "Waiting on this phone",
+    "last": "Last handover · {{date}}",
+    "expected": "Expected",
+    "myCount": "My count",
+    "cashierCount": "Cashier's count",
+    "notYet": "not yet",
+    "status": "Status",
+    "statuses": { "pending": "Waiting for the cashier", "confirmed": "Confirmed", "mismatch": "Does not match · finance checks", "resolved": "Resolved by finance" },
+    "waitCashier": "The cashier counts again on their own login. You can end the day once they confirm.",
+    "mismatch": "The counts do not match the cash collected. It is on the Bug fixer list; finance resolves it with you.",
+    "confirmedAt": "Counted at {{time}} by {{name}}",
+    "count": "Count the cash by note",
+    "note": "₹{{value}} × count",
+    "chequesHanded": "Cheques handed over",
+    "badCount": "Counts are whole numbers.",
+    "handover": "Hand over to the cashier",
+    "matches": "Your count matches the cash collected.",
+    "difference": "Difference:",
+    "nowCashier": "Now the cashier counts and confirms on their login.",
+    "end": "End the day",
+    "endNote": "The day ends only when everything on this phone is sent, the last visit is checked out and the cashier has confirmed your cash. Location stops when the day ends.",
+    "endButton": "End day",
+    "ended": "Day ended. Location is no longer recorded.",
+    "summary": "Visits {{done}} of {{n}}"
+  }
+}

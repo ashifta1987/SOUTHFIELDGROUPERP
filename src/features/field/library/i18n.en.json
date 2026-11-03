@@ -1,0 +1,12 @@
+{
+  "fieldLibrary": {
+    "title": "Reference library",
+    "search": "Search products",
+    "products": "Products, pack sizes and MRP",
+    "none": "No products to show for this company yet.",
+    "mrp": "MRP",
+    "noMrp": "MRP not set",
+    "docs": "Certificates, flyers and FAQs",
+    "docsNote": "Licence copies, batch test reports, flyers and short training notes appear here once Admin uploads them and allows sharing. Price lists are on each customer's Reference tab."
+  }
+}

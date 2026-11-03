@@ -1,0 +1,79 @@
+{
+  "fieldCustomer": {
+    "title": "Customer",
+    "notMine": "This customer is not on your list. Only shops assigned to you open here.",
+    "tabs": "Customer page",
+    "tab": { "account": "Account", "queries": "Queries", "reference": "Reference", "visit": "Visit" },
+    "collect": "Collect payment",
+    "order": "Take order",
+    "kinds": {
+      "product_complaint": "Product complaint",
+      "billing": "Billing query",
+      "delivery": "Delivery problem",
+      "price_scheme": "Price or scheme question",
+      "return": "Return request",
+      "other": "Other"
+    },
+    "qstatus": { "open": "Open", "in_progress": "In progress", "answered": "Answered", "closed": "Closed" },
+    "queries": {
+      "title": "Queries and complaints",
+      "none": "No queries for this customer.",
+      "next": "next: {{step}}",
+      "reply": "Office reply: {{reply}}",
+      "new": "New query",
+      "kind": "Type",
+      "description": "What is the query?",
+      "save": "Log query",
+      "done": "Query logged. The office replies here and the customer gets a WhatsApp update."
+    },
+    "ref": {
+      "contact": "Customer details",
+      "gstin": "GSTIN",
+      "unregistered": "Not registered",
+      "kyc": "KYC",
+      "kycStatus": { "draft": "Draft", "review": "In review", "verified": "Verified", "rejected": "Rejected" },
+      "phone": "Phone (masked)",
+      "pin": "Delivery pin",
+      "noPin": "No pin saved",
+      "priceList": "Price list",
+      "priceListNamed": "Price list · {{name}}",
+      "noPriceList": "No price list is set for this customer yet. Orders need one; ask the office.",
+      "mrp": "MRP",
+      "rateNote": "Rates are before GST. GST and totals are worked out by the server on the order.",
+      "lastOrders": "Last orders",
+      "noOrders": "No orders yet."
+    },
+    "orderStatus": {
+      "confirmed": "Confirmed",
+      "pending_credit": "Credit approval",
+      "pending_approval": "Approval",
+      "part_dispatched": "Part dispatched",
+      "dispatched": "Dispatched",
+      "closed": "Closed",
+      "cancelled": "Cancelled"
+    },
+    "visit": {
+      "offDuty": "Start your day first; visits are recorded only on duty.",
+      "toToday": "Go to Today",
+      "now": "Visit in progress",
+      "checkedIn": "Checked in at {{time}}",
+      "distance": "{{m}} m from the pin",
+      "pending": "Waiting for the sales manager's OK",
+      "approved": "Sales manager approved this check-in",
+      "refused": "Sales manager refused this check-in",
+      "shelf": "Shelf check (facings and stock of our products)",
+      "competitor": "Competitor notes",
+      "photo": "Shelf photo (optional)",
+      "outcome": "How did the visit end?",
+      "outcomes": { "order": "Order taken", "no_order": "No order", "collection": "Collection", "follow_up": "Follow-up" },
+      "noOrderReason": "No-order reason",
+      "nextVisit": "Next visit date (optional)",
+      "checkOut": "Check out",
+      "checkedOut": "Checked out.",
+      "uploadFailed": "The photo could not be uploaded. Try again or check out without it.",
+      "elsewhere": "You are checked in at {{name}}. Check out there first.",
+      "checkInTitle": "Check in",
+      "past": "Earlier visits"
+    }
+  }
+}
