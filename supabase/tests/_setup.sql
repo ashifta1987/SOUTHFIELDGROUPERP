@@ -221,4 +221,32 @@ begin
   end loop;
   return s || p || u || jsonb_build_object('fg_place', v_fgp, 'mould_out', v_out);
 end $$;
+
+-- Phase 6 seed on top of seed4: synthetic users (two salesmen, a sales manager, an MD), field-collection posting rules (a cash
+-- account "with the salesman" and the bank account), a 30-day credit term, a wholesale price list on the Kerala customer (assigned
+-- to the first salesman, with a shop pin), and a released lot of the taxable product with stock at the stores and at the shop.
+create or replace function tests.seed6(s jsonb) returns jsonb
+language plpgsql as $$
+declare
+  v_a uuid := (s ->> 'company_a')::uuid; u jsonb := '{}'::jsonb; r record; v_cih uuid; v_term uuid; v_pl uuid; v_lot uuid; v_lot2 uuid; v_g uuid; v_shop_br uuid;
+begin
+  for r in select * from (values ('salesman', 'salesman'), ('salesman2', 'salesman'), ('smgr', 'sales_manager'), ('md', 'md')) x(k, role) loop
+    u := u || jsonb_build_object(r.k, tests.create_user('test.p6' || r.k || '@example.test'));
+    insert into core.user_roles (user_id, role_key, company_id) values ((u ->> r.k)::uuid, r.role, v_a);
+  end loop;
+  select group_id into v_g from acct.accounts where id = (s ->> 'cash')::uuid;
+  insert into acct.accounts (company_id, group_id, name, status, kind) values (v_a, v_g, 'Test Cash with salesmen', 'active', 'cash') returning id into v_cih;
+  insert into acct.posting_rules (company_id, event, account_id) values (v_a, 'field.cash_in_hand', v_cih), (v_a, 'field.collection_bank', (s ->> 'bank')::uuid);
+  insert into master.credit_terms (company_id, code, label, days) values (v_a, 'T30', 'Test 30 days', 30) returning id into v_term;
+  insert into master.price_lists (company_id, name, kind) values (v_a, 'Test Wholesale', 'wholesale') returning id into v_pl;
+  insert into master.price_list_items (price_list_id, product_id, price, effective_from) values (v_pl, (s ->> 'prod')::uuid, 100, '2026-04-01');
+  update master.party_companies set salesman_user_id = (u ->> 'salesman')::uuid, price_list_id = v_pl where party_id = (s ->> 'cust')::uuid and company_id = v_a;
+  insert into master.party_addresses (party_id, kind, line1, city, state_code, lat, lng) values ((s ->> 'cust')::uuid, 'delivery', 'Test Shop Road', 'Test Town', '32', 10.000000, 76.300000);
+  insert into inv.lots (company_id, product_id, lot_no, source, status) values (v_a, (s ->> 'prod')::uuid, 'TLOT1', 'opening', 'available') returning id into v_lot;
+  insert into inv.lots (company_id, product_id, lot_no, source, status) values (v_a, (s ->> 'prod')::uuid, 'TLOT2', 'opening', 'available') returning id into v_lot2;
+  perform app.stock_post(v_a, (s ->> 'prod')::uuid, v_lot, (s ->> 'stores')::uuid, 'available', 100, 'opening', 'tests.seed6', null, 'OPEN', current_date, 10);
+  perform app.stock_post(v_a, (s ->> 'prod')::uuid, v_lot2, (s ->> 'shop')::uuid, 'available', 10, 'opening', 'tests.seed6', null, 'OPEN', current_date, 10);
+  select id into v_shop_br from core.branches where company_id = v_a and code = 'S1';
+  return s || u || jsonb_build_object('cash_in_hand', v_cih, 'term30', v_term, 'price_list', v_pl, 'lot1', v_lot, 'lot2', v_lot2, 'shop_branch', v_shop_br);
+end $$;
 grant execute on all functions in schema tests to authenticated;

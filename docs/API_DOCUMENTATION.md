@@ -320,6 +320,172 @@ Lots made by production (`inv.lots.source = 'production'`) are refused by `recor
 
 † null without `cost.view`.
 
+## Phase 6 RPCs (delivery and sales)
+
+Every changing RPC: `api.*`, security definer, `p_client_request_id uuid` first (same id → same result, nothing changes twice), row locks, rights / state / period / stock / credit / cash checks. Money `numeric(18,2)`, quantities `numeric(18,3)`. Reads marked *(read)*. Nested Phase 3 calls (invoice, posting) use `app.child_crid(crid, tag)` so a retry is idempotent end to end.
+
+### Orders and credit (screens SalesOrders, CreditControl, Take order)
+
+| RPC | Parameters (jsonb keys) | Returns | Rights / rules |
+|---|---|---|---|
+| `api.confirm_sales_order(crid, p_header jsonb, p_lines jsonb)` | header: company_id, gstin_id (default principal), party_id, order_date, delivery_date, channel `direct\|field\|shop\|online\|export\|private_label`, payment `credit\|cash\|advance`, place_id, price_list_id (office only), place_of_supply, buyer_po_no, buyer_po_date, notes, private_label_id, salesman_user_id (office), device_created_at; lines: [{product_id, qty, rate, discount}] | {id, doc_no, status `confirmed\|pending_credit\|pending_approval`, totals, reserved_lines, credit} | `sales.create`, or `field.sell` for the salesman's own customer (rate = price list, `order.price_locked`, `order.no_price_list`, `order.discount_over_authority`). `order.kyc_cash_only`, `party.missing`, `party.not_linked`, `price.above_mrp`, `gst.no_rate`, `order.private_label_missing`. Credit orders over limit + live exceptions → `pending_credit`. Queues `order_confirmed` when confirmed. |
+| `api.check_credit_exposure(p_company_id, p_party_id, p_extra numeric)` *(read)* | | {limit, credit_status, terms, receivables, open_orders, exception, exposure, available, extra, blocked, hidden_items} (+ receivables_gst for Admin/CA) | sales/accounts or the assigned salesman. Non-Admin: GST figures only; `blocked` always from the full exposure |
+| `api.release_order(crid, p_order_id)` | | {id, status} | `sales.approve` or `credit.md_exception`; never the creator (`sod.own_request`); `credit.over_limit`, `order.private_label_pending`, `order.state` |
+| `api.grant_md_exception(crid, p)` | company_id, party_id, order_id?, amount, valid_until (future), reason (≥ 5) | {id, order_status} | `credit.md_exception`; not the order's creator (`sod.own_request`); logged (`admin_action/credit_exception`); releases the held order when it now fits. `credit.exception_until`, `credit.exception_amount` |
+| `api.cancel_sales_order(crid, p_order_id, p_reason)` | | {id, status} | `sales.cancel`; nothing dispatched (`order.state`); reservations released |
+| `api.submit_credit_application(crid, p)` | company_id, party_id, requested_limit, requested_term_id, expected_monthly, security, note | {id, doc_no, stage 3} | `credit.request` (salesman: own customer). `credit.application_open`, `credit.limit_amount` |
+| `api.approve_credit_stage(crid, p_application_id, p_stage int, p_decision 'approved'\|'rejected', p jsonb)` | limit, term_id, review_on (stage 6), note (required to reject) | {id, status, stage} | stage 3 `credit.endorse`, 4 `credit.verify` (KYC verified, `credit.kyc_not_verified`), 5 `credit.recommend`, 6 `credit.approve` (`credit.review_date`, `credit.terms_required`, `party.msme_terms`). `credit.wrong_stage`, `sod.own_request`, `credit.same_person` |
+| `api.set_credit_status(crid, p_company_id, p_party_id, p_status 'active'\|'hold'\|'review', p_reason)` | | {ok} | `credit.recommend` or `credit.approve`; active only with an approved application (`credit.no_approval`) |
+
+### Dispatch, trips, driver app, vehicles (screens Dispatch, Trip, DriverTrip, DriverPOD, Vehicles, VehicleFile)
+
+| RPC | Parameters | Returns | Rights / rules |
+|---|---|---|---|
+| `api.create_dispatch(crid, p)` | order_id, place_id (default the order's), scheduled_at, eway_bill_no, lines [{order_line_id, qty}] (empty = all open) | {id, doc_no, value} | `logistics.create`; `order.not_confirmed`, `dispatch.place`, `dispatch.over_order`, `dispatch.no_lines` |
+| `api.invoice_dispatch(crid, p_dispatch_id, p)` | doc_date, gstin_id, notes | {dispatch_id, document_id, doc_no, total} | `sales_invoices.create`; Phase 3 `save_sales_draft` + `post_sales_document` (GST, MRP, numbering, GL, invoice message) then link. `dispatch.already_invoiced` |
+| `api.link_dispatch_document(crid, p_dispatch_id, p_document_id)` | | {dispatch_id, document_id} | `logistics.edit` or `sales_invoices.create`; `dispatch.document`, `dispatch.document_short`, `dispatch.state` |
+| `api.set_dispatch_eway(crid, p_dispatch_id, p_eway_bill_no)` | 12 digits | {id} | `logistics.edit`; `dispatch.eway_format` |
+| `api.create_trip(crid, p)` | company_id, trip_date, vehicle_id \| transporter, driver_user_id, lr_no, dispatch_ids [] | {id, doc_no} | `logistics.create`; `vehicle.document_expired` (Admin overrides), `vehicle.not_active`, `trip.dispatch` |
+| `api.assign_to_trip(crid, p_trip_id, p_dispatch_ids jsonb)` | | {trip_id, added} | `logistics.edit`; `trip.state` |
+| `api.start_trip(crid, p_trip_id, p)` | odometer_start, gps_notice_ack | {id, status, dispatches} | the trip's driver (`trip.drive`) or `logistics.edit`. `dispatch.no_invoice`, `dispatch.eway_required` (unless under `eway.threshold_amount`), `credit.over_limit`, `stock.insufficient`, `stock.reserved`, `stock.lot_on_hold`. Stock out (`dispatch`), `dispatched` message; opens the driver's GPS window when the notice is acknowledged |
+| `api.mark_stop_arrived(crid, p_stop_id)` | | {id, status} | driver / logistics |
+| `api.record_pod(crid, p_stop_id, p)` | received_by_name, receiver_phone (only last 4 kept), signature_path, photo_paths [] (bucket `pod`, `<company_id>/…`), lat, lng, device_at, remarks, lines [{dispatch_line_id, qty_delivered, short_reason}] | {stop_id, status, short} | driver / logistics. `pod.receiver`, `pod.proof`, `pod.bad_path`, `pod.qty`, `pod.short_reason`, `pod.already`. Short goods → quarantine at the dispatch place; GPS stored only on the driver's open trip window; `delivered` message |
+| `api.record_failed_delivery(crid, p_stop_id, p_reason)` | | {stop_id, status} | driver / logistics; everything back to quarantine, order quantity reopened |
+| `api.close_trip(crid, p_trip_id, p)` | odometer_end | {id, status} | driver / logistics; `trip.open_stops`; ends the driver's GPS window |
+| `api.my_trip()` *(read)* | | {trip_id, doc_no, status, trip_date, vehicle, stops [{stop_id, seq, status, dispatch_id, dispatch_no, customer, scheduled_at, address, contact_masked, lines [{dispatch_line_id, product, qty, uom}]}]} | the driver's own current trip |
+| `api.upsert_vehicle(crid, p)` | id?, company_id, reg_no, kind, ownership, transporter, payload_kg, usual_driver_user_id, place_id, status | {id} | `logistics.create` / `logistics.edit` |
+| `api.set_vehicle_document(crid, p)` | vehicle_id, kind, doc_no, valid_to, path | {id} | `logistics.edit` |
+| `api.record_vehicle_event(crid, p)` | vehicle_id, kind, event_date, odometer_km, litres, amount, trip_id, paid_by, note | {id} | `logistics.create` |
+
+### Route sales and the salesman portal (screens RouteSales, SalesmanApp + Customers, Customer page, Take order, Collect payment, Queries inbox, My day, End day)
+
+| RPC | Parameters | Returns | Rights / rules |
+|---|---|---|---|
+| `api.plan_beat(crid, p)` | company_id, id?, code, name, salesman_user_id, weekday 1–7, active, customers [party_id] | {id, customers} | `field.manage`; assigns the customers to the beat's salesman |
+| `api.assign_salesman(crid, p_company_id, p_party_id, p_user_id)` | | {ok} | `field.manage` |
+| `api.start_duty(crid, p)` | company_id, notice_ack (true), lat, lng | {session_id} | `field.sell`; `gps.notice_required`, `duty.already_on` |
+| `api.record_locations(crid, p_points jsonb)` | [{lat, lng, at, accuracy_m}] | {recorded} | own open session only: `gps.off_duty`, `gps.outside_duty` |
+| `api.check_in_visit(crid, p)` | company_id, party_id, lat, lng, at, beat_id, planned, unplanned_reason, reason | {visit_id, geofence_ok, distance_m, radius_m, approval} | `field.sell`, own customer (`field.not_my_customer`), on duty (`gps.off_duty`); `visit.open`, `visit.unplanned_reason`, `visit.no_location`, **`visit.out_of_fence`** (outside `field.geofence_m` or no pin, without a reason) |
+| `api.approve_out_of_geofence(crid, p_visit_id, p_approve bool, p_note)` | | {id, approval} | `field.manage`; not the salesman (`sod.own_request`); `visit.not_pending`; logged |
+| `api.check_out_visit(crid, p_visit_id, p)` | lat, lng, at, outcome `order\|no_order\|collection\|follow_up`, no_order_reason, shelf, competitor_notes, photo_paths (bucket `field`), next_visit_on | {visit_id, check_out_distance_m} | own visit; `visit.outcome`, `visit.no_order_reason`, `field.bad_path`, `visit.closed` |
+| `api.field_collect(crid, p)` | company_id, party_id, amount, mode `cash\|cheque\|upi\|bank`, reference, cheque_photo_path, visit_id, date | {voucher_id, doc_no, allocated [{kind, bill_ref, amount}], on_account, balance_gst} | `field.sell`, own customer. `cash.receipt_blocked` (Phase 3 limit), `field.cheque_photo`, `field.reference`, `money.account`, `posting.rule_missing` (`field.cash_in_hand`, `field.collection_bank`). Oldest bill first among the bills in scope; receipt message |
+| `api.cash_handover(crid, p)` | company_id, denominations {"500": n, …}, cheques | {id, expected, counted, difference} | `field.sell`; `field.handover_pending` |
+| `api.confirm_cash_handover(crid, p_handover_id, p)` | denominations, to_account_id (cash) | {id, status `confirmed\|mismatch`, difference, contra_voucher_id} | `cash_book.create`, another login (`sod.own_request`); mismatch → Bug fixer item |
+| `api.resolve_cash_handover(crid, p_handover_id, p_note)` | | {id, status, contra_voucher_id} | `cash_book.approve`, not the salesman |
+| `api.end_salesman_day(crid, p)` | company_id, unsynced (count on the phone), van_counts | {id, visits_planned, visits_done, orders_total, collections_total} | `field.unsynced`, `gps.off_duty`, `visit.open`, `field.cash_not_handed_over`, `field.handover_pending`; closes the duty session |
+| `api.log_query(crid, p)` | company_id, party_id, kind, document_id, lot_id, description, photo_paths | {id, complaint_id} | `sales.create` or own customer; `query.document` |
+| `api.answer_query(crid, p_query_id, p)` | status, reply, next_step, assigned_to | {id} | `sales.edit` |
+| `api.record_promise_to_pay(crid, p)` | company_id, party_id, amount, promised_on, note | {id} | own customer / sales.create; `promise.date` |
+| `api.send_statement_whatsapp(crid, p_company_id, p_party_id, p_to date)` | | {outbox_id, status, skip_reason} | sales/accounts or own customer; `statement.admin_only` when the statement holds a bill without GST and the sender is not Admin; registered consented number only |
+| `api.salesman_customer_account(p_company_id, p_party_id)` *(read)* | | {scope, as_of, balance_due, ageing {not_due, 0-30, 31-60, 61-90, 90+}, overdue, credit_limit, credit_status, available_credit, credit_blocked, last_payment, promises, open_bills [{kind, id, bill_ref, bill_date, due_date, amount, open_amount, days_overdue}]} | own customer or sales.view; `salesman_balance_scope` (gst_only until the owner decides) |
+| `api.my_customers(p_company_id)` *(read)* | | [{party_id, name, trade_name, gstin, kyc_status, credit_status, tier, overdue_gst, open_queries, last_visit, last_order, pin, phone_masked}] | `field.sell` |
+| `api.my_route_today(p_company_id, p_date)` *(read)* | | [{beat_id, beat, seq, party_id, name, pin, overdue_gst, open_query, credit_hold, kyc_missing, visited, last_visit, last_order}] | `field.sell` |
+| `api.my_day(p_company_id, p_date)` *(read)* | | {date, on_duty, visits_planned, visits_done, orders_total, collections_total, cash_with_me, cheques_with_me} | `field.sell` |
+| `api.route_sales_board(p_company_id, p_date)` *(read)* | | [{user_id, name, on_duty, visits [...], exceptions, orders_total, collected, cash_with_salesman, last_point}] | `field.manage` |
+| `api.purge_gps(crid)` | | {retention_days, points_deleted, visits_cleared, pods_cleared} | Admin (pg_cron runs `app.purge_gps` nightly) |
+
+### Customer care, shops, exports, online (screens SalesControls, Outlets, ShopSales, ExportOrders, OnlineListings, OnlineSales)
+
+| RPC | Parameters | Returns | Rights / rules |
+|---|---|---|---|
+| `api.log_complaint(crid, p)` | company_id, party_id, document_id, product_id, lot_id, kind, description, severity | {id, doc_no} | sales.create or own customer; `complaint.lot`, `complaint.description`; `complaint_update` message |
+| `api.qc_hold_batch(crid, p)` | lot_id, complaint_id, reason | {hold_id, qty_held} | `qc.release` or `qc.test`; `qc.already_on_hold`. Moves available → hold everywhere (`qc_hold`), lot status hold |
+| `api.qc_release_hold(crid, p_hold_id, p_decision 'release'\|'reject', p_note)` | | {hold_id, status} | `qc.release` |
+| `api.update_complaint(crid, p_complaint_id, p)` | status `investigating\|resolved\|rejected`, note, assigned_to | {id, status} | sales.edit or QC |
+| `api.close_complaint(crid, p_complaint_id, p_resolution)` | | {id, status} | `sales.approve`; `complaint.not_alone`, `complaint.hold_open`, `complaint.closed` |
+| `api.set_coverage_tier(crid, p)` / `api.set_customer_tier(crid, p_company_id, p_party_id, p_tier)` | company_id, tier, call_every_days, visit_every_days, grace_days | {ok} | `field.manage`; `coverage.tier` |
+| `api.log_call(crid, p)` | company_id, party_id, outcome `reached\|no_answer\|deferred`, note, next_action | {id} | own customer / sales.create |
+| `api.submit_private_label(crid, p)` / `api.approve_private_label(crid, p_id, p_stage 'sales'\|'quality'\|'md', p_approve, p_note)` | company_id, party_id, brand_name, spec, artwork_path | {id[, status]} | sales.create / sales.approve, qc.release, credit.approve; three different people, none the creator (`sod.own_request`, `private_label.same_person`) |
+| `api.upsert_agent(crid, p)` / `api.accrue_agent_commissions(crid, p_company_id, p_from, p_to)` | company_id, party_id, model, commission_pct, customers [] | {id} / {accrued, commission} | sales.approve / accounts.create. Only cash receipts or bank receipts matched to a statement line; GST invoices of the agent's customers; never twice |
+| `api.upsert_shop(crid, p)` | company_id, branch_id (kind shop), place_id, walk_in_party_id, cash_account_id, bank_account_id, price_list_id, active | {id} | `settings.manage` |
+| `api.shop_sale(crid, p)` | shop_id, party_id (default walk-in), doc_date, lines [{product_id, qty, rate, discount}], payment {mode cash\|upi\|card} | {document_id, doc_no, total, receipt_voucher_id, receipt_no} | `shop.operate` + `sales_invoices.create`; Phase 3 invoice, stock out (`sale`), `stock.lot_on_hold`, cash limit, receipt allocated to the invoice |
+| `api.shop_day_close(crid, p)` | shop_id, day, denominations, upi_total, card_total | {id, status `closed\|mismatch`, expected_cash, counted_cash, difference} | `shop.operate`; `shop.day_closed`; mismatch → Bug fixer item |
+| `api.create_export_order(crid, p)` | company_id, party_id (overseas), order_date, currency, fx_rate, incoterm, port_of_loading, destination, lut_ref, lut_valid_to, lines [{product_id, qty, rate_fc}] | {id, doc_no} | `exports.create`; `export.not_overseas`, `export.fx_rate` |
+| `api.add_container(crid, p)` / `api.check_packing_list(crid, p_container_id, p_loaded jsonb)` | export_order_id, container_no, seal_no, packing_list [{product_id, cartons, pieces}] / loaded | {id, container_no} / {id, status, differences} | `exports.edit`; `export.container_no` (ISO 6346 check digit) |
+| `api.post_export_invoice(crid, p)` | export_order_id, gstin_id, doc_date, lut (default true), shipping_bill_no, shipping_bill_date, port_code, lines (default the order's) | {document_id, doc_no, total_inr, value_fc, currency, lut} | `exports.create` + `sales_invoices.create`; LUT: Admin only (`gst.without_admin_only`), `export.lut_expired`; without LUT: IGST, place of supply 96 |
+| `api.upsert_online_channel(crid, p)` | company_id, code, gstin_id, party_id, place_id, tcs_applicable, status | {id} | `settings.manage` |
+| `api.publish_listing(crid, p)` | channel_id, product_id, title, price, publish | {id, status, blockers} | Admin; `listing.blocked` (barcode, mrp, price_above_mrp, price, not_active) |
+| `api.ingest_online_order(crid, p)` | channel_id, external_order_id, order_date, ship_state, lines [{product_id \| sku, qty, price_incl_tax}] | {online_order_id, order_id, doc_no, duplicate} | `sales.create` (Edge Function `store-webhooks`, Phase 8); same order twice → first result; `online.unknown_item` |
+
+### GST page and Schedule III (screens GST, Reports, ScheduleIIIBiochem)
+
+| RPC | Returns | Rights |
+|---|---|---|
+| `api.gstr1_summary(p_company_id, p_gstin_id \| null, p_from, p_to)` *(read)* | {b2b [{party_gstin, party_name, invoices, taxable, cgst, sgst, igst, total}], b2cl [...] (only when `gst.b2cl_invoice_value` set), b2cs [{pos, rate, taxable, cgst, sgst, igst}], exp [{doc_no, doc_date, with_payment, taxable, igst, total, shipping_bill_no, shipping_bill_date, port_code}], cdnr, cdnur, hsn [{hsn_code, uom, rate, qty, taxable, cgst, sgst, igst, total}], nil_exempt_non_gst (Admin/CA only), docs [{doc_type, series, from_no, to_no, issued, cancelled}], totals {taxable, cgst, sgst, igst, total}, all_supplies, b2cl_threshold_set} | `gst.view` or `reports.view` |
+| `api.gstr3b_summary(p_company_id, p_gstin_id, p_from, p_to)` *(read)* | {outward_taxable {taxable, igst, cgst, sgst}, outward_zero_rated, outward_nil_exempt (Admin/CA), outward_non_gst (Admin/CA), inward_reverse_charge, itc_available {igst, cgst, sgst, bills}, itc_ineligible, output_tax, net_before_setoff, note} | same |
+| `api.itc_register(p_company_id, p_from, p_to)` *(read, table)* | bill_id, gstin_id, supplier, supplier_gstin, supplier_bill_no, supplier_bill_date, bill_date, taxable, cgst, sgst, igst, itc, itc_eligible, reverse_charge, match_status (`await_2b`) | same |
+| `api.set_schedule3_map(crid, p {account_group_id, line_code})` | {ok} | `settings.manage`; clears the CA confirmation |
+| `api.confirm_schedule3_map(crid, p_company_id, p_note)` | {confirmed} | `settings.manage` (records the CA's confirmation) |
+| `api.schedule3_statements(p_company_id, p_from, p_to)` *(read)* | {balance_sheet [{side, section, code, label, amount}], profit_and_loss [{section, code, label, amount}], profit_for_period, profit_brought_forward, unmapped_groups [{group_id, group, nature, balance}], mapping_confirmed_by_ca, totals {assets, equity_liabilities, difference}, all_transactions, status} | `reports.view` or `accounts.view`; GST view excludes without-GST GL entries |
+
+The Phase 3 `api.trial_balance(company, from, to)` serves the trial balance tab.
+
+### WhatsApp (screen WhatsApp & email) and Help data tools
+
+| RPC | Parameters | Returns | Rights / rules |
+|---|---|---|---|
+| `api.schedule_reminders(crid, p_company_id, p_date)` | | {queued, skipped, date} | Admin or `receipts_payments.create`; pg_cron `payment-reminders` runs `app.schedule_reminders_all()` at 08:00 IST |
+| `api.set_cost_cap(crid, p_company_id, p_monthly_cap, p_alert_pct)` / `api.set_message_rate(crid, p_category, p_est_cost, p_effective_from)` | | {ok} | Admin |
+| `api.record_inbound(crid, p)` | wa_message_id, from_number, kind, body, media_path, company_id | {inbound_id, task_id, task_kind, party_id} \| {duplicate} \| {opted_out} | Admin or the webhook (service role). STOP words opt out |
+| `api.resolve_task(crid, p_task_id, p_status 'done'\|'dismissed', p_note)` | | {id, status} | finance, Admin, or the assigned person (payment proofs: finance only, `task.finance_only`) |
+| `api.reply_inbound(crid, p_inbound_id, p_text)` | | {outbox_id} | finance/salesperson/Admin; `msg.window_closed`, `msg.not_consented` |
+| `api.help_get_document_status(p_doc_no)` *(read, invoker)* | | {found, documents [{kind, type, doc_no, date, status, amount, due_date}]} | RLS: a without-GST bill is not found for non-Admin |
+| `api.help_check_my_rights(p_company_id, p_right)` *(read, invoker)* | | {view, roles, has_right, rights, special_permissions} | own rights only |
+| `api.help_get_stock(p_query, p_company_id)` *(read, invoker)* | | [{company_id, product_code, product, uom, sellable, free, quarantine, hold, in_transit}] | `inventory.view` (no cost) |
+| `api.help_my_requests()` *(read, invoker)* | | {special_permissions, staff_requests (no amounts), purchase_requests, credit_applications} | own rows |
+| `api.help_request_permission(crid, p_right, p_company_id, p_hours, p_reason)` | | as `api.request_special_permission` | grantable rights only |
+
+### Phase 6 read views (security_invoker; RLS decides rows; non-Admin sums are GST-only)
+
+| View | Columns |
+|---|---|
+| `api.sales_orders` | id, company_id, company_name, gstin_id, doc_no, order_date, delivery_date, party_id, party_name, place_of_supply, channel, payment, salesman_user_id, salesman_name, place_id, place_name, price_list_id, buyer_po_no, buyer_po_date, notes, taxable, cgst, sgst, igst, round_off, total, status, credit_check, credit_exception_id, private_label_id, export_order_id, online_order_id, created_by, created_by_name, confirmed_by, confirmed_at, cancelled_at, cancel_reason, device_created_at, created_at, open_value, dispatches |
+| `api.sales_order_lines` | id, order_id, line_no, product_id, product_code, description, hsn_code, uom, qty, rate, discount, taxable, gst_rate, cgst, sgst, igst, total, qty_dispatched, qty_delivered, qty_invoiced, qty_to_dispatch |
+| `api.credit_customers` | company_id, party_id, party_name, gstin, kyc_status, customer_type, credit_status, credit_limit, credit_term_id, terms, credit_review_on, salesman_user_id, salesman_name, tier, beat, receivables, open_orders, exception, available, last_application |
+| `api.credit_applications` | id, company_id, doc_no, party_id, party_name, requested_limit, requested_term_id, requested_terms, expected_monthly, security, note, stage, status, decided_limit, decided_term_id, review_on, reject_reason, requested_by, requested_by_name, created_at |
+| `api.credit_approvals` | id, application_id, stage, decision, limit_amount, term_id, note, decided_by, decided_by_name, decided_at |
+| `api.credit_exceptions` | id, company_id, party_id, party_name, order_id, amount, valid_until, reason, requested_by, granted_by, granted_by_name, granted_at, revoked_at, active |
+| `api.promises_to_pay` | id, company_id, party_id, amount, promised_on, note, status, recorded_by, created_at |
+| `api.vehicles` | id, company_id, reg_no, kind, ownership, transporter, payload_kg, usual_driver_user_id, usual_driver_name, place_id, status, created_at, next_expiry, has_expired_papers |
+| `api.vehicle_documents` (latest per kind) | id, vehicle_id, kind, doc_no, valid_to, path, set_by, set_at, days_left |
+| `api.vehicle_events` | id, company_id, vehicle_id, kind, event_date, odometer_km, litres, amount, trip_id, paid_by, note, recorded_by, created_at |
+| `api.dispatches` | id, company_id, doc_no, order_id, order_no, party_id, party_name, place_id, place_name, scheduled_at, status, trip_id, trip_no, vehicle_id, vehicle_reg_no, document_id, invoice_no, eway_bill_no, value, dispatched_at, delivered_at, created_at, invoice_ready, eway_ready, pod_recorded |
+| `api.dispatch_lines` | id, dispatch_id, order_line_id, product_id, product_code, product_name, uom, qty, qty_delivered, qty_returned, short_reason, lots |
+| `api.trips` | id, company_id, doc_no, trip_date, vehicle_id, vehicle_reg_no, driver_user_id, driver_name, transporter, lr_no, status, odometer_start, odometer_end, started_at, closed_at, created_at, stops, stops_done |
+| `api.trip_stops` | id, trip_id, seq, dispatch_id, dispatch_no, party_id, party_name, status, arrived_at, done_at, fail_reason |
+| `api.pods` | id, company_id, stop_id, dispatch_id, received_by_name, receiver_phone_masked, signature_path, photo_paths, lat, lng, remarks, device_at, recorded_by, created_at |
+| `api.beats` | id, company_id, code, name, salesman_user_id, salesman_name, weekday, active, customers |
+| `api.beat_customers` | beat_id, party_id, party_name, seq |
+| `api.visits` | id, company_id, salesman_user_id, salesman_name, party_id, party_name, beat_id, planned, unplanned_reason, check_in_at, distance_m, geofence_ok, out_of_fence_reason, approval, approved_by, approved_at, check_out_at, check_out_distance_m, outcome, no_order_reason, shelf, competitor_notes, photo_paths, next_visit_on, created_at |
+| `api.gps_points` | id, company_id, user_id, user_name, session_id, at, lat, lng, accuracy_m, source |
+| `api.field_collections` | id, company_id, salesman_user_id, salesman_name, party_id, party_name, voucher_id, receipt_no, amount, mode, reference, cheque_photo_path, handover_id, visit_id, collected_at |
+| `api.cash_handovers` | id, company_id, salesman_user_id, salesman_name, cashier_user_id, cashier_name, handover_date, expected_cash, salesman_count, salesman_total, cashier_count, cashier_total, cheques, difference, status, to_account_id, contra_voucher_id, bug_item_id, resolved_by, resolution_note, created_at, confirmed_at |
+| `api.day_closes` | id, company_id, user_id, user_name, close_date, visits_planned, visits_done, orders_total, collections_total, handover_id, van_counts, closed_at |
+| `api.queries` | id, company_id, party_id, party_name, kind, document_id, document_no, lot_id, description, photo_paths, status, raised_by, raised_by_name, assigned_to, next_step, reply, complaint_id, created_at, updated_at, age_days |
+| `api.coverage_tiers` | company_id, tier, call_every_days, visit_every_days, grace_days, set_by, set_at |
+| `api.coverage_status` | company_id, party_id, party_name, tier, salesman_user_id, call_every_days, visit_every_days, grace_days, last_call, last_visit, call_due, visit_due, call_missed, visit_missed |
+| `api.contact_attempts` | id, company_id, party_id, kind, outcome, note, next_action, visit_id, by_user, by_name, at |
+| `api.complaints` | id, company_id, doc_no, party_id, party_name, document_id, document_no, product_id, product_name, lot_id, lot_no, kind, description, severity, status, logged_by, logged_by_name, assigned_to, qc_hold_id, hold_status, resolution, closed_by, closed_at, created_at |
+| `api.complaint_events` | id, complaint_id, from_status, to_status, note, by_user, by_name, at |
+| `api.qc_holds` | id, company_id, lot_id, lot_no, product_id, product_name, complaint_id, reason, status, qty_held, previous_lot_status, held_by, held_at, decided_by, decided_at, decision_note |
+| `api.private_label_orders` | id, company_id, party_id, party_name, brand_name, spec, artwork_path, status, created_by, sales_approved_by, quality_approved_by, md_approved_by, rejected_by, reject_reason, created_at |
+| `api.agents` | id, company_id, party_id, party_name, model, commission_pct, status, customers, commission_accrued |
+| `api.agent_commissions` | id, company_id, agent_id, voucher_id, receipt_no, document_id, invoice_no, collected, commission, period_from, period_to, created_at |
+| `api.shops` | id, company_id, branch_id, branch_name, gstin_id, gstin, place_id, place_name, walk_in_party_id, cash_account_id, bank_account_id, price_list_id, active |
+| `api.shop_days` | id, company_id, shop_id, day, expected_cash, counted, counted_cash, upi_total, card_total, bills, difference, status, bug_item_id, closed_by, closed_by_name, closed_at |
+| `api.export_orders` | id, company_id, doc_no, party_id, party_name, order_date, currency, fx_rate, incoterm, port_of_loading, destination, lut_ref, lut_valid_to, lines, status, created_at, containers |
+| `api.containers` | id, export_order_id, container_no, seal_no, packing_list, loaded, check_status, check_result, checked_by, checked_at, created_at |
+| `api.export_invoices` | document_id, doc_no, doc_date, total_inr, export_order_id, currency, fx_rate, value_fc, lut, shipping_bill_no, shipping_bill_date, port_code |
+| `api.online_channels` | id, company_id, code, gstin_id, party_id, place_id, tcs_applicable, status, listed, orders |
+| `api.listings` | id, channel_id, channel, company_id, product_id, product_code, product_name, title, price, status, blockers, published_by, published_at |
+| `api.online_orders` | id, company_id, channel_id, channel, external_order_id, order_date, ship_state, order_id, order_no, order_status, status, created_at |
+| `api.schedule3_lines` | code, statement, side, section, label, note_ref, sort |
+| `api.schedule3_map` | company_id, account_group_id, group_name, nature, line_code, line_label, set_by, set_at, ca_confirmed, ca_note, confirmed_at |
+| `api.msg_tasks` | id, company_id, kind, party_id, party_name, inbound_id, from_masked, message_kind, message_text, received_at, window_expires_at, priority, status, due_at, assigned_user_id, note, resolved_by, resolved_at, created_at |
+| `api.msg_cost_caps` | company_id, monthly_cap, alert_pct, set_at, spent_this_month |
+| `api.msg_message_rates` | id, category, est_cost, effective_from, set_at |
+| `api.msg_cost_by_month` | company_id, month, category, event, messages, delivered_or_sent, skipped, est_cost |
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.
@@ -327,6 +493,8 @@ Lots made by production (`inv.lots.source = 'production'`) are refused by `recor
 Phase 4: `stock.*` (insufficient, reserved, qty, bucket, place_missing, place_other_company, lot_mismatch, lot_not_released, same_place, target, issue_missing, return_exceeds, allowance_missing, allowance_revoked, direct_write), `count.*`, `qc.*`, `scrap.*`, `transfer.*`, `purchase.*`, `capture.*`, `msme.terms_over_45`, `sod.own_request`, `sod.own_order`, `sod.own_count`, `sod.tester_receiver`, `sod.releaser_receiver`, `sod.not_picker`, `sod.picker_carrier`, `sod.picker_receiver`, `sod.witness_required`, `sod.write_off`, `sod.picker_close`, `period.no_fy`.
 
 Phase 5: `licence.*` (missing, expired, no_number, dates), `prod.*` (no_approved_formula, bulk_by_weight, packaging_in_nos, pack_in_nos, packaging_whole, not_in_formula, no_bulk_qty, no_fill_weight, no_good_packs, not_issued, recon_decrease, **recon_mismatch**, components_short, qty, family_name, family_missing), `formula.*`, `batch.*` (missing, state, has_issues), `weighing.*` (missing, state, pending), `qc.out_of_spec`, `qc.no_test`, `qc.sample_state`, `qc.use_batch_release`, `qc.qty_mismatch`, `qc.not_inspection_lot`, `asset.*` (calibration_due, not_in_use, missing, …), `mould.*`, `shift.*`, `bom.*`, `pack.*` (incl. gst_treatment_unset), `print.*`, `rnd.*`, `work.*`, `cost.rate`, `check.empty`, **`sod.own_formula`**, **`sod.own_weighing`**, **`sod.self_release`**, **`sod.inspector_maker`**, `sod.own_approval`.
+
+Phase 6: `order.*` (channel, payment, product, no_rate, no_price_list, price_locked, discount_over_authority, kyc_cash_only, private_label_missing, private_label_pending, missing, state, not_confirmed), `credit.*` (over_limit, exception_until, exception_amount, application_open, limit_amount, missing, state, wrong_stage, decision, same_person, kyc_not_verified, review_date, terms_required, status, no_approval), `party.not_linked`, `vehicle.*` (missing, not_active, document_expired), `dispatch.*` (place, over_order, no_lines, document, document_short, state, already_invoiced, eway_format, no_invoice, eway_required, missing), `trip.*` (missing, state, dispatch, no_stops, stop_missing, open_stops), `pod.*` (already, receiver, proof, bad_path, qty, short_reason), `stock.lot_on_hold`, `gps.*` (off_duty, notice_required, outside_duty), `duty.already_on`, `visit.*` (open, unplanned_reason, no_location, out_of_fence, missing, not_pending, closed, outcome, no_order_reason), `field.*` (not_my_customer, bad_path, cheque_photo, reference, handover_pending, handover_missing, handover_state, unsynced, cash_not_handed_over), `query.*`, `promise.date`, `complaint.*` (lot, description, missing, closed, status, not_alone, hold_open), `qc.already_on_hold`, `qc.hold_missing`, `qc.hold_closed`, `qc.decision`, `lot.missing`, `coverage.tier`, `private_label.*`, `shop.*` (missing, no_customer, branch, place, day_closed), `export.*` (missing, not_overseas, fx_rate, container_no, container_missing, lut_expired), `listing.*` (channel, blocked), `online.unknown_item`, `schedule3.*` (group, line), `task.*` (missing, status, closed, finance_only), `msg.*` (inbound_missing, window_closed, not_consented, empty).
 
 ## Edge Functions
 

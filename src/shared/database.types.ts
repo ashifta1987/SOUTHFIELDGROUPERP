@@ -31,6 +31,22 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"agent_commissions": {
+                  Row: {
+                    "agent_id": string,"collected": number,"commission": number,"company_id": string,"created_at": string,"document_id": string,"id": number,"invoice_no": string | null,"period_from": string,"period_to": string,"receipt_no": string | null,"voucher_id": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"agents": {
+                  Row: {
+                    "commission_accrued": number | null,"commission_pct": number,"company_id": string,"customers": number | null,"id": string,"model": string,"party_id": string,"party_name": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"assembly_bom_lines": {
                   Row: {
                     "avg_cost": number | null,"bom_id": string,"company_id": string,"id": string,"note": string | null,"product_code": string,"product_id": string,"product_name": string,"qty_per": number,"uom": string
@@ -173,6 +189,22 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"beat_customers": {
+                  Row: {
+                    "beat_id": string,"party_id": string,"party_name": string | null,"seq": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"beats": {
+                  Row: {
+                    "active": boolean,"code": string,"company_id": string,"customers": number | null,"id": string,"name": string,"salesman_name": string | null,"salesman_user_id": string | null,"weekday": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"bill_captures": {
                   Row: {
                     "bill_doc_no": string | null,"bill_id": string | null,"bill_status": string | null,"company_id": string,"extracted": NonNullable<Json>,"grn_id": string | null,"grn_no": string | null,"id": string,"invoice_date": string | null,"invoice_no": string | null,"invoice_total": number | null,"match_result": Json | null,"matched_at": string | null,"order_id": string | null,"order_no": string | null,"party_gstin": string | null,"party_id": string | null,"party_name": string | null,"photo_path": string,"read_at": string | null,"reject_reason": string | null,"source": string,"status": string,"uploaded_at": string,"uploaded_by": string | null,"uploaded_by_name": string | null
@@ -213,6 +245,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"cash_handovers": {
+                  Row: {
+                    "bug_item_id": string | null,"cashier_count": Json | null,"cashier_name": string | null,"cashier_total": number | null,"cashier_user_id": string | null,"cheques": number,"company_id": string,"confirmed_at": string | null,"contra_voucher_id": string | null,"created_at": string,"difference": number | null,"expected_cash": number,"handover_date": string,"id": string,"resolution_note": string | null,"resolved_by": string | null,"salesman_count": NonNullable<Json>,"salesman_name": string | null,"salesman_total": number,"salesman_user_id": string,"status": string,"to_account_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"companies": {
                   Row: {
                     "branch_count": number | null,"cin": string | null,"code": string,"created_at": string,"gstin_count": number | null,"id": string,"logo_key": string | null,"name": string,"pan": string | null,"registered_address": string | null,"short_name": string,"status": string
@@ -225,6 +265,22 @@ export type Database = {
                            "branch_count"?: never,"cin"?: string | null,"code"?: string | null,"created_at"?: string | null,"gstin_count"?: never,"id"?: string | null,"logo_key"?: string | null,"name"?: string | null,"pan"?: string | null,"registered_address"?: string | null,"short_name"?: string | null,"status"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"complaint_events": {
+                  Row: {
+                    "at": string,"by_name": string | null,"by_user": string | null,"complaint_id": string,"from_status": string | null,"id": number,"note": string | null,"to_status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"complaints": {
+                  Row: {
+                    "assigned_to": string | null,"closed_at": string | null,"closed_by": string | null,"company_id": string,"created_at": string,"description": string,"doc_no": string,"document_id": string | null,"document_no": string | null,"hold_status": string | null,"id": string,"kind": string,"logged_by": string,"logged_by_name": string | null,"lot_id": string | null,"lot_no": string | null,"party_id": string,"party_name": string | null,"product_id": string | null,"product_name": string | null,"qc_hold_id": string | null,"resolution": string | null,"severity": string,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"component_costs": {
@@ -243,6 +299,28 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"contact_attempts": {
+                  Row: {
+                    "at": string,"by_name": string | null,"by_user": string | null,"company_id": string,"id": number,"kind": string,"next_action": string | null,"note": string | null,"outcome": string,"party_id": string,"visit_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"containers": {
+                  Row: {
+                    "check_result": Json | null,"check_status": string,"checked_at": string | null,"checked_by": string | null,"container_no": string,"created_at": string,"export_order_id": string,"id": string,"loaded": Json | null,"packing_list": NonNullable<Json>,"seal_no": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "check_result"?: Json | null,"check_status"?: string | null,"checked_at"?: string | null,"checked_by"?: string | null,"container_no"?: string | null,"created_at"?: string | null,"export_order_id"?: string | null,"id"?: string | null,"loaded"?: Json | null,"packing_list"?: Json | null,"seal_no"?: string | null
+                         }
+                        Update: {
+                           "check_result"?: Json | null,"check_status"?: string | null,"checked_at"?: string | null,"checked_by"?: string | null,"container_no"?: string | null,"created_at"?: string | null,"export_order_id"?: string | null,"id"?: string | null,"loaded"?: Json | null,"packing_list"?: Json | null,"seal_no"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"cost_rates": {
                   Row: {
                     "company_id": string,"effective_from": string,"id": string,"kind": string,"note": string | null,"rate": number,"set_at": string,"set_by": string | null
@@ -255,6 +333,60 @@ export type Database = {
                            "company_id"?: string | null,"effective_from"?: string | null,"id"?: string | null,"kind"?: string | null,"note"?: string | null,"rate"?: number | null,"set_at"?: string | null,"set_by"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"coverage_status": {
+                  Row: {
+                    "call_due": boolean | null,"call_every_days": number | null,"call_missed": boolean | null,"company_id": string,"grace_days": number,"last_call": string | null,"last_visit": string | null,"party_id": string,"party_name": string,"salesman_user_id": string | null,"tier": string | null,"visit_due": boolean | null,"visit_every_days": number | null,"visit_missed": boolean | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"coverage_tiers": {
+                  Row: {
+                    "call_every_days": number | null,"company_id": string,"grace_days": number,"set_at": string,"set_by": string | null,"tier": string,"visit_every_days": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "call_every_days"?: number | null,"company_id"?: string | null,"grace_days"?: number | null,"set_at"?: string | null,"set_by"?: string | null,"tier"?: string | null,"visit_every_days"?: number | null
+                         }
+                        Update: {
+                           "call_every_days"?: number | null,"company_id"?: string | null,"grace_days"?: number | null,"set_at"?: string | null,"set_by"?: string | null,"tier"?: string | null,"visit_every_days"?: number | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"credit_applications": {
+                  Row: {
+                    "company_id": string,"created_at": string,"decided_limit": number | null,"decided_term_id": string | null,"doc_no": string,"expected_monthly": number | null,"id": string,"note": string | null,"party_id": string,"party_name": string | null,"reject_reason": string | null,"requested_by": string,"requested_by_name": string | null,"requested_limit": number,"requested_term_id": string | null,"requested_terms": string | null,"review_on": string | null,"security": string | null,"stage": number,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"credit_approvals": {
+                  Row: {
+                    "application_id": string,"decided_at": string,"decided_by": string,"decided_by_name": string | null,"decision": string,"id": number,"limit_amount": number | null,"note": string | null,"stage": number,"term_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"credit_customers": {
+                  Row: {
+                    "available": number | null,"beat": string | null,"company_id": string,"credit_limit": number | null,"credit_review_on": string | null,"credit_status": string,"credit_term_id": string | null,"customer_type": string | null,"exception": number | null,"gstin": string | null,"kyc_status": string,"last_application": string | null,"open_orders": number | null,"party_id": string,"party_name": string,"receivables": number | null,"salesman_name": string | null,"salesman_user_id": string | null,"terms": string | null,"tier": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"credit_exceptions": {
+                  Row: {
+                    "active": boolean | null,"amount": number,"company_id": string,"granted_at": string,"granted_by": string,"granted_by_name": string | null,"id": string,"order_id": string | null,"party_id": string,"party_name": string | null,"reason": string,"requested_by": string | null,"revoked_at": string | null,"valid_until": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"credit_terms": {
@@ -279,6 +411,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"day_closes": {
+                  Row: {
+                    "close_date": string,"closed_at": string,"collections_total": number,"company_id": string,"handover_id": string | null,"id": string,"orders_total": number,"user_id": string,"user_name": string | null,"van_counts": Json | null,"visits_done": number,"visits_planned": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"departments": {
                   Row: {
                     "company_id": string | null,"id": string,"name": string,"status": string
@@ -291,6 +431,22 @@ export type Database = {
                            "company_id"?: string | null,"id"?: string | null,"name"?: string | null,"status"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"dispatch_lines": {
+                  Row: {
+                    "dispatch_id": string,"id": string,"lots": NonNullable<Json>,"order_line_id": string,"product_code": string | null,"product_id": string,"product_name": string | null,"qty": number,"qty_delivered": number,"qty_returned": number,"short_reason": string | null,"uom": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"dispatches": {
+                  Row: {
+                    "company_id": string,"created_at": string,"delivered_at": string | null,"dispatched_at": string | null,"doc_no": string,"document_id": string | null,"eway_bill_no": string | null,"eway_ready": boolean | null,"id": string,"invoice_no": string | null,"invoice_ready": boolean | null,"order_id": string,"order_no": string | null,"party_id": string,"party_name": string | null,"place_id": string,"place_name": string | null,"pod_recorded": boolean | null,"scheduled_at": string | null,"status": string,"trip_id": string | null,"trip_no": string | null,"value": number,"vehicle_id": string | null,"vehicle_reg_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"doc_series": {
@@ -337,9 +493,33 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"export_invoices": {
+                  Row: {
+                    "currency": string,"doc_date": string,"doc_no": string | null,"document_id": string,"export_order_id": string,"fx_rate": number,"lut": boolean,"port_code": string | null,"shipping_bill_date": string | null,"shipping_bill_no": string | null,"total_inr": number,"value_fc": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"export_orders": {
+                  Row: {
+                    "company_id": string,"containers": number | null,"created_at": string,"currency": string,"destination": string | null,"doc_no": string,"fx_rate": number,"id": string,"incoterm": string | null,"lines": NonNullable<Json>,"lut_ref": string | null,"lut_valid_to": string | null,"order_date": string,"party_id": string,"party_name": string | null,"port_of_loading": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"factory_workload": {
                   Row: {
                     "batches": number | null,"company_id": string,"duties": number | null,"duty_list": (string)[] | null,"hours": number | null,"shift": string,"user_id": string,"user_name": string | null,"work_date": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"field_collections": {
+                  Row: {
+                    "amount": number,"cheque_photo_path": string | null,"collected_at": string,"company_id": string,"handover_id": string | null,"id": string,"mode": string,"party_id": string,"party_name": string | null,"receipt_no": string | null,"reference": string | null,"salesman_name": string | null,"salesman_user_id": string,"visit_id": string | null,"voucher_id": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -414,6 +594,14 @@ export type Database = {
                 },"goods_receipts": {
                   Row: {
                     "approved_by": string | null,"bill_id": string | null,"company_id": string,"created_at": string,"direct_purchase": boolean,"doc_no": string,"eway_bill_no": string | null,"id": string,"lines": number | null,"lines_in_quarantine": number | null,"notes": string | null,"order_id": string | null,"order_no": string | null,"party_id": string,"party_name": string,"place_id": string,"place_name": string,"receipt_date": string,"received_by": string,"received_by_name": string | null,"status": string,"supplier_invoice_date": string | null,"supplier_invoice_no": string | null,"vehicle_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"gps_points": {
+                  Row: {
+                    "accuracy_m": number | null,"at": string,"company_id": string,"id": number,"lat": number,"lng": number,"session_id": string,"source": string,"user_id": string,"user_name": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -553,6 +741,14 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"listings": {
+                  Row: {
+                    "blockers": (string)[],"channel": string,"channel_id": string,"company_id": string,"id": string,"price": number | null,"product_code": string | null,"product_id": string,"product_name": string | null,"published_at": string | null,"published_by": string | null,"status": string,"title": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"lots": {
                   Row: {
                     "company_id": string,"days_to_expiry": number | null,"expiry_date": string | null,"grn_id": string | null,"grn_no": string | null,"id": string,"last_test_result": string | null,"lot_no": string,"mfg_date": string | null,"needs_test": boolean,"product_code": string,"product_id": string,"product_name": string,"qty_on_hand": number | null,"qty_quarantine": number | null,"received_at": string,"received_by": string | null,"received_by_name": string | null,"released_at": string | null,"released_by": string | null,"released_by_name": string | null,"source": string,"status": string,"supplier_id": string | null,"supplier_lot_no": string | null,"supplier_name": string | null,"uom": string
@@ -667,6 +863,28 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"msg_cost_by_month": {
+                  Row: {
+                    "category": string,"company_id": string,"delivered_or_sent": number | null,"est_cost": number | null,"event": string,"messages": number | null,"month": string | null,"skipped": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"msg_cost_caps": {
+                  Row: {
+                    "alert_pct": number,"company_id": string,"monthly_cap": number,"set_at": string,"spent_this_month": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "alert_pct"?: number | null,"company_id"?: string | null,"monthly_cap"?: number | null,"set_at"?: string | null,"spent_this_month"?: never
+                         }
+                        Update: {
+                           "alert_pct"?: number | null,"company_id"?: string | null,"monthly_cap"?: number | null,"set_at"?: string | null,"spent_this_month"?: never
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"msg_inbound": {
                   Row: {
                     "body": string | null,"company_id": string | null,"from_masked": string | null,"handled_at": string | null,"id": string,"kind": string,"party_id": string | null,"party_name": string | null,"received_at": string,"window_expires_at": string | null
@@ -675,9 +893,31 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"msg_message_rates": {
+                  Row: {
+                    "category": string,"effective_from": string,"est_cost": number,"id": string,"set_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "category"?: string | null,"effective_from"?: string | null,"est_cost"?: number | null,"id"?: string | null,"set_at"?: string | null
+                         }
+                        Update: {
+                           "category"?: string | null,"effective_from"?: string | null,"est_cost"?: number | null,"id"?: string | null,"set_at"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"msg_outbox": {
                   Row: {
                     "attempts": number,"category": string,"company_id": string,"created_at": string,"doc_id": string | null,"doc_type": string | null,"est_cost": number | null,"event": string,"id": string,"language": string,"last_error": string | null,"party_id": string | null,"party_name": string | null,"send_after": string,"skip_reason": string | null,"status": string,"template_name": string,"to_masked": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"msg_tasks": {
+                  Row: {
+                    "assigned_user_id": string | null,"company_id": string | null,"created_at": string,"due_at": string | null,"from_masked": string | null,"id": string,"inbound_id": string | null,"kind": string,"message_kind": string | null,"message_text": string | null,"note": string | null,"party_id": string | null,"party_name": string | null,"priority": string,"received_at": string | null,"resolved_at": string | null,"resolved_by": string | null,"status": string,"window_expires_at": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -716,6 +956,28 @@ export type Database = {
                 },"negative_stock_allowances": {
                   Row: {
                     "active": boolean | null,"company_id": string,"granted_at": string,"granted_by": string,"granted_by_name": string | null,"id": string,"place_id": string | null,"place_name": string | null,"product_code": string,"product_id": string,"product_name": string,"reason": string,"revoke_reason": string | null,"revoked_at": string | null,"uses": number | null,"valid_from": string,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"online_channels": {
+                  Row: {
+                    "code": string,"company_id": string,"gstin_id": string,"id": string,"listed": number | null,"orders": number | null,"party_id": string,"place_id": string | null,"status": string,"tcs_applicable": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "code"?: string | null,"company_id"?: string | null,"gstin_id"?: string | null,"id"?: string | null,"listed"?: never,"orders"?: never,"party_id"?: string | null,"place_id"?: string | null,"status"?: string | null,"tcs_applicable"?: boolean | null
+                         }
+                        Update: {
+                           "code"?: string | null,"company_id"?: string | null,"gstin_id"?: string | null,"id"?: string | null,"listed"?: never,"orders"?: never,"party_id"?: string | null,"place_id"?: string | null,"status"?: string | null,"tcs_applicable"?: boolean | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"online_orders": {
+                  Row: {
+                    "channel": string,"channel_id": string,"company_id": string,"created_at": string,"external_order_id": string,"id": string,"order_date": string,"order_id": string | null,"order_no": string | null,"order_status": string | null,"ship_state": string,"status": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -891,6 +1153,20 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"pods": {
+                  Row: {
+                    "company_id": string,"created_at": string,"device_at": string | null,"dispatch_id": string,"id": string,"lat": number | null,"lng": number | null,"photo_paths": (string)[],"received_by_name": string,"receiver_phone_masked": string | null,"recorded_by": string | null,"remarks": string | null,"signature_path": string | null,"stop_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"created_at"?: string | null,"device_at"?: string | null,"dispatch_id"?: string | null,"id"?: string | null,"lat"?: number | null,"lng"?: number | null,"photo_paths"?: (string)[] | null,"received_by_name"?: string | null,"receiver_phone_masked"?: never,"recorded_by"?: string | null,"remarks"?: string | null,"signature_path"?: string | null,"stop_id"?: string | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"created_at"?: string | null,"device_at"?: string | null,"dispatch_id"?: string | null,"id"?: string | null,"lat"?: number | null,"lng"?: number | null,"photo_paths"?: (string)[] | null,"received_by_name"?: string | null,"receiver_phone_masked"?: never,"recorded_by"?: string | null,"remarks"?: string | null,"signature_path"?: string | null,"stop_id"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"posting_rules": {
                   Row: {
                     "account_id": string,"account_name": string,"company_id": string,"event": string,"id": string,"note": string | null
@@ -935,6 +1211,14 @@ export type Database = {
                            "active"?: boolean | null,"company_id"?: string | null,"id"?: string | null,"item_count"?: never,"kind"?: string | null,"name"?: string | null,"tax_inclusive"?: boolean | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"private_label_orders": {
+                  Row: {
+                    "artwork_path": string | null,"brand_name": string,"company_id": string,"created_at": string,"created_by": string,"id": string,"md_approved_by": string | null,"party_id": string,"party_name": string | null,"quality_approved_by": string | null,"reject_reason": string | null,"rejected_by": string | null,"sales_approved_by": string | null,"spec": NonNullable<Json>,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"problem_reports": {
@@ -995,6 +1279,20 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"promises_to_pay": {
+                  Row: {
+                    "amount": number,"company_id": string,"created_at": string,"id": string,"note": string | null,"party_id": string,"promised_on": string,"recorded_by": string | null,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "amount"?: number | null,"company_id"?: string | null,"created_at"?: string | null,"id"?: string | null,"note"?: string | null,"party_id"?: string | null,"promised_on"?: string | null,"recorded_by"?: string | null,"status"?: string | null
+                         }
+                        Update: {
+                           "amount"?: number | null,"company_id"?: string | null,"created_at"?: string | null,"id"?: string | null,"note"?: string | null,"party_id"?: string | null,"promised_on"?: string | null,"recorded_by"?: string | null,"status"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"purchase_bill_lines": {
                   Row: {
                     "account_id": string | null,"bill_id": string,"cgst": number,"description": string,"discount": number,"gst_rate": number,"hsn_code": string | null,"id": string,"igst": number,"line_no": number,"product_id": string | null,"qty": number,"rate": number,"sgst": number,"taxable": number,"total": number,"uom": string
@@ -1049,9 +1347,25 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"qc_holds": {
+                  Row: {
+                    "company_id": string,"complaint_id": string | null,"decided_at": string | null,"decided_by": string | null,"decision_note": string | null,"held_at": string,"held_by": string,"id": string,"lot_id": string,"lot_no": string | null,"previous_lot_status": string,"product_id": string | null,"product_name": string | null,"qty_held": number,"reason": string,"status": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"quality_inspections": {
                   Row: {
                     "accepted_qty": number,"assembly_order_id": string | null,"company_id": string,"created_at": string,"defects": NonNullable<Json>,"id": string,"inspected_by": string,"inspected_by_name": string | null,"inspection_date": string,"kind": string,"lot_id": string,"lot_no": string,"product_code": string,"product_id": string,"product_name": string,"rejected_qty": number,"remarks": string | null,"result": string,"sample_qty": number | null,"shift_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"queries": {
+                  Row: {
+                    "age_days": number | null,"assigned_to": string | null,"company_id": string,"complaint_id": string | null,"created_at": string,"description": string,"document_id": string | null,"document_no": string | null,"id": string,"kind": string,"lot_id": string | null,"next_step": string | null,"party_id": string,"party_name": string | null,"photo_paths": (string)[],"raised_by": string | null,"raised_by_name": string | null,"reply": string | null,"status": string,"updated_at": string
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1179,6 +1493,44 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"sales_order_lines": {
+                  Row: {
+                    "cgst": number,"description": string,"discount": number,"gst_rate": number,"hsn_code": string | null,"id": string,"igst": number,"line_no": number,"order_id": string,"product_code": string | null,"product_id": string,"qty": number,"qty_delivered": number,"qty_dispatched": number,"qty_invoiced": number,"qty_to_dispatch": number | null,"rate": number,"sgst": number,"taxable": number,"total": number,"uom": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"sales_orders": {
+                  Row: {
+                    "buyer_po_date": string | null,"buyer_po_no": string | null,"cancel_reason": string | null,"cancelled_at": string | null,"cgst": number,"channel": string,"company_id": string,"company_name": string,"confirmed_at": string | null,"confirmed_by": string | null,"created_at": string,"created_by": string | null,"created_by_name": string | null,"credit_check": Json | null,"credit_exception_id": string | null,"delivery_date": string | null,"device_created_at": string | null,"dispatches": number | null,"doc_no": string | null,"export_order_id": string | null,"gstin_id": string,"id": string,"igst": number,"notes": string | null,"online_order_id": string | null,"open_value": number | null,"order_date": string,"party_id": string,"party_name": string | null,"payment": string,"place_id": string | null,"place_name": string | null,"place_of_supply": string,"price_list_id": string | null,"private_label_id": string | null,"round_off": number,"salesman_name": string | null,"salesman_user_id": string | null,"sgst": number,"status": string,"taxable": number,"total": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"schedule3_lines": {
+                  Row: {
+                    "code": string,"label": string,"note_ref": string | null,"section": string,"side": string | null,"sort": number,"statement": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "code"?: string | null,"label"?: string | null,"note_ref"?: string | null,"section"?: string | null,"side"?: string | null,"sort"?: number | null,"statement"?: string | null
+                         }
+                        Update: {
+                           "code"?: string | null,"label"?: string | null,"note_ref"?: string | null,"section"?: string | null,"side"?: string | null,"sort"?: number | null,"statement"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"schedule3_map": {
+                  Row: {
+                    "account_group_id": string,"ca_confirmed": boolean | null,"ca_note": string | null,"company_id": string,"confirmed_at": string | null,"group_name": string,"line_code": string | null,"line_label": string | null,"nature": string,"set_at": string | null,"set_by": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"scrap_sales": {
                   Row: {
                     "buyer_id": string | null,"buyer_name": string | null,"company_id": string,"created_at": string,"doc_date": string,"id": string,"invoice_no": string | null,"place_id": string,"place_name": string,"qty": number,"rate_per_unit": number | null,"sales_document_id": string,"slip_path": string | null,"sold_by": string | null,"taxable": number,"total": number
@@ -1245,6 +1597,22 @@ export type Database = {
                            "company_id"?: string | null,"id"?: string | null,"qty"?: number | null,"reason"?: string | null,"shift_id"?: string | null
                          }
                         Relationships: [
+                    
+                  ]
+                },"shop_days": {
+                  Row: {
+                    "bills": number,"bug_item_id": string | null,"card_total": number,"closed_at": string,"closed_by": string | null,"closed_by_name": string | null,"company_id": string,"counted": NonNullable<Json>,"counted_cash": number,"day": string,"difference": number,"expected_cash": number,"id": string,"shop_id": string,"status": string,"upi_total": number
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"shops": {
+                  Row: {
+                    "active": boolean,"bank_account_id": string | null,"branch_id": string,"branch_name": string,"cash_account_id": string | null,"company_id": string,"gstin": string | null,"gstin_id": string | null,"id": string,"place_id": string,"place_name": string | null,"price_list_id": string | null,"walk_in_party_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
                     
                   ]
                 },"source_key_counts": {
@@ -1421,6 +1789,22 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"trip_stops": {
+                  Row: {
+                    "arrived_at": string | null,"dispatch_id": string,"dispatch_no": string | null,"done_at": string | null,"fail_reason": string | null,"id": string,"party_id": string | null,"party_name": string | null,"seq": number,"status": string,"trip_id": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"trips": {
+                  Row: {
+                    "closed_at": string | null,"company_id": string,"created_at": string,"doc_no": string,"driver_name": string | null,"driver_user_id": string | null,"id": string,"lr_no": string | null,"odometer_end": number | null,"odometer_start": number | null,"started_at": string | null,"status": string,"stops": number | null,"stops_done": number | null,"transporter": string | null,"trip_date": string,"vehicle_id": string | null,"vehicle_reg_no": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"uoms": {
                   Row: {
                     "code": string,"decimals": number,"label": string
@@ -1438,6 +1822,44 @@ export type Database = {
                 },"user_log": {
                   Row: {
                     "at": string,"detail": NonNullable<Json>,"event": string,"grant_code": string | null,"grant_id": string | null,"id": number,"user_id": string | null,"user_name": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"vehicle_documents": {
+                  Row: {
+                    "days_left": number | null,"doc_no": string | null,"id": string,"kind": string,"path": string | null,"set_at": string,"set_by": string | null,"valid_to": string | null,"vehicle_id": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"vehicle_events": {
+                  Row: {
+                    "amount": number | null,"company_id": string,"created_at": string,"event_date": string,"id": number,"kind": string,"litres": number | null,"note": string | null,"odometer_km": number | null,"paid_by": string | null,"recorded_by": string | null,"trip_id": string | null,"vehicle_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "amount"?: number | null,"company_id"?: string | null,"created_at"?: string | null,"event_date"?: string | null,"id"?: number | null,"kind"?: string | null,"litres"?: number | null,"note"?: string | null,"odometer_km"?: number | null,"paid_by"?: string | null,"recorded_by"?: string | null,"trip_id"?: string | null,"vehicle_id"?: string | null
+                         }
+                        Update: {
+                           "amount"?: number | null,"company_id"?: string | null,"created_at"?: string | null,"event_date"?: string | null,"id"?: number | null,"kind"?: string | null,"litres"?: number | null,"note"?: string | null,"odometer_km"?: number | null,"paid_by"?: string | null,"recorded_by"?: string | null,"trip_id"?: string | null,"vehicle_id"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"vehicles": {
+                  Row: {
+                    "company_id": string,"created_at": string,"has_expired_papers": boolean | null,"id": string,"kind": string,"next_expiry": string | null,"ownership": string,"payload_kg": number | null,"place_id": string | null,"reg_no": string,"status": string,"transporter": string | null,"usual_driver_name": string | null,"usual_driver_user_id": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"visits": {
+                  Row: {
+                    "approval": string,"approved_at": string | null,"approved_by": string | null,"beat_id": string | null,"check_in_at": string,"check_out_at": string | null,"check_out_distance_m": number | null,"company_id": string,"competitor_notes": string | null,"created_at": string,"distance_m": number | null,"geofence_ok": boolean,"id": string,"next_visit_on": string | null,"no_order_reason": string | null,"out_of_fence_reason": string | null,"outcome": string | null,"party_id": string,"party_name": string | null,"photo_paths": (string)[],"planned": boolean,"salesman_name": string | null,"salesman_user_id": string,"shelf": Json | null,"unplanned_reason": string | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1467,8 +1889,14 @@ export type Database = {
               "balance": number,"cr": number,"doc_no": string,"dr": number,"entry_date": string,"narration": string,"voucher_id": string,"voucher_type": string
             }[]
                            },
+"accrue_agent_commissions":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_from": string,"p_to": string }; Returns: Json
+                           },
 "add_asset_document":
 { Args: { "p": Json,"p_asset_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"add_container":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "add_hsn_rate":
 { Args: { "p_ca_confirmed": boolean,"p_cess": number,"p_client_request_id": string,"p_effective_from": string,"p_hsn": string,"p_note": string,"p_rate": number,"p_tax_class": string }; Returns: Json
@@ -1491,14 +1919,26 @@ export type Database = {
 "answer_problem_report":
 { Args: { "p_client_request_id": string,"p_id": string,"p_reply": string,"p_status": string }; Returns: Json
                            },
+"answer_query":
+{ Args: { "p": Json,"p_client_request_id": string,"p_query_id": string }; Returns: Json
+                           },
 "approve_assembly_bom":
 { Args: { "p_bom_id": string,"p_client_request_id": string }; Returns: Json
+                           },
+"approve_credit_stage":
+{ Args: { "p": Json,"p_application_id": string,"p_client_request_id": string,"p_decision": string,"p_stage": number }; Returns: Json
                            },
 "approve_formula_version":
 { Args: { "p_client_request_id": string,"p_effective_from"?: string,"p_version_id": string }; Returns: Json
                            },
+"approve_out_of_geofence":
+{ Args: { "p_approve": boolean,"p_client_request_id": string,"p_note": string,"p_visit_id": string }; Returns: Json
+                           },
 "approve_payroll":
 { Args: { "p_client_request_id": string,"p_run_id": string }; Returns: Json
+                           },
+"approve_private_label":
+{ Args: { "p_approve": boolean,"p_client_request_id": string,"p_id": string,"p_note": string,"p_stage": string }; Returns: Json
                            },
 "approve_purchase_request":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_note"?: string,"p_request_id": string }; Returns: Json
@@ -1509,8 +1949,14 @@ export type Database = {
 "assign_role":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_reason": string,"p_role": string,"p_user_id": string,"p_valid_to": string }; Returns: Json
                            },
+"assign_salesman":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_user_id": string }; Returns: Json
+                           },
 "assign_shift_duties":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"assign_to_trip":
+{ Args: { "p_client_request_id": string,"p_dispatch_ids": Json,"p_trip_id": string }; Returns: Json
                            },
 "bank_match_candidates":
 { Args: { "p_line_id": string }; Returns: {
@@ -1538,6 +1984,9 @@ export type Database = {
 "cancel_sales_document":
 { Args: { "p_client_request_id": string,"p_document_id": string,"p_reason": string }; Returns: Json
                            },
+"cancel_sales_order":
+{ Args: { "p_client_request_id": string,"p_order_id": string,"p_reason": string }; Returns: Json
+                           },
 "cancel_stock_count":
 { Args: { "p_client_request_id": string,"p_count_id": string,"p_reason": string }; Returns: Json
                            },
@@ -1553,8 +2002,23 @@ export type Database = {
 "cash_flow_summary":
 { Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: Json
                            },
+"cash_handover":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"check_credit_exposure":
+{ Args: { "p_company_id": string,"p_extra": number,"p_party_id": string }; Returns: Json
+                           },
 "check_gstin":
 { Args: { "p_gstin": string }; Returns: Json
+                           },
+"check_in_visit":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"check_out_visit":
+{ Args: { "p": Json,"p_client_request_id": string,"p_visit_id": string }; Returns: Json
+                           },
+"check_packing_list":
+{ Args: { "p_client_request_id": string,"p_container_id": string,"p_loaded": Json }; Returns: Json
                            },
 "classify_open_bills":
 { Args: { "p_bill_ids": (string)[],"p_client_request_id": string,"p_tax_class": string }; Returns: Json
@@ -1562,13 +2026,39 @@ export type Database = {
 "close_batch":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"close_complaint":
+{ Args: { "p_client_request_id": string,"p_complaint_id": string,"p_resolution": string }; Returns: Json
+                           },
 "close_transfer":
 { Args: { "p_client_request_id": string,"p_transfer_id": string }; Returns: Json
+                           },
+"close_trip":
+{ Args: { "p": Json,"p_client_request_id": string,"p_trip_id": string }; Returns: Json
+                           },
+"company_people":
+{ Args: { "p_company_id": string }; Returns: {
+              "display_name": string,"role_keys": (string)[],"user_id": string
+            }[]
+                           },
+"confirm_cash_handover":
+{ Args: { "p": Json,"p_client_request_id": string,"p_handover_id": string }; Returns: Json
                            },
 "confirm_purchase_order":
 { Args: { "p_client_request_id": string,"p_note"?: string,"p_order_id": string }; Returns: Json
                            },
+"confirm_sales_order":
+{ Args: { "p_client_request_id": string,"p_header": Json,"p_lines": Json }; Returns: Json
+                           },
+"confirm_schedule3_map":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_note": string }; Returns: Json
+                           },
 "create_bill_capture":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"create_dispatch":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"create_export_order":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "create_problem_report":
@@ -1580,6 +2070,9 @@ export type Database = {
 "create_rfq":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"create_trip":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "decide_bank_change":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_request_id": string }; Returns: Json
                            },
@@ -1589,20 +2082,50 @@ export type Database = {
 "decide_staff_request":
 { Args: { "p_approve": boolean,"p_client_request_id": string,"p_note": string,"p_request_id": string }; Returns: Json
                            },
+"end_salesman_day":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "explain_error":
 { Args: { "p_ref": string }; Returns: Json
                            },
+"field_collect":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "give_staff_cash":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"grant_md_exception":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "grant_special_permission":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_ends_at": string,"p_max_uses": number,"p_params": Json,"p_reason": string,"p_right": string,"p_starts_at": string,"p_user_id": string }; Returns: Json
                            },
+"gstr1_summary":
+{ Args: { "p_company_id": string,"p_from": string,"p_gstin_id": string,"p_to": string }; Returns: Json
+                           },
+"gstr3b_summary":
+{ Args: { "p_company_id": string,"p_from": string,"p_gstin_id": string,"p_to": string }; Returns: Json
+                           },
 "hand_over_transfer":
 { Args: { "p"?: Json,"p_client_request_id": string,"p_role": string,"p_transfer_id": string }; Returns: Json
                            },
+"help_check_my_rights":
+{ Args: { "p_company_id": string,"p_right": string }; Returns: Json
+                           },
+"help_get_document_status":
+{ Args: { "p_doc_no": string }; Returns: Json
+                           },
+"help_get_stock":
+{ Args: { "p_company_id": string,"p_query": string }; Returns: Json
+                           },
+"help_my_requests":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "help_page":
 { Args: { "p_language": string,"p_slug": string }; Returns: Json
+                           },
+"help_request_permission":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_hours": number,"p_reason": string,"p_right": string }; Returns: Json
                            },
 "home_summary":
 { Args: Record<PropertyKey, never>; Returns: Json
@@ -1630,6 +2153,12 @@ export type Database = {
 "import_undo":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
                            },
+"ingest_online_order":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"invoice_dispatch":
+{ Args: { "p": Json,"p_client_request_id": string,"p_dispatch_id": string }; Returns: Json
+                           },
 "issue_batch_packaging":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_lines": Json }; Returns: Json
                            },
@@ -1639,6 +2168,14 @@ export type Database = {
 "issue_stock":
 { Args: { "p_client_request_id": string,"p_from_place": string,"p_item_id": string,"p_lot_id": string,"p_qty": number,"p_target": Json }; Returns: Json
                            },
+"itc_register":
+{ Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: {
+              "bill_date": string,"bill_id": string,"cgst": number,"gstin_id": string,"igst": number,"itc": number,"itc_eligible": boolean,"match_status": string,"reverse_charge": boolean,"sgst": number,"supplier": string,"supplier_bill_date": string,"supplier_bill_no": string,"supplier_gstin": string,"taxable": number
+            }[]
+                           },
+"link_dispatch_document":
+{ Args: { "p_client_request_id": string,"p_dispatch_id": string,"p_document_id": string }; Returns: Json
+                           },
 "link_person_user":
 { Args: { "p_client_request_id": string,"p_person_id": string,"p_user_id": string }; Returns: Json
                            },
@@ -1647,8 +2184,17 @@ export type Database = {
               "active_grants": number,"display_name": string,"language": string,"last_sign_in_at": string,"person_code": string,"roles": Json,"sign_in_email": string,"sign_in_phone": string,"status": string,"user_id": string
             }[]
                            },
+"log_call":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"log_complaint":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "log_error":
 { Args: { "p_message": string,"p_payload_summary": Json,"p_route": string,"p_rpc": string,"p_rule_code": string }; Returns: string
+                           },
+"log_query":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "log_sign_in_failure":
 { Args: { "p_identifier": string }; Returns: undefined
@@ -1658,6 +2204,9 @@ export type Database = {
                            },
 "mark_attendance":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_date": string,"p_entries": Json }; Returns: Json
+                           },
+"mark_stop_arrived":
+{ Args: { "p_client_request_id": string,"p_stop_id": string }; Returns: Json
                            },
 "match_bank_line":
 { Args: { "p_client_request_id": string,"p_ignore": boolean,"p_line_id": string,"p_voucher_id": string }; Returns: Json
@@ -1677,6 +2226,18 @@ export type Database = {
 "move_mould":
 { Args: { "p": Json,"p_client_request_id": string,"p_mould_id": string }; Returns: Json
                            },
+"my_customers":
+{ Args: { "p_company_id": string }; Returns: Json
+                           },
+"my_day":
+{ Args: { "p_company_id": string,"p_date": string }; Returns: Json
+                           },
+"my_route_today":
+{ Args: { "p_company_id": string,"p_date": string }; Returns: Json
+                           },
+"my_trip":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "open_financial_year":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_start_year": number }; Returns: Json
                            },
@@ -1692,7 +2253,13 @@ export type Database = {
 "plan_batch":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"plan_beat":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "post_assembly":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"post_export_invoice":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "post_goods_receipt":
@@ -1731,11 +2298,23 @@ export type Database = {
 "preview_tax":
 { Args: { "p_date": string,"p_gstin_id": string,"p_lines": Json,"p_party_id": string,"p_place_of_supply": string,"p_without_gst": boolean }; Returns: Json
                            },
+"publish_listing":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"purge_gps":
+{ Args: { "p_client_request_id": string }; Returns: Json
+                           },
+"qc_hold_batch":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "qc_reject_batch":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
                            },
 "qc_release_batch":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_note"?: string }; Returns: Json
+                           },
+"qc_release_hold":
+{ Args: { "p_client_request_id": string,"p_decision": string,"p_hold_id": string,"p_note": string }; Returns: Json
                            },
 "receive_transfer":
 { Args: { "p_blind_counts": Json,"p_client_request_id": string,"p_transfer_id": string,"p_witness_id"?: string }; Returns: Json
@@ -1758,6 +2337,12 @@ export type Database = {
 "record_calibration":
 { Args: { "p": Json,"p_asset_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"record_failed_delivery":
+{ Args: { "p_client_request_id": string,"p_reason": string,"p_stop_id": string }; Returns: Json
+                           },
+"record_inbound":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "record_incoming_test":
 { Args: { "p_client_request_id": string,"p_lot_id": string,"p_result": Json }; Returns: Json
                            },
@@ -1766,6 +2351,9 @@ export type Database = {
                            },
 "record_lab_result":
 { Args: { "p": Json,"p_client_request_id": string,"p_sample_id": string }; Returns: Json
+                           },
+"record_locations":
+{ Args: { "p_client_request_id": string,"p_points": Json }; Returns: Json
                            },
 "record_machine_check":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -1777,6 +2365,12 @@ export type Database = {
 { Args: { "p": Json,"p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
 "record_pad_print_job":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"record_pod":
+{ Args: { "p": Json,"p_client_request_id": string,"p_stop_id": string }; Returns: Json
+                           },
+"record_promise_to_pay":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "record_quality_inspection":
@@ -1794,6 +2388,9 @@ export type Database = {
 "record_stock_count":
 { Args: { "p_client_request_id": string,"p_count_id": string,"p_lines": Json }; Returns: Json
                            },
+"record_vehicle_event":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "record_weighing":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_lines": Json }; Returns: Json
                            },
@@ -1806,11 +2403,17 @@ export type Database = {
 "release_from_quarantine":
 { Args: { "p_client_request_id": string,"p_lot_id": string,"p_note"?: string }; Returns: Json
                            },
+"release_order":
+{ Args: { "p_client_request_id": string,"p_order_id": string }; Returns: Json
+                           },
 "remove_role":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_user_role_id": string }; Returns: Json
                            },
 "remove_shift_duty":
 { Args: { "p_assignment_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
+                           },
+"reply_inbound":
+{ Args: { "p_client_request_id": string,"p_inbound_id": string,"p_text": string }; Returns: Json
                            },
 "request_bank_change":
 { Args: { "p_account_no": string,"p_bank_name": string,"p_client_request_id": string,"p_ifsc": string,"p_party_id": string,"p_reason": string }; Returns: Json
@@ -1827,6 +2430,12 @@ export type Database = {
 "reserve_transfer":
 { Args: { "p_client_request_id": string,"p_transfer_id": string }; Returns: Json
                            },
+"resolve_cash_handover":
+{ Args: { "p_client_request_id": string,"p_handover_id": string,"p_note": string }; Returns: Json
+                           },
+"resolve_task":
+{ Args: { "p_client_request_id": string,"p_note": string,"p_status": string,"p_task_id": string }; Returns: Json
+                           },
 "return_stock":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -1839,8 +2448,14 @@ export type Database = {
 "revoke_special_permission":
 { Args: { "p_client_request_id": string,"p_grant_id": string,"p_reason": string }; Returns: Json
                            },
+"route_sales_board":
+{ Args: { "p_company_id": string,"p_date": string }; Returns: Json
+                           },
 "run_checks":
 { Args: { "p_client_request_id": string,"p_company_id": string }; Returns: Json
+                           },
+"salesman_customer_account":
+{ Args: { "p_company_id": string,"p_party_id": string }; Returns: Json
                            },
 "save_assembly_bom":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -1866,6 +2481,12 @@ export type Database = {
 "save_staff":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"schedule_reminders":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_date": string }; Returns: Json
+                           },
+"schedule3_statements":
+{ Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: Json
+                           },
 "search_help":
 { Args: { "p_language": string,"p_query": string,"p_screen": string }; Returns: {
               "rank": number,"rule_code": string,"screen": string,"slug": string,"snippet": string,"title": string
@@ -1877,6 +2498,9 @@ export type Database = {
 "send_sample":
 { Args: { "p": Json,"p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"send_statement_whatsapp":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_to": string }; Returns: Json
+                           },
 "send_trial_sample":
 { Args: { "p": Json,"p_client_request_id": string,"p_trial_id": string }; Returns: Json
                            },
@@ -1886,14 +2510,32 @@ export type Database = {
 "set_bill_capture_fields":
 { Args: { "p": Json,"p_capture_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"set_cost_cap":
+{ Args: { "p_alert_pct": number,"p_client_request_id": string,"p_company_id": string,"p_monthly_cap": number }; Returns: Json
+                           },
 "set_cost_rate":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"set_coverage_tier":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"set_credit_status":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_reason": string,"p_status": string }; Returns: Json
+                           },
+"set_customer_tier":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_party_id": string,"p_tier": string }; Returns: Json
+                           },
+"set_dispatch_eway":
+{ Args: { "p_client_request_id": string,"p_dispatch_id": string,"p_eway_bill_no": string }; Returns: Json
                            },
 "set_duties":
 { Args: { "p_client_request_id": string,"p_date": string,"p_entries": Json }; Returns: Json
                            },
 "set_item_stock_settings":
 { Args: { "p": Json,"p_client_request_id": string,"p_product_id": string }; Returns: Json
+                           },
+"set_message_rate":
+{ Args: { "p_category": string,"p_client_request_id": string,"p_effective_from": string,"p_est_cost": number }; Returns: Json
                            },
 "set_negative_stock_allowance":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -1919,11 +2561,23 @@ export type Database = {
 "set_role_rights":
 { Args: { "p_client_request_id": string,"p_reason": string,"p_rights": (string)[],"p_role": string }; Returns: Json
                            },
+"set_schedule3_map":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "set_setting":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_effective_from": string,"p_key": string,"p_note": string,"p_value": Json }; Returns: Json
                            },
 "set_tally_group_map":
 { Args: { "p_account_group_id": string,"p_client_request_id": string,"p_company_id": string,"p_tally_group": string }; Returns: Json
+                           },
+"set_vehicle_document":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"shop_day_close":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"shop_sale":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "staff_kyc":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -1939,14 +2593,26 @@ export type Database = {
 "start_batch":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"start_duty":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "start_stock_count":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"start_trip":
+{ Args: { "p": Json,"p_client_request_id": string,"p_trip_id": string }; Returns: Json
                            },
 "statement_of_account":
 { Args: { "p_company_id": string,"p_from": string,"p_party_id": string,"p_to": string }; Returns: Json
                            },
+"submit_credit_application":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "submit_formula_version":
 { Args: { "p_client_request_id": string,"p_version_id": string }; Returns: Json
+                           },
+"submit_private_label":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "submit_staff_request":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
@@ -1959,6 +2625,9 @@ export type Database = {
               "account_id": string,"account_name": string,"closing": number,"cr": number,"dr": number,"group_name": string,"nature": string,"opening": number
             }[]
                            },
+"update_complaint":
+{ Args: { "p": Json,"p_client_request_id": string,"p_complaint_id": string }; Returns: Json
+                           },
 "update_user_profile":
 { Args: { "p": Json,"p_client_request_id": string,"p_user_id": string }; Returns: Json
                            },
@@ -1966,6 +2635,9 @@ export type Database = {
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_account_group":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_agent":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_asset":
@@ -2010,6 +2682,9 @@ export type Database = {
 "upsert_mould":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"upsert_online_channel":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "upsert_pack":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -2037,10 +2712,16 @@ export type Database = {
 "upsert_product_group":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
+"upsert_shop":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
 "upsert_staff_profile":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "upsert_template":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
+                           },
+"upsert_vehicle":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "verify_weighing":
