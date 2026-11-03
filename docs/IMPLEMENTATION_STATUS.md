@@ -2,7 +2,7 @@
 
 | Item | Value |
 |---|---|
-| Current phase | **Phase 4 — Inventory and purchase: complete on DEV. Phase 5 — Production: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
+| Current phase | **Phases 4 and 5 complete on DEV. Phase 6 — Delivery and sales: in progress.** Phase 3 approved by the owner on 03-11-2026 ("start phase 4"). On 03-11-2026 the owner waived the per-phase review stop ("don't ask me more permission, you can complete the project"): phases 4–9 are built back to back, each still verified (pgTAP + Playwright + axe) and reported; production go-live steps that need the owner (prod project, keys, WhatsApp, GSP) stay listed under Open questions. |
 | Repo before this session | Empty (prompt pack only: `AGENTS.md`, `.agents/`, `docs/prompts`, `docs/design`, `docs/spec/README.md`) |
 | Supabase | One project provided (`https://fxwoabbwzcifxzqsmrie.supabase.co`), treated as **DEV**. No ERP schema yet. Region **verified ap-south-1 (Mumbai)** on 03-11-2026. Checked 03-11-2026: email provider on, **phone provider off**, **public sign-up still on** (must be turned off). Two synthetic review accounts created (`phase0.admin@southfield.test` role admin, `phase0.staff@southfield.test` role staff); passwords in the gitignored `.env.test.local`. |
 | GitHub | https://github.com/ashifta1987/SOUTHFIELDGROUPERP (must be private) |
@@ -26,6 +26,17 @@
 Phase 0 builds **no ERP tables**. Data on the three screens shows designed empty states only.
 
 ---
+
+## Phase 5 result (03-11-2026)
+
+| # | Deliverable | Status |
+|---|---|---|
+| 1 | Contracts in `DATABASE_SCHEMA.md` / `API_DOCUMENTATION.md` ("Phase 5"); KPI definitions in `KPI_DEFINITIONS.md` | Done |
+| 2 | Migrations `20261103005000…5600` on DEV. Biochem: licences (production blocked without a valid one), versioned formulas approved by another person, batches with second-person weighing, samples against QC limits, packaging issue/packing into quarantine, reconciliation (difference → Bug fixer, blocks close), self-release block, batch costing, R&D trials/stability, assets/calibrations, work assignment, free items/gift packs (not billable until Admin sets GST treatment with CA note). Plastics: mould projects (stage approval by another), mould register/service, injection shifts with theoretical output and OEE, quality inspection (inspector ≠ operator/recorder), assembly BOM (approved by another) refusing when short, pad printing, machine checks, component/mould/assembly costs. `api.company_people` for people pickers without user-admin rights | Done |
+| 3 | Screens: Biochem manufacturing, production entry, production flow, labs, factory work assignment, free items and gift packs, machines, costing; Licences; Lab panel; factory manager phone; Mould projects, Mould register, Mould costing, Injection production, Quality, Machine assembly, Component costing, Assembled products, Pad printing; mould manager, injection manager and machine check phones | Done, live data |
+| 4 | pgTAP **359/359**; Playwright full suite green (adds `phase5-biochem`, `phase5-plastics`); e2e global setup removes leftover time-limited test roles | Done |
+
+Known Phase 5 gaps: no upload store for asset documents / licence PDFs; no automatic expiry reminders for licences and calibrations (views show due/overdue); no reversal RPCs for posted production entries; mould quotation cost sheet, operator salary sheet, steel rates, trial reports and pad-print kanban have no tables yet; machine-check photos not captured; `/lab` uses the phone shell width; PCB/SMT route off.
 
 ## Phase 4 result (03-11-2026)
 

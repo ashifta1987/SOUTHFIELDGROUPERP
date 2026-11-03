@@ -1,0 +1,60 @@
+{
+  "plComponentCosting": {
+    "title": "Component costing",
+    "subtitle": "What one moulded piece costs: granules, masterbatch, packing and mould wear",
+    "add": "Add material spec",
+    "editOne": "Edit spec of {{code}} · {{name}}",
+    "how": {
+      "title": "How a piece is costed",
+      "formula": "Cost per piece = granules + masterbatch + packing + mould wear",
+      "granule": {
+        "title": "Granules",
+        "body": "Shot weight per piece (part + runner ÷ cavities), less the masterbatch share, at the granule's average stock cost."
+      },
+      "masterbatch": {
+        "title": "Masterbatch",
+        "body": "The masterbatch % of the shot weight per piece at its average stock cost."
+      },
+      "packing": {
+        "title": "Packing",
+        "body": "Packing cost per piece set on the spec."
+      },
+      "mould": {
+        "title": "Mould wear",
+        "body": "From Mould costing: (cost + upkeep) ÷ life in shots ÷ cavities."
+      }
+    },
+    "missingTitle": "{{n}} part(s) use a granule with no cost on file, so their granule cost is missing (never guessed):",
+    "noGranuleCost": "Granule cost missing",
+    "listTitle": "Parts and their cost per piece",
+    "emptyTitle": "No material specs yet",
+    "emptyBody": "Add one per moulded part with \"Add material spec\".",
+    "col": {
+      "part": "Part",
+      "granule": "Granule · grade · colour",
+      "masterbatch": "Masterbatch",
+      "weights": "Part + runner",
+      "cavities": "Cavities",
+      "granuleCost": "Granules",
+      "mbCost": "Masterbatch",
+      "packing": "Packing",
+      "mould": "Mould wear",
+      "flag": "Check"
+    },
+    "addTitle": "Add material spec",
+    "editTitle": "Edit material spec",
+    "f": {
+      "none": "None",
+      "part": "Moulded part",
+      "granule": "Granule",
+      "grade": "Grade",
+      "colour": "Colour",
+      "masterbatch": "Masterbatch",
+      "mbPct": "Masterbatch %",
+      "partWeight": "Part weight (g)",
+      "runnerWeight": "Runner weight (g)",
+      "cavities": "Cavities",
+      "packing": "Packing cost per piece (₹)"
+    }
+  }
+}

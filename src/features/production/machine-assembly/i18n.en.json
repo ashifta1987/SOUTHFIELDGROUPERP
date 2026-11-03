@@ -1,0 +1,74 @@
+{
+  "plAssembly": {
+    "title": "Machine assembly",
+    "subtitle": "Bills of materials for assembled products, approved by a second person, and the assembly orders that use them",
+    "noCreate": "You can see assembly but not post it. Ask Admin for the production right.",
+    "bomsTitle": "Bills of materials",
+    "newBom": "New BOM version",
+    "bomsEmpty": "No bill of materials yet",
+    "bomsEmptyBody": "Write one with \"New BOM version\": the assembled item and every component per one unit.",
+    "openOne": "Open BOM v{{v}}: {{code}} · {{name}}",
+    "col": {
+      "product": "Assembled item",
+      "version": "Version",
+      "lines": "Components",
+      "writtenBy": "Written by",
+      "approvedBy": "Approved by"
+    },
+    "panelTitle": "{{code}} · {{name}} · v{{v}}",
+    "writtenBy": "written by {{name}}",
+    "approvedBy": "approved by {{name}}",
+    "l": {
+      "title": "Components per one unit",
+      "item": "Component",
+      "qty": "Per unit",
+      "avgCost": "Average cost",
+      "note": "Note",
+      "empty": "No components."
+    },
+    "approve": "Approve BOM",
+    "approveRule": "Someone other than the writer must approve; the version in use is then superseded.",
+    "needsApprover": "Waiting for a person with the approve right.",
+    "approved": "BOM approved. Assembly now uses this version.",
+    "chooseItem": "Choose the item",
+    "editor": {
+      "title": "New BOM version",
+      "hint": "Saving makes a new draft version; someone else approves it before assembly can use it.",
+      "product": "Assembled item",
+      "component": "Component {{n}}",
+      "qty": "Component {{n}} per unit",
+      "note": "Component {{n}} note",
+      "addLine": "+ Add component",
+      "notes": "Notes",
+      "save": "Save BOM draft",
+      "saved": "Draft v{{v}} saved. Ask someone else to approve it."
+    },
+    "post": {
+      "title": "Assemble",
+      "product": "Item to assemble (approved BOM)",
+      "noBom": "No approved BOM yet",
+      "qty": "Units (whole)",
+      "from": "Components from (place)",
+      "to": "Assembled units to (place)",
+      "choosePlace": "Choose the place",
+      "date": "Date",
+      "labour": "Labour hours",
+      "note": "Note",
+      "partsTitle": "Components against stock",
+      "onHand": "On hand there",
+      "save": "Post assembly",
+      "rule": "If any component is short the server lists every short item and nothing moves. Assembled units wait in quarantine for an assembly inspection.",
+      "done": "Assembly {{doc}} posted. Units are in quarantine for inspection."
+    },
+    "ordersTitle": "Assembly orders",
+    "ordersEmpty": "No assembly orders yet.",
+    "o": {
+      "doc": "Order",
+      "date": "Date",
+      "qty": "Units",
+      "by": "Assembled by",
+      "lot": "Lot",
+      "unitCost": "Cost per unit"
+    }
+  }
+}

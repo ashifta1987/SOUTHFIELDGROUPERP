@@ -1,0 +1,124 @@
+{
+  "plInjection": {
+    "title": "Injection production",
+    "subtitle": "Who runs which machine, with which mould, for how many minutes, and how much they made",
+    "noCreate": "You can see shifts but not record them. Ask Admin for the production right.",
+    "board": {
+      "title": "Machines and moulds · today",
+      "machine": "Machine",
+      "unit": "Unit",
+      "mould": "Mould on it",
+      "noMould": "No mould",
+      "good": "Good today",
+      "empty": "No injection machines in the asset register yet",
+      "emptyBody": "Add them on the machines and assets screen (kind: injection machine); each one gets a row here."
+    },
+    "entry": {
+      "title": "Shift entry",
+      "sub": "By the operator or manager at the end of the shift. The server works out run time, theoretical output and OEE."
+    },
+    "f": {
+      "date": "Date",
+      "shift": "Shift",
+      "machine": "Machine",
+      "chooseMachine": "Choose the machine",
+      "mould": "Mould",
+      "chooseMould": "Choose the mould",
+      "mouldHelp": "{{cavities}} cavities · standard cycle {{cycle}} s",
+      "operator": "Operator",
+      "operatorOther": "Someone not listed (type the name)",
+      "operatorName": "Operator name",
+      "unit": "Unit (place)",
+      "output": "Good pieces to (place)",
+      "outputHelp": "They wait in quarantine there until a quality inspection.",
+      "choosePlace": "Choose the place",
+      "chooseItem": "Choose the item",
+      "cavities": "Cavities running",
+      "planned": "Planned minutes",
+      "shotStart": "Shot counter start",
+      "shotEnd": "Shot counter end",
+      "good": "Good pieces",
+      "note": "Note",
+      "hintRequired": "Choose the machine, the mould, the unit and the place for good pieces."
+    },
+    "rejects": {
+      "title": "Rejects, by reason",
+      "reason": "Reject reason {{n}}",
+      "qty": "Reject pieces {{n}}",
+      "add": "+ Add reject reason"
+    },
+    "down": {
+      "title": "Downtime, by reason",
+      "kind": "Downtime kind {{n}}",
+      "reason": "Downtime detail {{n}}",
+      "minutes": "Downtime minutes {{n}}",
+      "add": "+ Add downtime"
+    },
+    "downKind": {
+      "breakdown": "Breakdown",
+      "mould_change": "Mould change",
+      "no_material": "No material",
+      "no_operator": "No operator",
+      "power": "Power cut",
+      "setting": "Setting",
+      "other": "Other"
+    },
+    "mats": {
+      "title": "Material used (granules, masterbatch)",
+      "item": "Material {{n}}",
+      "from": "Material {{n}} from",
+      "qty": "Material {{n}} kg",
+      "add": "+ Add material"
+    },
+    "regrind": {
+      "title": "Regrind reused",
+      "item": "Regrind {{n}}",
+      "from": "Regrind {{n}} from",
+      "qty": "Regrind {{n}} kg",
+      "add": "+ Add regrind"
+    },
+    "scrap": {
+      "title": "Rejects and runners weighed into scrap",
+      "item": "Scrap item",
+      "to": "Scrap to (place)",
+      "qty": "Scrap kg"
+    },
+    "save": "Save shift entry",
+    "saveHint": "Material leaves stock and good pieces go to quarantine when you save.",
+    "saved": "Shift {{doc}} saved.",
+    "result": {
+      "title": "Shift {{doc}} · worked out by the server",
+      "run": "Run minutes",
+      "theoretical": "Theoretical output (pieces)",
+      "total": "Pieces made (good + rejects)",
+      "shots": "Shots",
+      "toQuality": "Good pieces are in quarantine until a quality inspection clears them.",
+      "noLot": "No good pieces, so nothing went to quarantine."
+    },
+    "listTitle": "Shift entries",
+    "emptyTitle": "No shift entries yet",
+    "emptyBody": "Save the first one above.",
+    "col": {
+      "doc": "Entry",
+      "when": "Date · shift",
+      "machine": "Machine",
+      "mould": "Mould · part",
+      "operator": "Operator",
+      "good": "Good",
+      "rejects": "Rejects",
+      "theoretical": "Theoretical",
+      "availability": "Availability",
+      "performance": "Performance",
+      "quality": "Quality",
+      "oee": "OEE",
+      "lot": "Lot"
+    },
+    "reports": {
+      "title": "Reports",
+      "output": "Output by machine, shift, operator and mould",
+      "hours": "Run time against planned time",
+      "rejects": "Reject % and downtime by reason",
+      "oee": "Machine efficiency (availability × performance × quality)"
+    }
+  }
+}

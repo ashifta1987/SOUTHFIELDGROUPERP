@@ -1,0 +1,35 @@
+{
+  "plMachineCheck": {
+    "title": "Machine check · daily",
+    "sub": "Before the shift · {{date}}",
+    "back": "Back to the injection manager home",
+    "progress": "{{n}} of {{total}} checked",
+    "noRight": "Checks need the production right. Ask Admin.",
+    "machine": "Machine",
+    "chooseMachine": "Choose the machine",
+    "noMachines": "No machines on the asset register yet",
+    "shift": "Shift",
+    "list": "Checklist",
+    "item": {
+      "oil_level": "Hydraulic oil level is fine",
+      "no_leak": "No oil leaking anywhere",
+      "cooling": "Cooling water is running",
+      "heaters": "Heater bands are heating",
+      "safety": "Safety gate and emergency stop work",
+      "clamps": "Mould clamps are tight",
+      "grease": "Greased",
+      "noise": "No strange noise or vibration",
+      "hopper": "Hopper and dryer are clean",
+      "gauge": "Pressure gauge reading noted"
+    },
+    "ok": "OK: {{item}}",
+    "notOk": "Not OK: {{item}}",
+    "remarks": "Remarks (pressure reading, what is wrong)",
+    "notOkNote": "Any item not OK puts the machine under repair and tells the manager.",
+    "chooseFirst": "Choose the machine first.",
+    "answerAll": "Answer every item ({{n}} left).",
+    "submit": "Submit",
+    "savedOk": "Saved. All items OK.",
+    "savedRepair": "Saved. The machine is now marked for repair."
+  }
+}

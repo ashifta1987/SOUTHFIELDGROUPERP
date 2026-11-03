@@ -86,6 +86,18 @@ import { BiochemCostingPage } from '@/features/production/biochem-costing/Bioche
 import { FactoryManagerHomePage } from '@/features/me/factory-manager/FactoryManagerHomePage'
 import { LabPanelPage } from '@/features/lab/lab-panel/LabPanelPage'
 import { LicencesPage } from '@/features/admin/licences/LicencesPage'
+import { MouldProjectsPage } from '@/features/production/mould-projects/MouldProjectsPage'
+import { MouldRegisterPage } from '@/features/production/mould-register/MouldRegisterPage'
+import { MouldCostingPage } from '@/features/production/mould-costing/MouldCostingPage'
+import { InjectionProductionPage } from '@/features/production/injection-production/InjectionProductionPage'
+import { QualityPage } from '@/features/production/quality/QualityPage'
+import { MachineAssemblyPage } from '@/features/production/machine-assembly/MachineAssemblyPage'
+import { ComponentCostingPage } from '@/features/production/component-costing/ComponentCostingPage'
+import { AssembledProductsPage } from '@/features/production/assembled-products/AssembledProductsPage'
+import { PadPrintingPage } from '@/features/production/pad-printing/PadPrintingPage'
+import { MouldManagerHomePage } from '@/features/me/mould-manager/MouldManagerHomePage'
+import { InjectionManagerHomePage } from '@/features/me/injection-manager/InjectionManagerHomePage'
+import { MachineCheckPage } from '@/features/me/machine-check/MachineCheckPage'
 
 /** Screens built so far. Everything else in PAGE_INVENTORY renders its planned page until its phase. */
 const BUILT: Record<string, React.ReactNode> = {
@@ -171,6 +183,19 @@ const BUILT: Record<string, React.ReactNode> = {
   IsmailHome: <FactoryManagerHomePage />,
   LabPanel: <LabPanelPage />,
   Licences: <LicencesPage />,
+  // Phase 5 · Plastics production
+  Moulds: <MouldProjectsPage />,
+  MouldRegister: <MouldRegisterPage />,
+  MouldCosting: <MouldCostingPage />,
+  Production: <InjectionProductionPage />,
+  Quality: <QualityPage />,
+  Machines: <MachineAssemblyPage />,
+  ComponentCosting: <ComponentCostingPage />,
+  AssemblyCosting: <AssembledProductsPage />,
+  PadPrinting: <PadPrintingPage />,
+  RaviHome: <MouldManagerHomePage />,
+  KrishnaHome: <InjectionManagerHomePage />,
+  OperatorCheck: <MachineCheckPage />,
 }
 
 /** Built screens for sidebar items that have no reference screen. */

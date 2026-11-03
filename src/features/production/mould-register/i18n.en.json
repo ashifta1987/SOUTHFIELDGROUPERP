@@ -1,0 +1,140 @@
+{
+  "plMouldRegister": {
+    "title": "Mould register",
+    "subtitle": "Every mould as an asset: what it makes, whose it is, where it is now and which machine it is on",
+    "add": "Add mould",
+    "kpis": "Moulds at a glance",
+    "kpi": {
+      "all": "Moulds in total",
+      "allSub": "ours and buyers'",
+      "machine": "On a machine now",
+      "rack": "In the rack",
+      "repair": "In repair",
+      "due": "Service due",
+      "buyer": "Buyers' moulds"
+    },
+    "openOne": "Open mould {{code}} · {{name}}",
+    "toSet": "Not set",
+    "serviceDue": "Service due",
+    "material": "material {{item}}",
+    "col": {
+      "mould": "Mould",
+      "product": "Part it makes",
+      "owner": "Owner",
+      "cavities": "Cavities",
+      "cycle": "Cycle (s)",
+      "where": "Where now",
+      "shots": "Shots in total",
+      "since": "Shots since service",
+      "life": "Life used"
+    },
+    "run": {
+      "title": "Running now · mould on machine",
+      "machine": "Machine",
+      "unit": "Unit",
+      "mould": "Mould · product",
+      "empty": "No mould is on a machine now",
+      "emptyBody": "Fills in once injection machines are on the asset register and a mould is moved onto one."
+    },
+    "listTitle": "All moulds",
+    "emptyTitle": "No moulds yet",
+    "emptyBody": "Add each mould with \"Add mould\": the part it makes, cavities and the standard cycle time.",
+    "holds": {
+      "title": "Each mould record",
+      "id": {
+        "title": "ID and name:",
+        "body": "mould code and the part it makes."
+      },
+      "owner": {
+        "title": "Owner:",
+        "body": "ours or the buyer's (buyers' moulds are not our stock)."
+      },
+      "where": {
+        "title": "Where:",
+        "body": "unit, rack, on machine, in repair, at the buyer."
+      },
+      "size": {
+        "title": "Size:",
+        "body": "cavities, part and runner weight."
+      },
+      "production": {
+        "title": "Production:",
+        "body": "standard cycle time, shots in total and since service, service interval."
+      },
+      "value": {
+        "title": "Value:",
+        "body": "cost and upkeep (Mould costing, with the cost right)."
+      },
+      "history": {
+        "title": "History:",
+        "body": "moves, machines run on, services and repairs."
+      }
+    },
+    "panelTitle": "{{code}} · {{name}}",
+    "move": {
+      "title": "Move the mould",
+      "to": "Move to",
+      "machine": "Injection machine",
+      "chooseMachine": "Choose the machine",
+      "place": "Place",
+      "samePlace": "Same place",
+      "date": "Date",
+      "note": "Note",
+      "save": "Record move",
+      "done": "Moved. Now: {{where}}."
+    },
+    "service": {
+      "title": "Service or repair",
+      "kind": "Kind",
+      "date": "Date",
+      "amount": "Amount (₹)",
+      "note": "What was done",
+      "save": "Record service",
+      "done": "Recorded at {{shots}} shots. Shots since service start again from zero."
+    },
+    "ev": {
+      "title": "History",
+      "date": "Date",
+      "kind": "Event",
+      "shots": "Shots",
+      "detail": "Detail",
+      "amount": "Amount",
+      "by": "By",
+      "empty": "No history yet."
+    },
+    "evKind": {
+      "created": "Added",
+      "mounted": "Put on machine",
+      "unmounted": "Taken off machine",
+      "moved": "Moved",
+      "service": "Service",
+      "repair": "Repair",
+      "shots": "Shift shots",
+      "stage": "Stage changed"
+    },
+    "addTitle": "Add mould",
+    "editTitle": "Edit mould",
+    "dialogHint": "Where the mould is and its shot count change only through moves, services and shift entries.",
+    "f": {
+      "code": "Mould code",
+      "name": "Name",
+      "project": "Mould project",
+      "noProject": "None",
+      "product": "Part it makes",
+      "material": "Material (granules)",
+      "cavities": "Cavities",
+      "cycle": "Standard cycle time (s)",
+      "partWeight": "Part weight (g)",
+      "runnerWeight": "Runner weight (g)",
+      "ownership": "Owner",
+      "buyer": "Buyer",
+      "chooseBuyer": "Choose the buyer",
+      "place": "Kept at (place)",
+      "interval": "Service every (shots)",
+      "life": "Life (shots)",
+      "shots": "Shots already made",
+      "cost": "Cost (₹)",
+      "retire": "Retire this mould (it stays on record)"
+    }
+  }
+}

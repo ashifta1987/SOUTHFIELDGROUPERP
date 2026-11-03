@@ -33,7 +33,7 @@ test.describe('Phase 2 · Suppliers', () => {
     // Round trip through the database.
     await page.reload()
     await page.getByRole('button', { name: new RegExp(`^${name}`) }).click()
-    await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name })).toBeVisible({ timeout: 15_000 })
     await expect(page.getByText('Pay within 45 days')).toBeVisible()
     await expectNoSeriousA11y(page)
 

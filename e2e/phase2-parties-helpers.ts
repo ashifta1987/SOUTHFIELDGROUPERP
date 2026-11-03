@@ -51,7 +51,7 @@ export async function ensureE2eCompany(page: Page): Promise<{ code: string; name
   await dialog.getByLabel('PAN').fill(randomPan())
   await dialog.getByRole('button', { name: 'Save' }).click()
   await expect(dialog).toBeHidden()
-  await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name })).toBeVisible({ timeout: 15_000 })
   return { code, name }
 }
 

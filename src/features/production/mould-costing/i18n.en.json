@@ -1,0 +1,34 @@
+{
+  "plMouldCosting": {
+    "title": "Mould costing",
+    "subtitle": "What each mould cost and what it adds to every piece it makes",
+    "how": {
+      "title": "How the mould cost per piece is worked out",
+      "formula": "Mould cost per piece = (cost + upkeep) ÷ life in shots ÷ cavities",
+      "cost": { "title": "Cost", "body": "The mould's cost on the register (bought or made)." },
+      "upkeep": { "title": "Upkeep", "body": "Services and repairs recorded on the mould." },
+      "life": { "title": "Life in shots", "body": "The shots the mould is expected to make in its life." },
+      "cavities": { "title": "Cavities", "body": "Pieces made in one shot." }
+    },
+    "missingTitle": "{{n}} mould(s) have no cost yet, so their cost per piece is missing (never guessed):",
+    "missingNext": "Add the cost and the life in shots on the Mould register.",
+    "listTitle": "Moulds and their cost",
+    "emptyTitle": "No moulds yet",
+    "emptyBody": "Add moulds on the Mould register first.",
+    "col": {
+      "mould": "Mould",
+      "product": "Part it makes",
+      "cavities": "Cavities",
+      "shots": "Shots so far",
+      "life": "Life (shots)",
+      "cost": "Cost",
+      "upkeep": "Upkeep",
+      "perShot": "Per shot",
+      "perPiece": "Per piece"
+    },
+    "quote": {
+      "title": "Cost sheet for a new mould (quotation)",
+      "body": "The steel, standard parts, machining and EDM cost sheet for quoting a buyer's mould is not built yet. Until then, enter the estimate on the mould project."
+    }
+  }
+}

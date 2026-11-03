@@ -1,0 +1,91 @@
+{
+  "plasticsCommon": {
+    "flow": "Plastics production",
+    "stepOf": "step {{n}} of {{total}} · used by Admin, supervisors, operators",
+    "serverSays": "Server: {{detail}}",
+    "noView": "You can't see production. Ask Admin for the production right.",
+    "costHiddenBanner": "Hidden — needs cost rights. Costs, rates and values on this screen need the \"See cost and margin\" right; ask Admin.",
+    "step": {
+      "project": "Mould project",
+      "register": "Mould register",
+      "mouldCosting": "Mould costing",
+      "machines": "Machines",
+      "moulding": "Moulding",
+      "quality": "Quality",
+      "componentCosting": "Component costing",
+      "assembly": "Assembly",
+      "padPrinting": "Pad printing",
+      "jobWork": "Job work",
+      "maintenance": "Maintenance"
+    },
+    "stage": {
+      "design": "Design",
+      "trial": "Trial",
+      "approval": "Customer approval",
+      "approved": "Approved",
+      "dropped": "Dropped"
+    },
+    "location": {
+      "rack": "In the rack",
+      "machine": "On a machine",
+      "repair": "In repair",
+      "buyer": "With the buyer",
+      "other": "Elsewhere"
+    },
+    "ownership": {
+      "own": "Ours",
+      "buyer": "Buyer's"
+    },
+    "shift": {
+      "day": "Day",
+      "night": "Night",
+      "general": "General"
+    },
+    "status": {
+      "retired": "Retired",
+      "rejected": "Rejected"
+    },
+    "rules": {
+      "mould.code": "Enter the code and the name.",
+      "mould.buyer": "Choose the buyer who owns the mould.",
+      "mould.project_closed": "This project is closed (approved or dropped).",
+      "mould.project_missing": "Project not found.",
+      "mould.stage_order": "Projects move one stage at a time.",
+      "mould.cavities": "Enter the cavities and the standard cycle time (seconds).",
+      "mould.machine": "Choose an injection machine of this company that is in use.",
+      "mould.machine_busy": "Another mould is on this machine; take it off first.",
+      "mould.missing": "Choose a mould of this company.",
+      "mould.retired": "This mould is retired.",
+      "mould.location": "Choose where the mould is going.",
+      "mould.service_kind": "Choose service or repair.",
+      "mould.not_active": "This mould can't run now.",
+      "mould.no_product": "Set the component this mould makes on the mould register first.",
+      "shift.cavities": "Cavities running must be at least 1 and not more than the mould has.",
+      "shift.planned": "Enter the planned production time in minutes (up to 1,440).",
+      "shift.downtime": "Downtime can't be more than the planned time.",
+      "shift.good": "Enter the good pieces (zero or more).",
+      "shift.shots": "The shot counter end is below the start.",
+      "shift.shift": "Choose the shift.",
+      "bom.self": "An item can't be its own component.",
+      "bom.qty": "Every component needs a quantity above zero.",
+      "bom.state": "Only a draft BOM can be approved.",
+      "bom.missing": "BOM not found.",
+      "bom.none_approved": "This item has no approved bill of materials yet.",
+      "print.qty": "Enter the pieces printed.",
+      "print.ink": "Enter the ink used and the place it came from.",
+      "check.empty": "Tick the checklist first.",
+      "sod.inspector_maker": "You made or recorded this lot, so someone else must inspect it.",
+      "sod.own_approval": "Someone else must approve what you wrote or created.",
+      "prod.components_short": "Components are short, so nothing was assembled and no stock moved.",
+      "qc.qty_mismatch": "Accepted + rejected must equal the quantity in quarantine (a pass needs accepted pieces; a fail accepts none).",
+      "qc.not_inspection_lot": "Inspections here are for moulded or assembled lots.",
+      "qc.not_in_quarantine": "This lot is not in quarantine any more.",
+      "qc.kind": "Choose the inspection kind.",
+      "qc.lot_missing": "Lot not found.",
+      "scrap.not_scrap_item": "Choose an item marked as scrap or regrind.",
+      "people.no_access": "You have no role in this company.",
+      "doc.no_lines": "Add at least one component.",
+      "product.missing": "Choose the item."
+    }
+  }
+}

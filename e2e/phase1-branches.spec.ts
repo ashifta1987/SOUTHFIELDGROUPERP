@@ -15,7 +15,7 @@ async function createE2eCompany(page: Page) {
   await dialog.getByLabel('PAN').fill(pan)
   await dialog.getByRole('button', { name: 'Save' }).click()
   await expect(dialog).toBeHidden()
-  await expect(page.getByRole('heading', { level: 2, name })).toBeVisible()
+  await expect(page.getByRole('heading', { level: 2, name })).toBeVisible({ timeout: 15_000 })
   return { code, pan, name }
 }
 

@@ -3,7 +3,7 @@
 -- granules out and scrap in through the stock ledger; good pieces in quarantine until an inspection by someone who did not
 -- make them; the mixer grinder BOM (second-person approval) and assembly that consumes components and refuses when short;
 -- pad printing ink; machine checks; RLS hides the other company.
-select plan(39);
+select plan(41);
 
 create temp table s as select tests.seed5(tests.seed4(tests.seed3(tests.seed2(tests.seed())))) as v;
 grant select on s to authenticated;
@@ -39,6 +39,14 @@ insert into ids select 'mould', (api.upsert_mould(gen_random_uuid(), jsonb_build
 select lives_ok($$ select api.move_mould(gen_random_uuid(), tests.id('mould'), jsonb_build_object('location', 'machine', 'machine_asset_id', tests.k('inj'))) $$, 'the mould is mounted on the machine');
 select tests.logout();
 
+-- An edit that does not send the cost (or comes from someone without cost.view) keeps the mould cost.
+select tests.login(tests.k('mouldmgr'));
+select lives_ok($$ select api.upsert_mould(gen_random_uuid(), jsonb_build_object('id', tests.id('mould'), 'company_id', tests.k('company_a'), 'code', 'TMLD-1', 'name', 'Test mould renamed',
+  'project_id', tests.id('project'), 'product_id', tests.k('cmp1'), 'material_product_id', tests.k('granule'), 'cavities', 4, 'cycle_time_sec', 20, 'part_weight_g', 10, 'runner_weight_g', 4,
+  'service_interval_shots', 1000, 'life_shots', 100000)) $$, 'the mould is edited without a cost');
+select tests.logout();
+select is((select cost from prod.moulds where id = tests.id('mould')), 200000::numeric, 'the existing mould cost is kept');
+
 -- ── Shift entry: theoretical output and OEE ──
 select tests.login(tests.k('operator'));
 select is(tests.hint($q$ select api.record_injection_shift(gen_random_uuid(), jsonb_build_object('company_id', tests.k('company_a'), 'place_id', tests.k('mould_out'),
@@ -66,7 +74,7 @@ select is((select qty from inv.stock_balances where product_id = tests.k('granul
   'granules used left the stores through the ledger');
 select is((select count(*)::int from prod.material_consumption where source_id = tests.id('shift') and kind = 'granule'), 1, 'and are in the consumption ledger');
 select is((select qty from inv.stock_balances where product_id = tests.k('scrap') and place_id = tests.k('stores') and bucket = 'available'), 3.000::numeric(18,3), 'scrap is weighed in');
-select is((select count(*)::int from prod.regrind_entries where note = (select r ->> 'doc_no' from sh) and kind = 'scrap_in'), 1, 'the scrap entry is on the regrind register');
+select is((select count(*)::int from prod.regrind_entries where company_id = tests.k('company_a') and note = (select r ->> 'doc_no' from sh) and kind = 'scrap_in'), 1, 'the scrap entry is on the regrind register');
 select is((select qty from inv.stock_balances where product_id = tests.k('cmp1') and place_id = tests.k('mould_out') and bucket = 'quarantine'), 4500.000::numeric(18,3),
   'good pieces wait in quarantine');
 select is((select shot_count from prod.moulds where id = tests.id('mould')), 1200::bigint, 'the mould''s shot count goes up by the shots');

@@ -1,0 +1,49 @@
+{
+  "plAssembled": {
+    "title": "Assembled products",
+    "subtitle": "What each assembled product costs from its approved bill of materials",
+    "openOne": "Show components of {{code}} · {{name}}",
+    "how": {
+      "title": "How an assembled product is costed",
+      "formula": "Components cost = Σ (quantity per unit × the component's average stock cost)",
+      "step": {
+        "moulding": "Moulding · injected parts",
+        "printing": "Pad printing · print jobs",
+        "assembly": "Assembly · parts and springs",
+        "packing": "Packing · labels, bags, cartons",
+        "qc": "QC · assembly inspection",
+        "stock": "Stock · ready to dispatch"
+      }
+    },
+    "gapsTitle": "{{n}} product(s) have components with no cost on file; those count as zero here and are flagged (never guessed):",
+    "withoutCost": "{{n}} without cost",
+    "listTitle": "Products with an approved BOM",
+    "emptyTitle": "No approved bill of materials yet",
+    "emptyBody": "Write and approve one on Machine assembly.",
+    "col": {
+      "product": "Product",
+      "bom": "BOM",
+      "parts": "Components",
+      "components": "Components cost",
+      "withoutCost": "Check",
+      "mrp": "MRP"
+    },
+    "l": {
+      "title": "Components of {{code}} v{{v}}",
+      "item": "Component",
+      "qty": "Per unit",
+      "avgCost": "Average cost",
+      "empty": "No components."
+    },
+    "ordersTitle": "Assembly orders · cost per unit when assembled",
+    "ordersEmpty": "No assembly orders yet.",
+    "o": {
+      "doc": "Order",
+      "date": "Date",
+      "qty": "Units",
+      "hours": "Labour hours",
+      "lot": "Lot",
+      "unitCost": "Cost per unit"
+    }
+  }
+}

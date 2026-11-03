@@ -1,0 +1,67 @@
+{
+  "plMouldProjects": {
+    "title": "Mould projects",
+    "subtitle": "Each new mould from design to the customer's approval · approved by someone other than the creator",
+    "new": "New mould project",
+    "counts": "{{active}} active · {{done}} approved",
+    "viewLabel": "Which projects",
+    "view": {
+      "active": "Active",
+      "completed": "Completed",
+      "dropped": "Dropped"
+    },
+    "listLabel": "Mould projects",
+    "due": "Due {{date}}",
+    "emptyTitle": "No mould projects here",
+    "emptyBody": "Start one with \"New mould project\"; it moves design → trial → customer approval → approved.",
+    "pick": "Choose a project on the left.",
+    "stages": "Project stages",
+    "stageNow": "Stage now:",
+    "approvedOn": "approved on {{date}}",
+    "note": "Note for this step (optional)",
+    "moveTo": "Move to {{stage}}",
+    "approve": "Approve project",
+    "moved": "Done. Stage is now {{stage}}.",
+    "needsApprover": "Waiting for a person with the approve right.",
+    "approveRule": "Approval needs the approve right and must be given by someone other than the person who created the project.",
+    "drop": "Drop project",
+    "dropTitle": "Drop project {{code}}",
+    "reason": "Reason (at least five characters)",
+    "notes": "Notes",
+    "cost": {
+      "title": "Estimated cost",
+      "body": "The estimate entered on the project. The mould's own cost and upkeep are on Mould costing. Visible only with \"See cost and margin\"."
+    },
+    "moulds": {
+      "title": "Moulds from this project",
+      "empty": "No mould registered yet. Add it on the Mould register and choose this project."
+    },
+    "ev": {
+      "title": "History",
+      "date": "Date",
+      "kind": "Event",
+      "detail": "Detail",
+      "by": "By",
+      "empty": "No history yet."
+    },
+    "evKind": {
+      "created": "Created",
+      "stage": "Stage changed"
+    },
+    "newTitle": "New mould project",
+    "editTitle": "Edit mould project",
+    "dialogHint": "Codes are saved in capitals. A buyer's mould needs the buyer.",
+    "f": {
+      "code": "Project code",
+      "name": "Name",
+      "product": "Component it will make",
+      "noProduct": "Not set yet",
+      "ownership": "Owner of the mould",
+      "buyer": "Buyer",
+      "chooseBuyer": "Choose the buyer",
+      "target": "Target date",
+      "estimate": "Estimated cost (₹)"
+    },
+    "openPrefix": "Open project"
+  }
+}

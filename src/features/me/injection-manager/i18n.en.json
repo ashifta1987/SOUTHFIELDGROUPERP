@@ -1,0 +1,20 @@
+{
+  "plInjectionHome": {
+    "title": "Injection manager home",
+    "sub": "Injection unit · manager · {{code}}",
+    "noRight": "You can't see production. Ask Admin for the production right.",
+    "checks": "Machine checks today",
+    "checksBody": "Machines checked by the operators before the shift, out of all injection machines.",
+    "noMachines": "Add injection machines to the asset register; each one's checklist then shows here.",
+    "doCheck": "Open machine check",
+    "repair": "Machines under repair",
+    "noRepair": "No machine is under repair.",
+    "mouldRepair": "Mould repair (mould register)",
+    "shifts": "Shift entries today",
+    "waiting": "{{n}} moulded lot(s) waiting for inspection",
+    "entry": "Shift entry",
+    "quality": "Quality",
+    "requests": "Requests",
+    "buy": "Request material to buy"
+  }
+}

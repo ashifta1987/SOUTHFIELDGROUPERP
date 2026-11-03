@@ -1,0 +1,61 @@
+{
+  "plPadPrinting": {
+    "title": "Pad printing",
+    "subtitle": "Print jobs, ink used from stock, operators and cost per print",
+    "noCreate": "You can see print jobs but not record them. Ask Admin for the production right.",
+    "kpis": "Pad printing today",
+    "kpi": {
+      "jobs": "Print jobs",
+      "printed": "Pieces printed",
+      "rejected": "Pieces rejected",
+      "labour": "Labour",
+      "today": "today",
+      "minutes": "minutes today"
+    },
+    "new": {
+      "title": "New print job",
+      "save": "Record print job",
+      "done": "Print job {{doc}} recorded. Ink left the stores into the consumption ledger."
+    },
+    "f": {
+      "date": "Date",
+      "part": "Part printed",
+      "chooseItem": "Choose the item",
+      "machine": "Pad printer",
+      "noMachine": "Not recorded",
+      "operator": "Operator",
+      "noOperator": "Not recorded",
+      "printed": "Pieces printed",
+      "rejected": "Pieces rejected",
+      "prints": "Prints per piece",
+      "ink": "Ink",
+      "noInk": "No ink issued",
+      "inkQty": "Ink used (kg)",
+      "inkFrom": "Ink from (place)",
+      "choosePlace": "Choose the place",
+      "labour": "Labour minutes",
+      "note": "Note"
+    },
+    "listTitle": "Print jobs",
+    "emptyTitle": "No print jobs yet",
+    "emptyBody": "Record the first one above.",
+    "col": {
+      "doc": "Job",
+      "date": "Date",
+      "part": "Part",
+      "machine": "Machine",
+      "operator": "Operator",
+      "printed": "Printed",
+      "rejected": "Rejected",
+      "prints": "Prints/piece",
+      "ink": "Ink (kg)",
+      "inkValue": "Ink value",
+      "perPrint": "Cost per print"
+    },
+    "cost": {
+      "title": "Cost per print",
+      "formula": "Cost per print = (ink value + labour minutes ÷ 60 × labour rate) ÷ (pieces printed × prints per piece)",
+      "body": "Ink is valued at its lot cost when issued; the labour rate is the one Admin sets on costing. Visible only with \"See cost and margin\"."
+    }
+  }
+}

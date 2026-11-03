@@ -1,0 +1,19 @@
+{
+  "plMouldHome": {
+    "title": "Mould manager home",
+    "sub": "Mould unit · {{code}}",
+    "noRight": "You can't see production. Ask Admin for the production right.",
+    "repair": "Moulds sent for repair",
+    "noRepair": "No moulds in repair.",
+    "projects": "Mould projects",
+    "register": "Mould register",
+    "buy": "Request to buy",
+    "costing": "Mould costing",
+    "openN": "{{n}} open",
+    "mouldsN": "{{n}} moulds",
+    "due": "Service due",
+    "noDue": "No mould is due for service.",
+    "shotsSince": "{{n}} shots since service",
+    "projectsNow": "Open projects · {{n}} waiting for approval"
+  }
+}

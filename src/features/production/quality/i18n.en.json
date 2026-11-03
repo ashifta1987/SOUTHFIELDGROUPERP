@@ -1,0 +1,69 @@
+{
+  "plQuality": {
+    "title": "Quality inspections",
+    "subtitle": "Nothing moulded or assembled moves to stock or dispatch until it is cleared here",
+    "openCount": "{{n}} lot(s) waiting in quarantine",
+    "tabs": "Inspections",
+    "tab": {
+      "open": "Waiting",
+      "done": "Done"
+    },
+    "openTitle": "Waiting for inspection",
+    "openOne": "Inspect lot {{doc}}",
+    "assembledBy": "assembled by {{name}}",
+    "source": {
+      "shift": "Moulded",
+      "assembly": "Assembled"
+    },
+    "col": {
+      "lot": "Lot",
+      "type": "Type",
+      "item": "Item and source",
+      "qty": "Quantity",
+      "since": "Waiting since"
+    },
+    "emptyTitle": "Nothing waiting",
+    "emptyBody": "Good pieces from a shift entry or an assembly order appear here until someone inspects them.",
+    "doneTitle": "Inspections done",
+    "doneEmpty": "No inspections yet.",
+    "d": {
+      "date": "Date",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "result": "Result",
+      "by": "Inspector"
+    },
+    "kind": {
+      "first_piece": "First piece",
+      "patrol": "Patrol",
+      "final": "Final",
+      "assembly": "Assembly"
+    },
+    "next": {
+      "title": "What happens next",
+      "accept": { "title": "Accept:", "body": "accepted pieces move from quarantine to stock and become available." },
+      "reject": { "title": "Reject:", "body": "the whole quantity goes to the rejection bucket; production sees it." },
+      "hold": { "title": "Hold:", "body": "the inspection is recorded and the lot stays in quarantine." },
+      "who": { "title": "Who inspects:", "body": "never the operator, the person who recorded the shift, or the assembler." }
+    },
+    "lotHidden": "This lot can't be read with your rights.",
+    "panelTitle": "Inspection · {{doc}}",
+    "inQuarantine": "{{qty}} {{uom}} in quarantine",
+    "youMadeIt": "You made or recorded this lot, so the server will refuse your inspection; someone else must inspect it.",
+    "f": {
+      "kind": "Inspection",
+      "date": "Date",
+      "sample": "Sample (pieces)",
+      "accepted": "Accepted (pieces)",
+      "rejected": "Rejected (pieces)",
+      "defects": "Defects found (comma between each)",
+      "remarks": "Notes"
+    },
+    "accept": "Accept · move to stock",
+    "hold": "Hold",
+    "reject": "Reject · rejection store",
+    "rule": "Final and assembly inspections decide the whole lot: accepted + rejected must equal the quantity in quarantine.",
+    "noRight": "Inspections need the QC right (final and assembly: the QC release right). Ask Admin.",
+    "saved": "Inspection of {{doc}} recorded. Lot is now: {{status}}."
+  }
+}
