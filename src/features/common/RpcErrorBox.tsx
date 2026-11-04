@@ -15,7 +15,10 @@ export function useRpcMessage() {
     }
     if (err.code === '23505') return t('errors.rules.unique')
     if (err.code === '23514' || err.code === '22P02') return t('errors.invalidValue')
-    return t('errors.saveFailed')
+    // No translated rule for this refusal: say so plainly and show what the server or the network actually said,
+    // so the person (and Admin) can tell a network/sign-in problem from a data problem.
+    const detail = err.message?.trim()
+    return detail ? `${t('errors.saveFailed')} (${detail.slice(0, 200)})` : t('errors.saveFailed')
   }
 }
 
