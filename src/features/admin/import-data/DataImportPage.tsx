@@ -16,9 +16,9 @@ import type { StageRow } from '@/features/import/tally/parseTallyXml'
 import { acceptFor, isExcel, readSource, ReadError, rowDetail, SOURCES, type ReadResult, type SourceKey } from './readSource'
 import { IMPORT_KEYS, ImportError, ImportHistory, ResultChip } from './ImportHistory'
 import { TWO_COLS } from './layout'
+import { StepBar, type Step } from './steps'
+import { isReportSource, ReportImport, ReportsList } from './TallyReports'
 
-type Step = 'upload' | 'check' | 'import' | 'result'
-const STEPS: Step[] = ['upload', 'check', 'import', 'result']
 const RESULTS = ['created', 'linked', 'aliased', 'skipped', 'bug', 'changed', 'error', 'pending'] as const
 const PREVIEW = 8
 
@@ -39,6 +39,7 @@ export function DataImportPage() {
   const { list, company, companyId, choose, isLoading } = useCompanyChoice()
 
   const [source, setSource] = useState<SourceKey>('tally_xml')
+  const reportSource = isReportSource(source)
   const [step, setStep] = useState<Step>('upload')
   const [file, setFile] = useState<File | null>(null)
   const [asOf, setAsOf] = useState('')
@@ -150,10 +151,14 @@ export function DataImportPage() {
 
           {canImport ? (
             <>
-              <SourceCards value={source} onChange={(s) => reset(s)} disabled={step === 'import'} />
-              <StepBar step={step} />
+              <SourceCards value={source} onChange={(s) => reset(s)} disabled={step === 'import'} isAdmin={isAdmin} />
+              {reportSource && company ? (
+                <ReportImport key={`${source}|${companyId}`} source={source} companyId={companyId as string} companyNames={[company.name, company.short_name]} companyLabel={company.name} />
+              ) : (
+                <StepBar step={step} />
+              )}
 
-              {step === 'upload' || step === 'check' ? (
+              {!reportSource && (step === 'upload' || step === 'check') ? (
                 <Card title={step === 'upload' ? t('importData.upload.title') : undefined} style={{ marginBottom: 16 }}>
                   {step === 'upload' ? (
                     <UploadForm
@@ -173,7 +178,7 @@ export function DataImportPage() {
                 </Card>
               ) : null}
 
-              {step === 'import' ? (
+              {!reportSource && step === 'import' ? (
                 <Card title={t('importData.progress.title')} style={{ marginBottom: 16 }}>
                   {runErr ? (
                     <>
@@ -193,14 +198,18 @@ export function DataImportPage() {
             </>
           ) : null}
 
-          {step === 'result' && result ? <ResultCard result={result} tbk={source === 'tbk' && !result.counts} onAgain={() => reset()} /> : null}
+          {!reportSource && step === 'result' && result ? <ResultCard result={result} tbk={source === 'tbk' && !result.counts} onAgain={() => reset()} /> : null}
 
           {source === 'tbk' && canImport ? <BridgeChecklist /> : null}
 
-          <div style={TWO_COLS}>
-            <TemplateCard />
-            <TallyCard />
-          </div>
+          {reportSource ? null : (
+            <div style={TWO_COLS}>
+              <TemplateCard />
+              <TallyCard />
+            </div>
+          )}
+
+          {canImport && companyId && company ? <ReportsList companyId={companyId} companyLabel={company.name} /> : null}
 
           <ImportHistory companyId={companyId} canImport={canImport} isAdmin={isAdmin} onResult={showResult} />
         </>
@@ -210,7 +219,7 @@ export function DataImportPage() {
 }
 
 /* ── Source cards ── */
-function SourceCards({ value, onChange, disabled }: { value: SourceKey; onChange: (s: SourceKey) => void; disabled: boolean }) {
+function SourceCards({ value, onChange, disabled, isAdmin }: { value: SourceKey; onChange: (s: SourceKey) => void; disabled: boolean; isAdmin: boolean }) {
   const { t } = useTranslation()
   const base: CSSProperties = {
     display: 'flex',
@@ -228,7 +237,7 @@ function SourceCards({ value, onChange, disabled }: { value: SourceKey; onChange
   }
   return (
     <div role="group" aria-label={t('importData.sources.label')} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 12, marginBottom: 16 }}>
-      {SOURCES.map((s) => {
+      {SOURCES.filter((s) => s !== 'daybook' || isAdmin).map((s) => {
         const on = s === value
         return (
           <button
@@ -247,30 +256,6 @@ function SourceCards({ value, onChange, disabled }: { value: SourceKey; onChange
         )
       })}
     </div>
-  )
-}
-
-/* ── Step bar ── */
-function StepBar({ step }: { step: Step }) {
-  const { t } = useTranslation()
-  const at = STEPS.indexOf(step)
-  return (
-    <ol aria-label={t('importData.steps.label')} style={{ listStyle: 'none', margin: '0 0 16px', padding: 0, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
-      {STEPS.map((s, i) => {
-        const done = i < at || (s === 'result' && step === 'result')
-        const current = i === at && !done
-        return (
-          <li key={s} aria-current={current ? 'step' : undefined} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <span aria-hidden="true" style={{ height: 5, borderRadius: 3, background: done ? 'var(--sf-success)' : current ? 'var(--sf-info)' : 'var(--sf-line)' }} />
-            <span style={{ fontSize: 13, fontWeight: done || current ? 600 : 400, color: done ? 'var(--sf-success-ink)' : current ? 'var(--sf-info-ink)' : 'var(--sf-text-muted)' }}>
-              {done ? '✓ ' : current ? '● ' : ''}
-              {`${i + 1} · ${t(`importData.steps.${s}`)}`}
-              <span className="sr-only">{done ? ` (${t('importData.steps.done')})` : current ? ` (${t('importData.steps.current')})` : ''}</span>
-            </span>
-          </li>
-        )
-      })}
-    </ol>
   )
 }
 

@@ -1829,16 +1829,56 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"tally_report_bs_diffs": {
+                  Row: {
+                    "depth": number | null,"diff": number | null,"erp_amount": number | null,"is_total": boolean | null,"line": string | null,"report_id": string | null,"side": string | null,"status": string | null,"tally_amount": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_report_diffs": {
+                  Row: {
+                    "account_id": string | null,"diff": number | null,"erp_group": string | null,"erp_name": string | null,"erp_net": number | null,"ledger": string | null,"report_id": string | null,"status": string | null,"tally_group": string | null,"tally_net": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_report_lines": {
+                  Row: {
+                    "company_id": string,"line": Json | null,"ord": number | null,"report_id": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_report_stock_match": {
+                  Row: {
+                    "company_id": string,"name": string | null,"product_id": string | null,"product_name": string | null,"product_uom": string | null,"qty": number | null,"rate": number | null,"report_id": string,"status": string | null,"unit": string | null,"value": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_reports": {
+                  Row: {
+                    "applied_at": string | null,"as_of": string,"company_id": string,"company_name": string,"company_name_in_file": string | null,"file_name": string | null,"file_sha256": string,"grain": string,"id": string,"kind": string,"line_count": number | null,"period_from": string | null,"period_to": string | null,"result": Json | null,"status": string,"totals": NonNullable<Json>,"uploaded_at": string,"uploaded_by": string | null,"uploaded_by_name": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"tally_vouchers": {
                   Row: {
-                    "alter_id": number | null,"amount": number,"batch_id": string | null,"company_id": string,"guid": string | null,"id": string,"is_cancelled": boolean,"is_optional": boolean,"party_id": string | null,"party_name": string | null,"state": string,"voucher_date": string,"voucher_no": string | null,"voucher_type": string
+                    "alter_id": number | null,"amount": number,"batch_id": string | null,"company_id": string,"dc": string | null,"guid": string | null,"id": string,"is_cancelled": boolean,"is_optional": boolean,"party_id": string | null,"party_name": string | null,"state": string,"voucher_date": string,"voucher_no": string | null,"voucher_type": string
                   }
                   ComputedFields: never
                   Insert: {
-                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
+                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"dc"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
                          }
                         Update: {
-                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
+                           "alter_id"?: number | null,"amount"?: number | null,"batch_id"?: string | null,"company_id"?: string | null,"dc"?: string | null,"guid"?: string | null,"id"?: string | null,"is_cancelled"?: boolean | null,"is_optional"?: boolean | null,"party_id"?: string | null,"party_name"?: string | null,"state"?: string | null,"voucher_date"?: string | null,"voucher_no"?: string | null,"voucher_type"?: string | null
                          }
                         Relationships: [
                     
@@ -2308,6 +2348,12 @@ export type Database = {
 "apply_eway_result":
 { Args: { "p": Json,"p_request_id": string }; Returns: Json
                            },
+"apply_stock_summary_as_opening_stock":
+{ Args: { "p_client_request_id": string,"p_place_id": string,"p_report_id": string }; Returns: Json
+                           },
+"apply_trial_balance_as_opening":
+{ Args: { "p_client_request_id": string,"p_report_id": string }; Returns: Json
+                           },
 "approve_assembly_bom":
 { Args: { "p_bom_id": string,"p_client_request_id": string }; Returns: Json
                            },
@@ -2453,6 +2499,16 @@ export type Database = {
               "display_name": string,"role_keys": (string)[],"user_id": string
             }[]
                            },
+"compare_balance_sheet":
+{ Args: { "p_report_id": string }; Returns: {
+              "depth": number,"diff": number,"erp_amount": number,"is_total": boolean,"line": string,"report_id": string,"side": string,"status": string,"tally_amount": number
+            }[]
+                           },
+"compare_trial_balance":
+{ Args: { "p_report_id": string }; Returns: {
+              "account_id": string,"diff": number,"erp_group": string,"erp_name": string,"erp_net": number,"ledger": string,"report_id": string,"status": string,"tally_group": string,"tally_net": number
+            }[]
+                           },
 "complete_close_task":
 { Args: { "p_action": string,"p_client_request_id": string,"p_note"?: string,"p_task_id": string }; Returns: Json
                            },
@@ -2596,6 +2652,9 @@ export type Database = {
 "import_process":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
+"import_process_step":
+{ Args: { "p_batch_id": string,"p_client_request_id": string,"p_limit"?: number }; Returns: Json
+                           },
 "import_stage_rows":
 { Args: { "p_batch_id": string,"p_rows": Json }; Returns: Json
                            },
@@ -2683,6 +2742,9 @@ export type Database = {
                            },
 "maintenance_summary":
 { Args: { "p_company_id": string }; Returns: Json
+                           },
+"map_tally_stock_item":
+{ Args: { "p_client_request_id": string,"p_product_id": string,"p_report_id": string,"p_tally_name": string }; Returns: Json
                            },
 "mark_attendance":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_date": string,"p_entries": Json }; Returns: Json
@@ -3145,6 +3207,9 @@ export type Database = {
                            },
 "stage_channel_event":
 { Args: { "p_channel_id": string,"p_detail": Json,"p_event_id": number,"p_external_id": string,"p_kind": string }; Returns: Json
+                           },
+"stage_tally_report":
+{ Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
 "start_batch":
 { Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json

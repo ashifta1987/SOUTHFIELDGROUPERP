@@ -3,8 +3,8 @@ import { mapHeaders, readTallyXml, sheetToRows, type ListKind } from '@/features
 import type { StageRow } from '@/features/import/tally/parseTallyXml'
 
 /** The five kinds of upload on the Import data screen. */
-export type SourceKey = 'tally_xml' | 'products' | 'parties' | 'employees' | 'tbk'
-export const SOURCES: SourceKey[] = ['tally_xml', 'products', 'parties', 'employees', 'tbk']
+export type SourceKey = 'tally_xml' | 'daybook' | 'trial_balance' | 'stock_summary' | 'balance_sheet' | 'products' | 'parties' | 'employees' | 'tbk'
+export const SOURCES: SourceKey[] = ['tally_xml', 'daybook', 'trial_balance', 'stock_summary', 'balance_sheet', 'products', 'parties', 'employees', 'tbk']
 
 export const isExcel = (s: SourceKey): s is ListKind => s === 'products' || s === 'parties' || s === 'employees'
 
@@ -91,6 +91,7 @@ export function rowDetail(r: StageRow): string {
 /** Accept attribute for the file input. */
 export function acceptFor(source: SourceKey): string {
   if (source === 'tally_xml') return '.xml,text/xml,application/xml'
+  if (source === 'daybook' || source === 'trial_balance' || source === 'stock_summary' || source === 'balance_sheet') return '.xlsx,.xml'
   if (isExcel(source)) return '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   return '.001,.tbk,.zip,application/zip,application/octet-stream'
 }

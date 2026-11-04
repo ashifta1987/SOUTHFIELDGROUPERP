@@ -737,6 +737,22 @@ View: `api.help_whatsapp_staff` (number masked).
 
 Paging: list screens request pages with PostgREST `range()` (`src/data/paged.tsx`, 200 rows) in the order of the Phase 9 indexes.
 
+## Phase 10: Tally reports
+
+| RPC / view | Who | What |
+|---|---|---|
+| `api.import_process_step(p_client_request_id, p_batch_id, p_limit default 500)` | `data.import` | Processes at most `p_limit` (max 2,000) pending rows with the same decisions as `api.import_process`; returns `{remaining}`. Call until 0, then `api.import_process` once to finish the batch. |
+| `api.import_stage_rows(p_batch_id, p_rows)` | `data.import`; voucher rows Admin only | (Replaced) same as before, plus the Admin rule for `object_type = 'voucher'`. |
+| `api.stage_tally_report(p_client_request_id, p)` | `data.import` | Stores a Trial Balance, Stock Summary or Balance Sheet. `p`: `company_id, kind, as_of, period_from, period_to, file_name, file_sha256, company_name, grain, lines[], totals{}`. Idempotent by company, kind, as-of and file checksum (`{duplicate: true}` for a repeat). The server recomputes the sums. |
+| `api.apply_trial_balance_as_opening(p_client_request_id, p_report_id)` | Admin only | Sets opening balances. Returns `{applied: true, ledgers, created, updated, dr, cr}` or `{applied: false, refused: 'total_mismatch' \| 'unmapped', ...message}` (and opens Bug fixer items, changing nothing). Rule codes: `report.group_wise`, `report.vouchers_after`, `report.already_applied`, `report.opening_unbalanced`. |
+| `api.apply_stock_summary_as_opening_stock(p_client_request_id, p_report_id, p_place_id)` | `inventory.approve` | Posts the opening stock once. Returns `{applied: true, items, not_posted, qty, value, ...}` or `{applied: false, refused: 'unmatched', unmatched[]}`. |
+| `api.map_tally_stock_item(p_client_request_id, p_report_id, p_tally_name, p_product_id)` | `data.import` | Maps a Tally item name to an existing product (alias + company link). Products are created only through `api.upsert_product`. |
+| `api.compare_trial_balance(p_report_id)` / view `api.tally_report_diffs` | `data.import`, Admin, CA | Per ledger: Tally net, ERP net, difference (ERP − Tally), status `match`, `differs`, `only_in_tally`, `only_in_erp`. |
+| `api.compare_balance_sheet(p_report_id)` / view `api.tally_report_bs_diffs` | same | Per group line: Tally amount, ERP amount (mapped groups), difference, status `match`, `differs`, `not_mapped`, `total`, `detail`. |
+| Views `api.tally_reports`, `api.tally_report_lines`, `api.tally_report_stock_match` | same | Lists for the Import screen. |
+
+New rule codes: `report.kind`, `report.as_of`, `report.sha`, `report.no_lines`, `report.missing`, `report.locked`, `report.item_missing`, `report.product_missing`, `report.group_wise`, `report.vouchers_after`, `report.already_applied`, `report.opening_unbalanced`.
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.

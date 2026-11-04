@@ -9,9 +9,40 @@ How Tally data comes into the ERP (§25, §25A). The plan's later steps (cut-ove
 | Tally XML export (masters, day book) | Parsed in the browser into rows (`src/features/import/tally/parseTallyXml.ts`). The rows go to `api.import_stage_rows`; Postgres decides everything in `api.import_process`. | **Built (Phase 2)** |
 | Excel lists (parties, products, employees) | Headers matched by synonyms (`sheetToRows`). Same engine after that. | **Built (Phase 2)** |
 | Tally backup (TBK900_xxxxx.001, zipped data folder) | Stored encrypted in the private `imports` bucket (Mumbai), with batch status `awaiting_bridge`. The **Tally bridge** on the import computer restores it in TallyPrime into its own folder, never over the live data. It reads the masters and vouchers over TallyPrime's XML/HTTP interface (port 9000) and sends rows through the `tally-bridge` Edge Function using its device key. | Upload built; bridge function written (`supabase/functions/tally-bridge`); **bridge PC not chosen yet** (owner question) |
+| **Day Book** (Excel or XML) | `parseDayBook` (Excel) / the XML parser; lines go to `api.import_stage_rows`, processed in slices by `api.import_process_step`. Reference history only (see below). | **Built (Phase 10)** |
+| **Trial Balance** (Excel, XML best effort) | `parseTrialBalance`; stored in `ops.tally_reports`; Admin applies it as opening balances. | **Built (Phase 10)** |
+| **Stock Summary** (Excel, XML best effort) | `parseStockSummary`; stored; applied once as opening stock through `api.post_opening_stock`. | **Built (Phase 10)** |
+| **Balance Sheet** (Excel, XML best effort) | `parseBalanceSheet`; stored; reconciliation only, never posts. | **Built (Phase 10)** |
 | Nightly read-only pull during the parallel-run month | Bridge | Phase 9 |
 
 The original file is always kept in the `imports` bucket. Each load is one **batch** (`IMP-YYMMDD-NNN`). Admin approves a batch; an unapproved batch can be undone.
+
+## The four Tally reports (Import data → Day Book, Trial Balance, Stock Summary, Balance Sheet)
+
+Each report is read by a pure parser (`src/features/import/tally/reports/*.ts`, the same code in the browser and in `scripts/import-tally-report.mjs`). The parser only converts layout; the database decides.
+
+| Report | What it does | What it never does |
+|---|---|---|
+| **Day Book** | Keeps every voucher line as reference history in `ops.tally_vouchers` (type, number, date, party, amount, Dr or Cr side). Parties are matched to `master.parties` by name or alias when they exist; otherwise the name stays as text. | **It cannot post.** A Day Book has one leg per voucher (no counter-legs), so it cannot make balanced entries. Nothing goes to the GL. |
+| **Trial Balance** | Stored in `ops.tally_reports`. Compared with the ERP trial balance for the parallel run (`api.compare_trial_balance`, view `api.tally_report_diffs`). **Admin only**, after the CA has signed the numbers, `api.apply_trial_balance_as_opening` sets each ledger's `opening_balance`, `opening_dc` and `opening_as_of`. | It posts no ledger entry. Bill-wise detail of debtors and creditors stays as the unclassified opening bills already loaded. It is refused when debit ≠ credit (Bug fixer item), when the sheet lists groups only, when a ledger's Tally group is not mapped (Bug fixer "Map this head"), or when vouchers are already posted after the report date. |
+| **Stock Summary** | Stored; items are matched to `master.products` by name or alias. `api.apply_stock_summary_as_opening_stock` (Admin or the stock approval right) posts each item once through `api.post_opening_stock`, in the store you choose, at Tally's rate. | Zero or negative quantities are not posted (Bug fixer). Items not in the product list stop the apply until each is mapped to an existing product (an alias) or created on the Products screen with an HSN and unit the user chooses. A report is applied once. |
+| **Balance Sheet** | Stored; group totals of both sides are compared with the ERP for Tally groups that are mapped to an account group (`api.compare_balance_sheet`, view `api.tally_report_bs_diffs`). | It never posts anything. |
+
+**Order to load them:** 1 masters (From Tally) → 2 Trial Balance (CA checks; Admin applies) → 3 Stock Summary (apply) → 4 Day Book (history) → 5 Balance Sheet (compare). Map the Tally groups first (Tally books screen) so ledgers can be placed.
+
+**Idempotent.** A report is identified by company, kind, as-of date and the SHA-256 of the file: the same file again is recognised and stores nothing new. Day Book lines carry `match_key = type|no|date|amount|party|dr-or-cr`; two identical lines in one file get `|#2`, `|#3` so both load, and loading the same file again skips every line. A staged report is history: its lines never change and it is never deleted; only its status moves (stored → applied → replaced).
+
+**Privacy of bills without GST.** A Day Book contains voucher types sold without GST (for example `SALES WO`). Voucher rows (`ops.tally_vouchers` and the staged voucher rows in `ops.import_rows`) are readable only by Admin and the CA, and only Admin can stage voucher rows (a person who holds just "Load Tally data" cannot).
+
+### How to export from TallyPrime
+- **Day Book:** Display More Reports → Day Book, set the period, Alt+E (Export) → Excel (Spreadsheet) → Export. The title lines (company, period), the header row (Date, Particulars, Vch Type, Vch No., Debit Amount, Credit Amount) and the "Inwards / Outwards Qty" sub-header row are found and skipped automatically.
+- **Trial Balance:** Display More Reports → Trial Balance, period ending on the opening date, **Alt+F5 (Expanded)** so every ledger shows, then Alt+E → Excel. A sheet with groups only is refused with a message asking for the ledger-wise export. Closing Balance (Debit, Credit) columns, plain Debit / Credit columns, or one column with Dr/Cr suffixes are all read. Group rows are told from ledger rows by leading spaces when present, otherwise by the group's amount equalling the sum of the rows below it; the ledger total is checked against the file's Grand Total, and a "Diff. in opening balances" row is reported.
+- **Stock Summary:** Display More Reports → Stock Summary, date, Alt+E → Excel. Closing quantity (e.g. `125.500 Kg`), rate and value are read; the as-of date comes from the title line.
+- **Balance Sheet:** Display More Reports → Balance Sheet, date, Alt+E → Excel. Both layouts are read: horizontal (Particulars | Amount | Particulars | Amount, liabilities left) and vertical (a Liabilities and an Assets section).
+- **XML:** XML exports of the three display reports are also read (tolerant tag scanner), but they have **not** been tried against a real TallyPrime file; check the totals shown before loading. An XML Day Book (with voucher lines) goes through the existing Tally XML parser.
+
+### Loading from the command line (owner's computer)
+`npx tsx scripts/import-tally-report.mjs --company SFB --kind daybook --file <path.xlsx> --dry-run` prints the pre-load summary (counts by voucher type, Dr/Cr totals, date range, company named in the file) and sends nothing. Without `--dry-run` it signs in as the Admin login (`E2E_ADMIN_*` from the environment or `.env.test.local`, never printed), stages in chunks of 1,500 lines and processes in slices of 1,000 with progress. `--kind trial_balance|stock_summary|balance_sheet` stores the report (`--as-of` when the file has no date); `--apply` (Trial Balance, or Stock Summary with `--place <store code>`) then calls the apply RPC. `--force` loads even when the company named in the file does not look like the chosen company. Real files are passed at run time and are never committed (`imports/` is git-ignored).
 
 ## No duplicate masters (order of matching)
 
@@ -124,4 +155,6 @@ Every rollback decision is the owner's, recorded in the Bug fixer and in `docs/I
 ## Tests (synthetic Tally data only)
 
 `supabase/tests/06_import.sql` (15 assertions) and `src/features/import/tally/parseTallyXml.test.ts` (9 tests).
+
+Phase 10, Tally reports: `supabase/tests/26_tally_reports.sql` (67 assertions: idempotent staging, Admin-only apply, Dr ≠ Cr refused, opening balances only when balanced and mapped, unmapped group → "Map this head", group-wise refused, vouchers after the date refused, stock applied once, voucher rows Admin/CA only, other company invisible, compare shows differences, timing of a 500-line step), `src/features/import/tally/reports/reports.test.ts` (25 tests on synthetic in-memory workbooks), and `e2e/phase10-tally-reports.spec.ts` (synthetic .xlsx generated at run time, fresh synthetic company, DB assertions, axe).
 

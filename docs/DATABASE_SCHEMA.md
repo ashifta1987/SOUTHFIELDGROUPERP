@@ -716,3 +716,28 @@ No new business tables. Migrations (all additive, applied to DEV 03-11-2026):
 | File | Covers | Tests |
 |---|---|---|
 | `supabase/tests/25_security.sql` | Catalogue: RLS + at least one policy on every table, invoker views, pinned `search_path`, no `anon` access except the failed sign-in log, no direct writes, no `using (true)` write policy, no public bucket. MFA off/on at aal1/aal2 for accountant, Admin, salesman and investor. Set helpers equal `app.can()` for 7 user kinds × 11 rights. Audit-history gate | 35 |
+
+## Phase 10: Tally reports import (Day Book, Trial Balance, Stock Summary, Balance Sheet)
+
+Migrations `20261103010000_tally_reports.sql` and `20261103010100_tally_reports_grants.sql` (additive only).
+
+### Tables and columns
+
+| Object | Contents |
+|---|---|
+| `ops.tally_reports` | One staged Tally display report. `company_id`, `kind` (`trial_balance`, `stock_summary`, `balance_sheet`), `as_of`, `period_from`, `period_to`, `file_name`, `file_sha256`, `company_name_in_file`, `grain` (`ledger`, `group`, `unknown`), `lines jsonb`, `totals jsonb` (server-computed sums plus the file's own grand totals as `tally_*`), `status` (`staged`, `applied`, `superseded`), `result jsonb`, `uploaded_by/at`, `applied_by/at`. **Unique `(company_id, kind, as_of, file_sha256)`.** Append-only: a trigger refuses any change to lines, totals, keys or uploader, delete is refused, row history is on. RLS: read with `data.import` for the company, or Admin / CA view. |
+| `ops.tally_vouchers.dc` | New column: `D` or `C`, the side of a one-leg Day Book line (null for XML vouchers with lines). |
+| `ops.import_rows` | New **restrictive** read policy: voucher rows only for Admin and the CA. |
+
+Line shapes in `lines`: Trial Balance `{name, parents[], is_group, dr, cr}`; Stock Summary `{name, parents[], is_group, qty, unit, rate, value}`; Balance Sheet `{side L|A, name, depth, is_group, is_total, amount}`.
+
+### Views (security invoker)
+`api.tally_reports` (list, no lines), `api.tally_report_lines`, `api.tally_report_diffs` (Trial Balance, per ledger), `api.tally_report_bs_diffs` (Balance Sheet, per group), `api.tally_report_stock_match` (Stock Summary items against products). `api.tally_vouchers` gains `dc`.
+
+### Rules enforced (where)
+- Day Book `match_key` and Dr/Cr side: `app.imp_voucher`. Same file twice → every line skipped.
+- Vouchers are Admin-only to stage (`api.import_stage_rows`) and to read.
+- Trial Balance apply: Admin only, `grain = ledger`, Dr = Cr and equal to the file's grand total, every ledger resolvable (existing account by normalised name, or a missing account created in the group mapped through `ops.tally_group_map`), no posted voucher after the date, company opening stays balanced; nothing is posted.
+- Stock Summary apply: `inventory.approve`, store of the same company, once, unmatched items refuse, zero/negative lines → Bug fixer `negative_stock`.
+- Balance Sheet: stored for reconciliation only.
+

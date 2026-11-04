@@ -9,7 +9,7 @@ await c.connect()
 const q = (sql, p) => c.query(sql, p)
 
 await q("delete from core.form_fields where label like 'E2E Test%'")
-const companies = (await q("select id from core.companies where code like 'E2E%'")).rows
+const companies = (await q("select id from core.companies where code like 'E2E%' and code not in ('SFB', 'SFP')")).rows
 let removed = 0, switchedOff = 0
 for (const { id } of companies) {
   await q('begin')
