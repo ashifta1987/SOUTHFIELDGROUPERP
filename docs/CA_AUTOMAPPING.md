@@ -156,3 +156,7 @@ Screen: **Accounts → Schedule III** (`src/features/accounts/schedule-iii`). Th
 21. **Opening bills without GST:** for each, which of the four lawful reasons applies? (Admin classifies; the assistant did not.) Open **Accounts → Opening bills**.
 22. **Partner/director balances:** capital, loan or current account? Open **Partners**.
 23. **Confirm** that the Plastics Tally files belong to Southfield Plastics Pvt Ltd (Q-46). Open **Import**.
+
+## Opening balances applied for DEV testing (05-11-2026)
+
+On **05-11-2026** the Trial Balance of each company was applied as opening balances as of **03-11-2026** on the DEV database (owner decision on the date), for testing. **Tally's own "Difference in opening balances" was not hidden or corrected**: SFB 436.00 and SFP 1,69,198.75 sit in the Suspense ledger "Difference in opening balances (Tally) — CA to clear" (Suspense A/c group, credit side), each with a HIGH Bug fixer item for the CA. For SFB the Tally lines Opening Stock and Unadjusted Forex Gain/Loss (not ledgers) are parked, net Cr 35,18,807.89, in "Tally computed lines not carried (Opening Stock, Unadjusted Forex) — CA to clear". **The CA must** find the cause of the difference in Tally, decide how opening stock and the unrealised forex amount reach the books, confirm the 54 accounts that were opened while their duplicate review is still waiting, and clear both Suspense ledgers with approved journals before any of this is used as the books of record. Nothing was posted to the ledger, stock or vouchers; the CA confirmation flags were not touched.

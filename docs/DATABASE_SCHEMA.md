@@ -719,7 +719,7 @@ No new business tables. Migrations (all additive, applied to DEV 03-11-2026):
 
 ## Phase 10: Tally reports import (Day Book, Trial Balance, Stock Summary, Balance Sheet)
 
-Migrations `20261103010000_tally_reports.sql` and `20261103010100_tally_reports_grants.sql` (additive only).
+Migrations `20261103010000_tally_reports.sql` and `20261103010100_tally_reports_grants.sql` (additive only). Later, additive: `20261103011000_import_pincode_sanitise.sql` (`app.imp_pincode`, `app.imp_state2`, `app.imp_pan`; `app.imp_ledger` patched so a bad PIN, state code or PAN is left out and the raw PIN text is kept in address line 2 as "PIN in Tally (not valid): ..."; `api.import_retry_errors`), `011100` / `011200` / `011400` (`api.apply_trial_balance_as_opening` with the Suspense options, `app.tb_resolve_group`, `app.tb_is_pseudo`, `app.tb_declared_difference`, `app.tb_suspense_account`, index `import_rows_ledger_name_idx`), `011300` / `011500` / `011600` (Day Book upgrade in place).
 
 ### Tables and columns
 
@@ -727,6 +727,8 @@ Migrations `20261103010000_tally_reports.sql` and `20261103010100_tally_reports_
 |---|---|
 | `ops.tally_reports` | One staged Tally display report. `company_id`, `kind` (`trial_balance`, `stock_summary`, `balance_sheet`), `as_of`, `period_from`, `period_to`, `file_name`, `file_sha256`, `company_name_in_file`, `grain` (`ledger`, `group`, `unknown`), `lines jsonb`, `totals jsonb` (server-computed sums plus the file's own grand totals as `tally_*`), `status` (`staged`, `applied`, `superseded`), `result jsonb`, `uploaded_by/at`, `applied_by/at`. **Unique `(company_id, kind, as_of, file_sha256)`.** Append-only: a trigger refuses any change to lines, totals, keys or uploader, delete is refused, row history is on. RLS: read with `data.import` for the company, or Admin / CA view. |
 | `ops.tally_vouchers.dc` | New column: `D` or `C`, the side of a one-leg Day Book line (null for XML vouchers with lines). |
+| `ops.tally_vouchers.upgraded_into`, `upgraded_at`, `upgraded_from` | New columns (migration `20261103011300`, `011500`, `011600`). A full-entry Day Book XML voucher that matches one-leg Excel vouchers on type, number and date is **upgraded in place**: the first Excel leg (by key) takes the XML guid, key, party, amount and full lines and keeps `upgraded_from {legs, match_key, amount, batch_id, other_amounts}`; the other legs are `state = 'reversed'` with `upgraded_into` pointing at it. Loading the XML again, or the Excel again, changes nothing (the old Excel key of the kept leg is recognised through `upgraded_from`). |
+| `ops.tally_reports.status` | Now also `partly_applied` (a Trial Balance applied with unplaced ledgers listed in `result.skipped`; it can be applied again). |
 | `ops.import_rows` | New **restrictive** read policy: voucher rows only for Admin and the CA. |
 
 Line shapes in `lines`: Trial Balance `{name, parents[], is_group, dr, cr}`; Stock Summary `{name, parents[], is_group, qty, unit, rate, value}`; Balance Sheet `{side L|A, name, depth, is_group, is_total, amount}`.

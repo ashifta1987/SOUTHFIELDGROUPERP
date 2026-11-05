@@ -2352,7 +2352,7 @@ export type Database = {
 { Args: { "p_client_request_id": string,"p_place_id": string,"p_report_id": string }; Returns: Json
                            },
 "apply_trial_balance_as_opening":
-{ Args: { "p_client_request_id": string,"p_report_id": string }; Returns: Json
+{ Args: { "p_book_difference"?: boolean,"p_client_request_id": string,"p_reason"?: string,"p_report_id": string,"p_skip_unmapped"?: boolean,"p_zero_unlisted"?: boolean }; Returns: Json
                            },
 "approve_assembly_bom":
 { Args: { "p_bom_id": string,"p_client_request_id": string }; Returns: Json
@@ -2654,6 +2654,9 @@ export type Database = {
                            },
 "import_process_step":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_limit"?: number }; Returns: Json
+                           },
+"import_retry_errors":
+{ Args: { "p_batch_id": string,"p_client_request_id": string }; Returns: Json
                            },
 "import_stage_rows":
 { Args: { "p_batch_id": string,"p_rows": Json }; Returns: Json

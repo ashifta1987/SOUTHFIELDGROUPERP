@@ -65,6 +65,59 @@ Other things the first real load showed:
 - `--reparse <tag>` on `scripts/import-tally-report.mjs` stores the same file again after a parser fix (staged reports are history and the file checksum is unique); `scripts/compare-tally-reports.mjs` prints the comparison by ledger group, never by name.
 - Heavy loads: about 4 KB of database per Day Book voucher (staged row, voucher, audit history); a one-leg Day Book line costs about 2.3 KB.
 
+## PIN codes and other bad values in masters (fixed 05-11-2026)
+
+Root cause: `app.imp_ledger` wrote the Tally PIN and state text straight into `char(6)` / `char(2)` columns that have a CHECK (`party_addresses_pincode_check`). A PIN of `0`, `682 030`, 5, 7, 10 or 11 digits, or a long state text, failed the check or overflowed the column, and the ledger row ended as `error` (the first Biochem masters load had 99 check failures and 6 overflows). The fix is in the database, so no staged payload can fail on it again: digits only, accepted only as `[1-9][0-9]{5}`, otherwise empty with the raw text kept in address line 2 ("PIN in Tally (not valid): ..."); the state code must be 2 digits; the PAN must be valid and agree with the GSTIN. `api.import_retry_errors` re-runs the stale `error` rows of a batch. Run on the Biochem masters batch: 105 error rows before, 0 after (95 skipped because the later batch had already created them, 10 waiting for a duplicate or head decision). Every ledger of the Biochem masters file is now in `acct.accounts` except 97 names that wait for review (96 for a duplicate decision, 1 for a head mapping).
+
+## Trial Balance applied as opening balances (DEV, 05-11-2026)
+
+Opening date 03-11-2026 for both companies (owner decision). Applied with `api.apply_trial_balance_as_opening(... p_book_difference := true, p_skip_unmapped := true, p_zero_unlisted := true)`:
+
+| | SFB | SFP |
+|---|---|---|
+| Ledgers opened | 828 (785 updated, 43 created) | 275 (264 updated, 11 created) |
+| Not opened | 0 | 2 (no group, no ledger master, net zero) |
+| Report status | applied | partly_applied |
+| Tally's own difference (Dr − Cr) | 436.00, declared by the file | 1,69,198.75, declared by the Balance Sheet file (the Trial Balance XML has no difference row) |
+| Tally pseudo-lines not opened | Opening Stock Dr 9,25,977.60 and Unadjusted Forex Cr 44,44,785.49 (net Cr 35,18,807.89, parked in a second Suspense ledger) | none |
+| Unlisted ledgers set to zero | 30 (net Dr 16,07,883.20 of start-of-year openings) | 0 |
+| Company debit = credit | 32,33,16,477.39 each | 4,63,04,245.99 each |
+
+The Tally difference stays visible in Suspense for the CA (HIGH Bug fixer items). Comparison with the Trial Balance by ledger group: SFB 828 match; only in Tally 2 (the two pseudo-lines); only in the ERP 2 (the two Suspense ledgers). SFP 275 match; only in Tally 2 (the unplaced lines); only in the ERP 1 (Suspense). No group differs. No GL entry, voucher or stock entry was posted.
+
+## Opening stock: what the owner must supply
+
+The Stock Summary reports are staged and **not applied**: every item is unmatched, because the Tally files carry no stock item masters and no product has an HSN or unit chosen by the owner.
+
+| | SFB | SFP |
+|---|---|---|
+| Items in the Stock Summary | 420 | 169 |
+| By Tally unit | Kgs 205, Nos 201, CTN 4, ROLL 2, Ltrs 1, LTR 1, no unit 6 | Nos 110, Kgs 28, PKTS 27, box 2, MT 1, no unit 1 |
+| Negative quantity | 15 (value −27,893.35) | 120 (no value) |
+| Zero quantity | 6 | 1 |
+| Zero value | 12 | 120 |
+| No rate | 18 | 121 |
+| Total value in the file | 1,37,90,510.87 | 1,43,07,685.13 |
+
+The owner supplies a **product list** (Excel for the Products import) with, for every item: code, name, HSN, unit of measure (UOM), kind, and the store that holds it. HSN rates need the CA's confirmation (Q-19). **Negative quantities** must be corrected in Tally (a missing receipt or production entry) or by the owner: a line at zero or below is never posted, it opens a Bug fixer item. Units with two spellings (Ltrs / LTR, Kgs) are mapped to one UOM when the product list is loaded.
+
+## Biochem full-entry Day Book (XML): cost estimate and plan
+
+The Biochem Day Book was loaded from Excel (one leg per voucher, 45,479 vouchers). Only a Tally XML export carries the full entries. Measured on Plastics: 7,669 vouchers took a 216 MB XML (about 28.8 KB per voucher) and grew the database by about 28 MB (about 3.7 KB per voucher, staged rows included). The same ratios applied to the Biochem voucher counts by financial year (April to March) in the loaded Excel history (counts only; Biochem vouchers may be 30% larger or smaller, because item-heavy sales vouchers are bigger):
+
+| Financial year | Vouchers | Estimated XML size | Estimated DB growth | Cumulative if exported newest first: vouchers / XML / DB growth / DB total |
+|---|---|---|---|---|
+| 2026-27 (to 03-11-2026) | 4,143 | 117 MB | 15 MB | 4,143 / 117 MB / 15 MB / 214 MB |
+| 2025-26 | 8,621 | 243 MB | 32 MB | 12,764 / 360 MB / 47 MB / 246 MB |
+| 2024-25 | 10,975 | 309 MB | 40 MB | 23,739 / 669 MB / 87 MB / 286 MB |
+| 2023-24 | 8,909 | 251 MB | 33 MB | 32,648 / 920 MB / 119 MB / 318 MB |
+| 2022-23 | 7,865 | 222 MB | 29 MB | 40,513 / 1,141 MB / 148 MB / 347 MB |
+| 2021-22 | 4,966 | 140 MB | 18 MB | 45,479 / 1,281 MB / 166 MB / 365 MB |
+
+The database is about 199 MB today (plan limit unknown; the free plan is 500 MB). Recommendation: export **2026-27 and 2025-26** first (about 360 MB of XML, about +47 MB), check the totals, then decide on earlier years. Everything is exported year by year from Tally (one XML per financial year), because a single 1.3 GB file is not practical. Loading all six years fits the free plan (about 365 MB) but leaves little room for the operating data of the first months, so the choice belongs to the owner.
+
+How it loads: `scripts/import-tally-daybook-xml.mjs --company SFB --file <year.xml> --from 2025-04-01 --to 2026-03-31` (`--dry-run` first). `--from` / `--to` keep only vouchers dated inside the window while streaming (inclusive; a bad date or a window that ends before it starts is refused; logic in `src/features/import/tally/reports/dayBookWindow.ts`, unit-tested with synthetic data). A voucher that matches Excel one-leg vouchers on type, number and date **upgrades the first Excel leg in place** (full lines, XML guid, one voucher), and marks the other legs reversed and linked, so nothing is counted twice and loading the same file or the Excel again changes nothing. A voucher with no Excel match is created. Not run on real data yet.
+
 ## No duplicate masters (order of matching)
 
 1. **Tally identity:** company + GUID in `ops.source_keys` (with MASTERID and ALTERID). The same GUID is always the same record. A higher ALTERID with changed content opens a "Changed in Tally after loading" item, and the record is not written over. A rename keeps the Tally name as an alias.

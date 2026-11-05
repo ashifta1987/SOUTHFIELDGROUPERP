@@ -6,13 +6,16 @@
 //   npx tsx scripts/import-tally-daybook-xml.mjs --company SFP --file <DayBook.xml> [--from ..] [--to ..] [--force]
 //
 // The file is never held in memory as one string (UTF-16LE is decoded incrementally and split on </TALLYMESSAGE>).
-// --from / --to keep only vouchers dated inside the window (e.g. the financial years wanted as reference).
+// --from / --to keep only vouchers dated inside the window (inclusive; e.g. the financial years wanted as reference).
+// A voucher that matches one-leg Excel vouchers on type | number | date replaces them in the database (the first leg is upgraded with the full
+// lines, the other legs are marked reversed and linked): one voucher is never counted twice. Decided in app.imp_voucher; see dayBookWindow.ts.
 // Prints counts, totals, dates and balance checks only: never a party, ledger or narration text.
 import { readFileSync, existsSync, statSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { streamTallyRows } from './lib/tallyStream.mjs'
 import { companyNameMatches } from '../src/features/import/tally/reports/index.ts'
+import { financialYear, inWindow, parseWindow } from '../src/features/import/tally/reports/dayBookWindow.ts'
 
 function loadEnv(file) {
   if (!existsSync(file)) return
@@ -38,6 +41,12 @@ const path = opt('file')
 const from = opt('from')
 const to = opt('to')
 const dry = flag('dry-run')
+let window
+try {
+  window = parseWindow(from, to)
+} catch (e) {
+  die(e instanceof Error ? e.message : String(e))
+}
 if (!code || !path) die('Usage: --company <code> --file <DayBook.xml> [--dry-run] [--from YYYY-MM-DD] [--to YYYY-MM-DD] [--force]')
 if (!existsSync(path)) die('File not found.')
 
@@ -121,7 +130,7 @@ const { messages, companyName } = await streamTallyRows(
         stats.noDate++
         continue
       }
-      if ((from && d < from) || (to && d > to)) {
+      if (!inWindow(d, window)) {
         stats.outsideWindow++
         continue
       }
@@ -161,7 +170,7 @@ const { messages, companyName } = await streamTallyRows(
       if (Math.abs(sum) > 0.01) t.unbalanced++
       if (lines.length === 0) t.noLines++
       byType.set(p.type ?? '(none)', t)
-      const fy = Number(d.slice(0, 4)) - (Number(d.slice(5, 7)) < 4 ? 1 : 0)
+      const fy = financialYear(d)
       const y = byYear.get(fy) ?? { count: 0, lines: 0 }
       y.count++
       y.lines += lines.length
