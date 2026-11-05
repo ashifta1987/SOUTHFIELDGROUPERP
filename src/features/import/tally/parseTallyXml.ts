@@ -132,6 +132,12 @@ function ledgerRegType(el: Element): string | null {
   return null
 }
 
+/** An Indian PIN code is 6 digits and does not start with 0. Tally holds free text here ("0", "682 030", 7 or 10 digits): a PIN that is not exactly that is left out rather than loaded wrong. */
+export function cleanPincode(v: string | null): string | null {
+  const d = (v ?? '').replace(/\s+/g, '')
+  return /^[1-9][0-9]{5}$/.test(d) ? d : null
+}
+
 function parseLedger(el: Element): StageRow {
   const bills = children(el, 'BILLALLOCATIONS.LIST')
     .map((b) => ({
@@ -156,7 +162,7 @@ function parseLedger(el: Element): StageRow {
       pan: text(el, 'INCOMETAXNUMBER') ?? text(el, 'PANNUMBER'),
       phone: text(el, 'LEDGERMOBILE') ?? text(el, 'LEDGERPHONE'),
       state: text(el, 'LEDSTATENAME') ?? text(el, 'STATENAME'),
-      pincode: text(el, 'PINCODE'),
+      pincode: cleanPincode(text(el, 'PINCODE')),
       address: address || null,
       opening: tallyAmount(text(el, 'OPENINGBALANCE')) ?? 0,
       bills,
@@ -193,22 +199,36 @@ function parseStockItem(el: Element): StageRow {
   }
 }
 
+/** Voucher types that Tally keeps out of the books (orders, delivery/receipt notes, memos, stock journals): their entries are memorandum only. */
+const NON_ACCOUNTING_TYPES = ['sales order', 'purchase order', 'delivery note', 'receipt note', 'rejections in', 'rejections out', 'stock journal', 'memorandum', 'reversing journal', 'physical stock', 'job work in order', 'job work out order']
+const INVENTORY_LISTS = ['ALLINVENTORYENTRIES.LIST', 'INVENTORYENTRIES.LIST', 'INVENTORYENTRIESIN.LIST', 'INVENTORYENTRIESOUT.LIST']
+
 function parseVoucher(el: Element): StageRow {
-  const lineEls = [...children(el, 'ALLLEDGERENTRIES.LIST'), ...children(el, 'LEDGERENTRIES.LIST')]
-  const lines = lineEls
+  // In an item invoice (sales, purchase, notes) the sales/purchase ledger sits inside each inventory line's ACCOUNTING ALLOCATIONS, not among the
+  // voucher's own ledger entries: both places are read so the voucher balances.
+  const lineEls = [
+    ...children(el, 'ALLLEDGERENTRIES.LIST'),
+    ...children(el, 'LEDGERENTRIES.LIST'),
+    ...INVENTORY_LISTS.flatMap((t) => children(el, t)).flatMap((inv) => children(inv, 'ACCOUNTINGALLOCATIONS.LIST')),
+  ]
+  const allLines = lineEls
     .map((l) => ({ ledger: text(l, 'LEDGERNAME'), amount: tallyAmount(text(l, 'AMOUNT')) ?? 0 }))
     .filter((l) => l.ledger)
+  const vtype = el.getAttribute('VCHTYPE') ?? text(el, 'VOUCHERTYPENAME')
+  const nonAccounting = NON_ACCOUNTING_TYPES.includes((vtype ?? '').trim().toLowerCase())
+  // a non-accounting voucher keeps its entries as a memo; `lines` (what must balance) is empty
+  const lines = nonAccounting ? [] : allLines
   const party = text(el, 'PARTYLEDGERNAME') ?? text(el, 'PARTYNAME')
-  const partyLine = lines.find((l) => party && l.ledger === party)
-  const positive = lines.reduce((s, l) => s + (l.amount > 0 ? l.amount : 0), 0)
+  const partyLine = allLines.find((l) => party && l.ledger === party)
+  const positive = allLines.reduce((s, l) => s + (l.amount > 0 ? l.amount : 0), 0)
   const amount = partyLine ? Math.abs(partyLine.amount) : Math.round(positive * 100) / 100
   const yes = (v: string | null) => (v ?? '').toLowerCase() === 'yes'
   return {
     object_type: 'voucher',
-    name: [el.getAttribute('VCHTYPE') ?? text(el, 'VOUCHERTYPENAME'), text(el, 'VOUCHERNUMBER')].filter(Boolean).join(' '),
+    name: [vtype, text(el, 'VOUCHERNUMBER')].filter(Boolean).join(' '),
     ...identity(el),
     payload: {
-      type: el.getAttribute('VCHTYPE') ?? text(el, 'VOUCHERTYPENAME'),
+      type: vtype,
       number: text(el, 'VOUCHERNUMBER'),
       date: tallyDate(text(el, 'DATE')),
       party,
@@ -217,6 +237,7 @@ function parseVoucher(el: Element): StageRow {
       optional: yes(text(el, 'ISOPTIONAL')),
       narration: text(el, 'NARRATION'),
       lines,
+      ...(nonAccounting ? { non_accounting: true, memo_lines: allLines } : {}),
     },
   }
 }
@@ -256,7 +277,7 @@ export function parseTallyXml(xml: string): ParsedTally {
       const tag = el.tagName.toUpperCase()
       switch (tag) {
         case 'GROUP':
-          rows.push({ object_type: 'group', name: nameOf(el), ...identity(el), payload: { parent: text(el, 'PARENT') } })
+          rows.push({ object_type: 'group', name: nameOf(el), ...identity(el), payload: { parent: text(el, 'PARENT'), reserved: el.getAttribute('RESERVEDNAME')?.trim() || null } })
           break
         case 'LEDGER':
           rows.push(parseLedger(el))

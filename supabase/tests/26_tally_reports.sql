@@ -42,7 +42,7 @@ insert into ids select 'tb1', tests.tb('1', '2026-03-31', jsonb_build_array(
 select is((tests.r('tb1') ->> 'duplicate')::boolean, false, 'a new Trial Balance is staged');
 select is((tests.r('tb1') -> 'totals' ->> 'dr')::numeric, 800::numeric, 'the server adds up the ledger lines itself (groups are not counted twice)');
 select is((tests.tb('1', '2026-03-31', '[{"name":"x","dr":1,"cr":0}]') ->> 'duplicate')::boolean, true, 'the same file again is recognised, nothing new is staged');
-select is((select count(*)::int from ops.tally_reports where kind = 'trial_balance'), 1, 'only one report row exists for that file');
+select is((select count(*)::int from ops.tally_reports where kind = 'trial_balance' and company_id = tests.k('company_a')), 1, 'only one report row exists for that file');
 select tests.logout();
 
 -- ── Rights and RLS ──
@@ -187,7 +187,7 @@ select is((api.import_process_step(gen_random_uuid(), (tests.r('db1') ->> 'id'):
 select is((api.import_process_step(gen_random_uuid(), (tests.r('db1') ->> 'id')::uuid, 3) ->> 'remaining')::int, 0, 'the next step finishes the rest');
 select api.import_process(gen_random_uuid(), (tests.r('db1') ->> 'id')::uuid);
 select is((select count(*)::int from ops.tally_vouchers where company_id = tests.k('company_a')), 4, 'two identical lines in one file both load');
-select is((select dc::text from ops.tally_vouchers where voucher_no = 'R-1'), 'C', 'the credit side is kept');
+select is((select dc::text from ops.tally_vouchers where voucher_no = 'R-1' and company_id = tests.k('company_a')), 'C', 'the credit side is kept');
 select is((select count(*)::int from ops.bug_items where kind = 'unbalanced_voucher' and company_id = tests.k('company_a')), 0, 'a one-leg Day Book line is not an unbalanced voucher');
 select is((select count(*)::int from acct.vouchers where company_id = tests.k('company_a') and doc_no <> 'TEST-J1'), 0, 'Day Book lines are not posted to the books');
 insert into ids select 'db2', api.import_create_batch(gen_random_uuid(), jsonb_build_object('company_id', tests.k('company_a'), 'source', 'excel', 'kind', 'vouchers', 'file_name', 'daybook.xlsx'));
@@ -206,7 +206,7 @@ select is((select count(*)::int from ops.import_rows where object_type = 'vouche
 select is((select count(*)::int from api.tally_vouchers), 0, 'the voucher list is empty for a non-Admin');
 select tests.logout();
 select tests.login(tests.k('ca'));
-select is((select count(*)::int from api.tally_vouchers where voucher_type = 'SALES WO'), 2, 'the CA sees every voucher type');
+select is((select count(*)::int from api.tally_vouchers where voucher_type = 'SALES WO' and company_id = tests.k('company_a')), 2, 'the CA sees every voucher type');
 select tests.logout();
 
 -- Speed of the chunked path: 3,000 lines in steps of 500, each step well inside a request timeout.

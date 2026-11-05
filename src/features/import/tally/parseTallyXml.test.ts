@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chunk, decodeTallyBytes, parseTallyXml, sanitizeTallyXml, tallyAmount, tallyDate, tallyQty } from './parseTallyXml'
+import { chunk, cleanPincode, decodeTallyBytes, parseTallyXml, sanitizeTallyXml, tallyAmount, tallyDate, tallyQty } from './parseTallyXml'
 
 // Synthetic Tally XML only (never real data).
 const XML = `<?xml version="1.0"?>
@@ -87,3 +87,38 @@ describe('helpers', () => {
   })
 })
 
+
+describe('real TallyPrime layouts (synthetic values)', () => {
+  const wrap = (inner: string) => `<ENVELOPE xmlns:UDF="TallyUDF"><TALLYMESSAGE xmlns:UDF="TallyUDF">${inner}</TALLYMESSAGE></ENVELOPE>`
+  it('an item invoice balances: the sales ledger inside the inventory line allocations is a voucher line', () => {
+    const p = parseTallyXml(
+      wrap(`<VOUCHER VCHTYPE="Sales Gst" ACTION="Create"><GUID>v1</GUID><DATE>20260410</DATE><VOUCHERNUMBER>1</VOUCHERNUMBER><PARTYLEDGERNAME>Test Party</PARTYLEDGERNAME>
+        <ALLINVENTORYENTRIES.LIST><STOCKITEMNAME>Test Item</STOCKITEMNAME><AMOUNT>1000.00</AMOUNT><BATCHALLOCATIONS.LIST><AMOUNT>1000.00</AMOUNT></BATCHALLOCATIONS.LIST>
+          <ACCOUNTINGALLOCATIONS.LIST><LEDGERNAME>Test Sales</LEDGERNAME><AMOUNT>1000.00</AMOUNT></ACCOUNTINGALLOCATIONS.LIST></ALLINVENTORYENTRIES.LIST>
+        <ALLLEDGERENTRIES.LIST><LEDGERNAME>Test Party</LEDGERNAME><AMOUNT>-1180.00</AMOUNT></ALLLEDGERENTRIES.LIST>
+        <ALLLEDGERENTRIES.LIST><LEDGERNAME>Test GST</LEDGERNAME><AMOUNT>180.00</AMOUNT></ALLLEDGERENTRIES.LIST></VOUCHER>`),
+    )
+    const v = p.rows[0]!.payload
+    const lines = v.lines as { ledger: string; amount: number }[]
+    expect(lines).toHaveLength(3)
+    expect(Math.round(lines.reduce((s, l) => s + l.amount, 0) * 100)).toBe(0)
+    expect(v.amount).toBe(1180)
+  })
+  it('an order or delivery note is a memorandum: nothing to balance, entries kept as memo', () => {
+    const p = parseTallyXml(wrap(`<VOUCHER VCHTYPE="Sales Order"><GUID>v2</GUID><DATE>20260410</DATE><ALLLEDGERENTRIES.LIST><LEDGERNAME>Test Party</LEDGERNAME><AMOUNT>-50.00</AMOUNT></ALLLEDGERENTRIES.LIST></VOUCHER>`))
+    const v = p.rows[0]!.payload
+    expect(v.lines).toEqual([])
+    expect(v.non_accounting).toBe(true)
+    expect(v.memo_lines).toHaveLength(1)
+  })
+  it('a predefined group carries its RESERVEDNAME; a custom one does not; entity-encoded names are trimmed', () => {
+    const p = parseTallyXml(wrap(`<GROUP NAME="Test Predefined" RESERVEDNAME="Test Predefined"><PARENT>Current Assets</PARENT></GROUP>`) + '')
+    expect(p.rows[0]!.payload).toMatchObject({ reserved: 'Test Predefined', parent: 'Current Assets' })
+    const c = parseTallyXml(wrap(`<GROUP NAME="Test Custom&#13;&#10;" RESERVEDNAME=""><PARENT>Sundry Debtors&#13;&#10;</PARENT></GROUP>`))
+    expect(c.rows[0]).toMatchObject({ name: 'Test Custom', payload: { reserved: null, parent: 'Sundry Debtors' } })
+  })
+  it('keeps a PIN code only when it is 6 digits (Tally holds free text there)', () => {
+    expect(cleanPincode('682 030')).toBe('682030')
+    expect(['0', '', null, '12345', '1234567', '0123456', 'abc'].map((x) => cleanPincode(x as string | null))).toEqual([null, null, null, null, null, null, null])
+  })
+})

@@ -8,6 +8,7 @@
 //   npx tsx scripts/import-tally-report.mjs --company SFB --kind balance_sheet --file <path.xlsx> [--as-of 2026-03-31]
 //
 // --kind: daybook | trial_balance | stock_summary | balance_sheet.   --dry-run: read the file and print the pre-load summary only.
+// --reparse TAG: store the same file again after a parser fix (the tag is mixed into the file checksum; the old report stays as history).
 // --force: load even when the company named in the file does not look like the chosen company.
 // --apply: after staging a Trial Balance (Admin: sets opening balances) or a Stock Summary (needs --place), call the apply RPC.
 // Signs in as the Admin login E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD from the environment or .env.test.local (never printed).
@@ -16,7 +17,7 @@
 import { readFileSync, existsSync } from 'node:fs'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
-import { readSheet } from 'read-excel-file/node'
+import readXlsxFile, { readSheet } from 'read-excel-file/node'
 import { parseDayBook, parseReport, reportXmlToTable, sha256Hex, companyNameMatches } from '../src/features/import/tally/reports/index.ts'
 import { runDayBook, stageReport } from '../src/features/import/tally/reports/flow.ts'
 import { decodeTallyBytes, sanitizeTallyXml } from '../src/features/import/tally/parseTallyXml.ts'
@@ -51,6 +52,7 @@ if (!code || !KINDS.includes(kind ?? '') || !path) die(`Usage: --company <code> 
 if (!existsSync(path)) die('File not found.')
 
 const money = (n) => (n === null || n === undefined ? '-' : Number(n).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+const round2 = (n) => Math.round((n + Number.EPSILON) * 100) / 100
 const dmy = (iso) => (iso ? iso.split('-').reverse().join('-') : '-')
 
 // ── Read and parse (same modules as the browser) ──
@@ -60,6 +62,13 @@ async function table() {
   if (isXml) {
     if (kind === 'daybook') die('A Day Book XML (with voucher lines) is loaded from the Import screen. Use the Excel Day Book here.')
     return reportXmlToTable(sanitizeTallyXml(decodeTallyBytes(new Uint8Array(bytes))), kind)
+  }
+  // an analysis workbook with several sheets: take the sheet that carries this report (--sheet NAME overrides)
+  const wanted = opt('sheet') ?? { trial_balance: 'Trial Balance', stock_summary: 'Stock Summary', balance_sheet: 'Balance Sheet' }[kind]
+  const sheets = await readXlsxFile(path)
+  if (sheets.length > 1) {
+    const hit = sheets.find((s) => String(s.sheet).toLowerCase() === String(wanted).toLowerCase())
+    if (hit) return hit.data
   }
   return readSheet(path)
 }
@@ -82,12 +91,18 @@ if (kind === 'daybook') {
   console.log(`${kind}: ${parsed.lines.length} lines · as of ${dmy(parsed.asOf)} · company named in the file: ${parsed.companyName ?? '-'}`)
   if (kind === 'trial_balance') {
     console.log(`  ${d.ledgerCount} ledgers, ${d.groupCount} group lines · grain: ${d.grain}`)
-    console.log(`  ledgers add up to Dr ${money(d.ledgerDr)} / Cr ${money(d.ledgerCr)} · file grand total Dr ${money(d.tallyDr)} / Cr ${money(d.tallyCr)}`)
+    console.log(`  ledgers add up to Dr ${money(d.ledgerDr)} / Cr ${money(d.ledgerCr)} · difference (Dr - Cr) ${money(round2(d.ledgerDr - d.ledgerCr))}`)
+    console.log(`  file grand total Dr ${money(d.tallyDr)} / Cr ${money(d.tallyCr)} · file "difference in opening balances" Dr ${money(d.diffDr)} / Cr ${money(d.diffCr)}`)
     if (d.grain === 'group') console.log('  This sheet lists groups only. Export the expanded, ledger-wise Trial Balance (Alt+F5) and load that file.')
   } else if (kind === 'stock_summary') {
-    console.log(`  ${d.itemCount} items, ${d.groupCount} group lines · value ${money(d.itemValue)} · file grand total ${money(d.tallyValue)} · zero/negative lines ${d.negativeOrZero}`)
+    const noValue = parsed.lines.filter((l) => !l.is_group && (l.value ?? 0) === 0).length
+    const negQty = parsed.lines.filter((l) => !l.is_group && (l.qty ?? 0) < 0).length
+    console.log(`  ${d.itemCount} items, ${d.groupCount} group lines · value ${money(d.itemValue)} · file grand total ${money(d.tallyValue)} · quantity ${d.itemQty}`)
+    console.log(`  negative quantity ${negQty} · zero/negative quantity ${d.negativeOrZero} · without a value ${noValue} · without a rate ${parsed.lines.filter((l) => !l.is_group && l.rate === null).length}`)
   } else {
-    console.log(`  layout ${d.layout} · liabilities ${money(d.liabilitiesTotal)} · assets ${money(d.assetsTotal)}`)
+    const top = (side) => round2(parsed.lines.filter((l) => l.side === side && l.depth === 0 && !l.is_total).reduce((a, l) => a + l.amount, 0))
+    console.log(`  layout ${d.layout} · ${parsed.lines.filter((l) => l.depth === 0 && !l.is_total).length} top lines, ${parsed.lines.filter((l) => l.depth > 0).length} detail lines`)
+    console.log(`  liabilities side ${money(top('L'))} · assets side ${money(top('A'))} · difference ${money(round2(top('L') - top('A')))} · file totals ${money(d.liabilitiesTotal)} / ${money(d.assetsTotal)}`)
   }
   for (const w of parsed.warnings) console.log(`  note: ${w.code}${w.detail ? ` (${w.detail})` : ''}`)
 }
@@ -148,7 +163,9 @@ try {
   } else {
     const asOf = opt('as-of') ?? parsed.asOf
     if (!asOf) die('The report date could not be read from the file. Add --as-of YYYY-MM-DD.')
-    const sha = await sha256Hex(new Uint8Array(bytes))
+    console.log(`As-of date ${dmy(asOf)} (${opt('as-of') ? 'from --as-of' : 'read from the file'}).`)
+    // a corrected parser must be able to store the same file again: --reparse <tag> mixes the tag into the checksum (history is never edited)
+    const sha = opt('reparse') ? await sha256Hex(new TextEncoder().encode(`${await sha256Hex(new Uint8Array(bytes))}|${opt('reparse')}`)) : await sha256Hex(new Uint8Array(bytes))
     const r = await stageReport(rpc, { companyId: company.id, parsed, asOf, fileName: path.split('/').pop(), sha256: sha, onProgress })
     console.log(r.duplicate ? `This exact file is already stored (report ${r.id}, status ${r.status}). Nothing new was added.` : `Stored report ${r.id} as of ${dmy(asOf)}.`)
     if (flag('apply')) {

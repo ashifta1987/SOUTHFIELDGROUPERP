@@ -1,6 +1,7 @@
 import {
   buildHierarchy, companyNameOf, findRow, label, leadingSpaces, parseAmount, periodOf, round2, text, ReportReadError, type HierMode, type Table,
 } from './common'
+import { isFlatTable } from './xmlReports'
 
 export interface BsLine {
   side: 'L' | 'A'
@@ -70,7 +71,7 @@ export function parseBalanceSheet(table: Table): BalanceSheetParsed {
     blocks[1]!.side = blocks[1]!.side ?? (blocks[0]!.side === 'L' ? 'A' : 'L')
   }
 
-  interface Raw { side: 'L' | 'A'; name: string; amount: number; total: boolean; indent: number }
+  interface Raw { side: 'L' | 'A'; name: string; amount: number; total: boolean; indent: number; group: boolean }
   const raw: Raw[] = []
   let section: 'L' | 'A' = 'L'
   let sawSection = false
@@ -97,7 +98,7 @@ export function parseBalanceSheet(table: Table): BalanceSheetParsed {
       // amounts are shown on their natural side (liabilities credit, assets debit); a Dr/Cr suffix or a minus sign flips them
       let amount = a.value
       if (a.dc) amount = Math.abs(a.value) * (a.dc === (side === 'L' ? 'C' : 'D') ? 1 : -1)
-      raw.push({ side, name: name.trim(), amount, total: isTotal(name), indent: leadingSpaces(r[b.nameCol]) })
+      raw.push({ side, name: name.trim(), amount, total: isTotal(name), indent: leadingSpaces(r[b.nameCol]), group: isFlatTable(table) && text(r[b.amtCol + 1]) === 'G' })
     }
   }
   if (raw.length === 0) throw new ReportReadError('errNoRows')
@@ -129,7 +130,7 @@ export function parseBalanceSheet(table: Table): BalanceSheetParsed {
       }
     }
     if (!ok(hier)) warnings.push({ code: 'side_total_differs', detail: `${side}: ${top(hier)} / ${total}` })
-    body.forEach((r, i) => lines.push({ side, name: r.name, depth: hier.depth[i] ?? 0, is_group: hier.isGroup[i] ?? false, is_total: false, amount: round2(r.amount) }))
+    body.forEach((r, i) => lines.push({ side, name: r.name, depth: hier.depth[i] ?? 0, is_group: (hier.isGroup[i] ?? false) || r.group, is_total: false, amount: round2(r.amount) }))
     diffs.forEach((r) => lines.push({ side, name: r.name, depth: 0, is_group: false, is_total: false, amount: round2(r.amount) }))
     if (total !== null) lines.push({ side, name: 'Total', depth: 0, is_group: false, is_total: true, amount: round2(total) })
   }

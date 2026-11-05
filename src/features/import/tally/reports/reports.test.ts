@@ -302,8 +302,107 @@ describe('XML exports', () => {
     expect(p.lines).toMatchObject([{ name: 'Test A', dr: 100, cr: 0 }, { name: 'Test & B', dr: 0, cr: 100 }])
   })
   it('turns a Stock Summary XML into items', () => {
-    const xml = `<ENVELOPE><DSPACCNAME><DSPDISPNAME>Test Item</DSPDISPNAME></DSPACCNAME><DSPSTKINFO><DSPSTKCL><DSPCLQTY> 5 Nos</DSPCLQTY><DSPCLRATE>10.00/Nos</DSPCLRATE><DSPCLAMTA>50.00</DSPCLAMTA></DSPSTKCL></DSPSTKINFO></ENVELOPE>`
+    const xml = `<ENVELOPE><DSPACCNAME><DSPDISPNAME>Test Item</DSPDISPNAME></DSPACCNAME><DSPSTKINFO><DSPSTKCL><DSPCLQTY> 5 Nos</DSPCLQTY><DSPCLRATE>10.00/Nos</DSPCLRATE><DSPCLAMTA>-50.00</DSPCLAMTA></DSPSTKCL></DSPSTKINFO></ENVELOPE>`
     const p = parseReport('stock_summary', reportXmlToTable(xml, 'stock_summary'))
     expect(p.lines).toMatchObject([{ name: 'Test Item', qty: 5, unit: 'Nos', rate: 10, value: 50 }])
+  })
+})
+
+type L = { name: string; parents: string[]; is_group: boolean; dr: number; cr: number; qty: number | null; unit: string | null; rate: number | null; value: number }
+describe('real TallyPrime XML layouts (synthetic data, same quirks)', () => {
+  const block = (name: string, dr: string, cr: string) =>
+    `<DSPACCNAME><DSPDISPNAME>${name}</DSPDISPNAME></DSPACCNAME><DSPACCINFO><DSPCLDRAMT><DSPCLDRAMTA>${dr}</DSPCLDRAMTA></DSPCLDRAMT><DSPCLCRAMT><DSPCLCRAMTA>${cr}</DSPCLCRAMTA></DSPCLCRAMT></DSPACCINFO>`
+  it('Trial Balance: Dr is written negative, Cr positive, a wrong-sign pair is honoured, empty lines are dropped, names are cleaned', () => {
+    const xml = `<ENVELOPE>${block('Opening Stock', '', '')}${block('Test Asset', '-500.00', '')}${block('Test &amp; Wrong Side Cr', '', '-40.00')}${block('Test Wrong Side Dr', '40.00', '')}${block('Test Capital&#13;&#10;', '', '500.00')}</ENVELOPE>\r\r\n`
+    const p = parseReport('trial_balance', reportXmlToTable(xml, 'trial_balance'))
+    expect((p.lines as L[]).map((l) => l.name)).toEqual(['Test Asset', 'Test & Wrong Side Cr', 'Test Wrong Side Dr', 'Test Capital'])
+    expect((p.lines as L[])).toMatchObject([{ dr: 500, cr: 0 }, { dr: 40, cr: 0 }, { dr: 0, cr: 40 }, { dr: 0, cr: 500 }])
+    expect((p.lines as L[]).every((l) => !l.is_group)).toBe(true) // no group is guessed from sums in a flat XML list
+    const d = p.detail as { ledgerDr: number; ledgerCr: number }
+    expect(d.ledgerDr).toBe(d.ledgerCr)
+    expect(p.asOf).toBeNull()
+  })
+  it('Trial Balance: a flat list never turns a ledger into a group because its amount equals the rows below', () => {
+    const xml = `<ENVELOPE>${block('Test A', '-100.00', '')}${block('Test B', '-60.00', '')}${block('Test C', '-40.00', '')}${block('Test D', '', '200.00')}</ENVELOPE>`
+    const p = parseReport('trial_balance', reportXmlToTable(xml, 'trial_balance'))
+    expect((p.lines as L[]).filter((l) => l.is_group)).toHaveLength(0)
+  })
+  it('Trial Balance: a visible Opening Stock line is kept but flagged', () => {
+    const xml = `<ENVELOPE>${block('Opening Stock', '-70.00', '')}${block('Test B', '', '70.00')}</ENVELOPE>`
+    const p = parseReport('trial_balance', reportXmlToTable(xml, 'trial_balance'))
+    expect(p.warnings.map((w) => w.code)).toContain('stock_valuation_line')
+  })
+  it('Stock Summary: negative quantities, blank rate/amount, trailing entities, Dr-negative value', () => {
+    const item = (n: string, q: string, r: string, a: string) =>
+      `<DSPACCNAME><DSPDISPNAME>${n}</DSPDISPNAME></DSPACCNAME><DSPSTKINFO><DSPSTKCL><DSPCLQTY>${q}</DSPCLQTY><DSPCLRATE>${r}</DSPCLRATE><DSPCLAMTA>${a}</DSPCLAMTA></DSPSTKCL></DSPSTKINFO>`
+    const xml = `<ENVELOPE>${item('Test Neg &#13;&#10;', '-3688 Nos', '', '')}${item('Test Held', '906 Nos', '2.00', '-1812.00')}${item('Test Value Only', '', '', '-150.00')}${item('Test Kg', '12.5 Kg', '10.00', '-125.00')}</ENVELOPE>`
+    const p = parseReport('stock_summary', reportXmlToTable(xml, 'stock_summary'))
+    expect((p.lines as L[]).map((l) => l.name)).toEqual(['Test Neg', 'Test Held', 'Test Value Only', 'Test Kg'])
+    expect((p.lines as L[])[0]).toMatchObject({ qty: -3688, unit: 'Nos', rate: null, value: 0, is_group: false })
+    expect((p.lines as L[])[1]).toMatchObject({ qty: 906, rate: 2, value: 1812 })
+    expect((p.lines as L[])[2]).toMatchObject({ qty: null, value: 150 })
+    expect((p.lines as L[])[3]).toMatchObject({ qty: 12.5, unit: 'Kg', value: 125 })
+    expect((p.detail as { itemValue: number }).itemValue).toBe(2087)
+    expect((p.lines as L[]).some((l) => l.is_group)).toBe(false)
+  })
+  it('Balance Sheet: one running list, side by group name or sign, sub lines under their group', () => {
+    const e = (n: string, sub: string, main: string) => `<BSNAME><DSPACCNAME><DSPDISPNAME>${n}</DSPDISPNAME></DSPACCNAME></BSNAME><BSAMT><BSSUBAMT>${sub}</BSSUBAMT><BSMAINAMT>${main}</BSMAINAMT></BSAMT>`
+    const xml = `<ENVELOPE>${e('Capital Account', '', '500.00')}${e('Test Partner', '500.00', '')}${e('Current Liabilities', '', '-20.00')}${e('Test Debit Balance Creditor', '-20.00', '')}${e('Fixed Assets', '', '-400.00')}${e('Test Machine', '-450.00', '')}${e('Test Credit Machine', '50.00', '')}${e('Current Assets', '', '-80.00')}${e('Test Cash', '-80.00', '')}</ENVELOPE>`
+    const p = parseReport('balance_sheet', reportXmlToTable(xml, 'balance_sheet'))
+    const find = (n: string) => (p.lines as { name: string; side: string; amount: number; depth: number; is_group: boolean }[]).find((l) => l.name === n)!
+    expect(find('Capital Account')).toMatchObject({ side: 'L', amount: 500, depth: 0 })
+    expect(find('Current Liabilities')).toMatchObject({ side: 'L', amount: -20 })
+    expect(find('Fixed Assets')).toMatchObject({ side: 'A', amount: 400 })
+    expect(find('Test Machine')).toMatchObject({ side: 'A', amount: 450, depth: 1 })
+    expect(find('Test Credit Machine')).toMatchObject({ side: 'A', amount: -50, depth: 1 })
+    expect(find('Current Assets')).toMatchObject({ side: 'A', amount: 80 })
+    expect(find('Capital Account')).toMatchObject({ is_group: true })
+    expect(find('Current Liabilities')).toMatchObject({ is_group: true }) // a group line stays a group even with one sub line or none
+  })
+})
+
+describe('Excel analysis workbook layouts', () => {
+  it('Trial Balance sheet: ledger | primary group | group | debit | credit, total and difference rows, date in the source note', () => {
+    const p = parseReport('trial_balance', [
+      ['Ledger', 'Primary group', 'Group', 'Debit ₹', 'Credit ₹'],
+      ['Test Asset', 'Fixed Assets', 'Fixed Assets', 500, null],
+      ['Test Debtor', 'Current Assets', 'Sundry Debtors', 100, null],
+      ['Test Capital', 'Capital Account', 'Test Partners', null, 590],
+      ['Opening Stock', 'Opening Stock', 'Opening Stock', 10, null],
+      [null, null, null, null, null],
+      [null, null, 'Total', 610, 590],
+      [null, null, 'Difference (debit − credit)', 20, null],
+      [null, null, null, null, null],
+      ['Source: test export, balances at 3-Nov-2026; groups from the masters.', null, null, null, null],
+    ])
+    expect(p.asOf).toBe('2026-11-03')
+    expect((p.lines as L[])).toHaveLength(4)
+    expect((p.lines as L[])[1]).toMatchObject({ name: 'Test Debtor', parents: ['Sundry Debtors', 'Current Assets'], dr: 100 })
+    expect((p.lines as L[])[0]?.parents).toEqual(['Fixed Assets'])
+    expect((p.lines as L[])[3]?.parents).toEqual([])
+    const d = p.detail as { tallyDr: number; tallyCr: number; diffDr: number }
+    expect([d.tallyDr, d.tallyCr, d.diffDr]).toEqual([610, 590, 20])
+    expect(p.warnings.map((w) => w.code)).toEqual(expect.arrayContaining(['opening_difference', 'stock_valuation_line']))
+    expect(p.warnings.map((w) => w.code)).not.toContain('grand_total_differs')
+  })
+  it('Stock Summary sheet: item | quantity | unit | rate | value, total in the rate column, extra rows ignored', () => {
+    const p = parseReport('stock_summary', [
+      ['Item', 'Quantity', 'Unit', 'Rate ₹', 'Value ₹', 'Flag'],
+      ['Test Jar', 10, 'Nos', 5, 50, 'Yes'],
+      ['Test Resin', 2.5, 'Kgs', 100, 250, 'No'],
+      ['Test Negative', -4, 'Nos', 3, -12, 'No'],
+      [null, null, null, null, null, null],
+      [null, null, null, 'Total', 288, null],
+      [null, null, null, 'Extra summary row', 50, null],
+      [null, null, null, null, null, null],
+      ['Source: test, closing as on 3-Nov-2026.', null, null, null, null, null],
+    ])
+    expect(p.asOf).toBe('2026-11-03')
+    expect(p.companyName).toBeNull()
+    expect((p.lines as L[])).toHaveLength(3)
+    expect((p.lines as L[])[0]).toMatchObject({ qty: 10, unit: 'Nos', rate: 5, value: 50, is_group: false })
+    expect((p.lines as L[])[2]).toMatchObject({ qty: -4, value: -12 })
+    expect((p.detail as { itemValue: number; tallyValue: number }).tallyValue).toBe(288)
+    expect(p.warnings).toHaveLength(0)
   })
 })

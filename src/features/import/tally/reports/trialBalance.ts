@@ -2,6 +2,8 @@ import {
   buildHierarchy, columnLabels, companyNameOf, findRow, isBlank, label, leadingSpaces, looksLikeGroupNames, parseAmount, periodOf, round2, text, ReportReadError,
   type HierMode, type Table,
 } from './common'
+import { isFlatTable } from './xmlReports'
+import { parseLedgerGroupTrialBalance } from './workbookLayouts'
 
 export interface TbLine {
   name: string
@@ -87,6 +89,8 @@ function pickColumns(table: Table, h: number): Cols {
  * being the sum of the rows below it. The leaf totals are checked against the file's Grand Total.
  */
 export function parseTrialBalance(table: Table): TrialBalanceParsed {
+  const ledgerGroup = parseLedgerGroupTrialBalance(table)
+  if (ledgerGroup) return ledgerGroup
   const h = findRow(table, (r) => r.some((c) => label(c) === 'particulars'))
   if (h < 0) throw new ReportReadError('errTbHeader')
   const cols = pickColumns(table, h)
@@ -153,8 +157,8 @@ export function parseTrialBalance(table: Table): TrialBalanceParsed {
   }
   const matches = (t: { d: number; c: number }) => tallyDr === null || tallyCr === null || (Math.abs(t.d - tallyDr) < 0.01 && Math.abs(t.c - tallyCr) < 0.01)
 
-  let hier = buildHierarchy(items, 'greedy')
-  if (!matches(leafTotals(hier.isGroup))) {
+  let hier = buildHierarchy(items, isFlatTable(table) ? 'flat' : 'greedy')
+  if (!isFlatTable(table) && !matches(leafTotals(hier.isGroup))) {
     for (const mode of ['min2', 'flat'] as HierMode[]) {
       const alt = buildHierarchy(items, mode)
       if (matches(leafTotals(alt.isGroup))) {

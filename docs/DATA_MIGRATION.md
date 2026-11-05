@@ -44,6 +44,27 @@ Each report is read by a pure parser (`src/features/import/tally/reports/*.ts`, 
 ### Loading from the command line (owner's computer)
 `npx tsx scripts/import-tally-report.mjs --company SFB --kind daybook --file <path.xlsx> --dry-run` prints the pre-load summary (counts by voucher type, Dr/Cr totals, date range, company named in the file) and sends nothing. Without `--dry-run` it signs in as the Admin login (`E2E_ADMIN_*` from the environment or `.env.test.local`, never printed), stages in chunks of 1,500 lines and processes in slices of 1,000 with progress. `--kind trial_balance|stock_summary|balance_sheet` stores the report (`--as-of` when the file has no date); `--apply` (Trial Balance, or Stock Summary with `--place <store code>`) then calls the apply RPC. `--force` loads even when the company named in the file does not look like the chosen company. Real files are passed at run time and are never committed (`imports/` is git-ignored).
 
+## Real TallyPrime export layouts (learned from the first real load)
+
+Generic notes only; no real values. All TallyPrime XML files are UTF-16LE with a BOM. Tally writes **a debit as a negative number and a credit as a positive one** in every XML report.
+
+| File | Layout | What the importer does |
+|---|---|---|
+| **Masters** ("All Masters" `IMPORTDATA`) | `TALLYMESSAGE` blocks holding `CURRENCY`, `COMPANY`, `GROUP`, `LEDGER`. No stock items or units unless Tally was asked for them. A predefined group has `RESERVEDNAME` set, a custom one has it empty. Names can end in `&#13;&#10;`. Some PIN codes hold `0`, 5, 7 or 10 digits. A ledger can have no parent (Tally's reserved Profit & Loss). | `scripts/import-tally-masters.mjs` streams the file (UTF-16 decoded incrementally, cut on `</TALLYMESSAGE>`), uses the Import screen's parser and RPCs, prints counts and the group list. A PIN that is not exactly 6 digits is left out. |
+| **Trial Balance XML** | A flat ledger list: `DSPACCNAME/DSPDISPNAME` then `DSPACCINFO` with `DSPCLDRAMTA` / `DSPCLCRAMTA` (one signed figure, the other blank). No group rows, no Grand Total, no title or date. A pseudo-line "Opening Stock" can be present with blank figures. | Net debit = −(DR + CR) so a wrong-sign figure still lands on the right side. Blank lines are dropped; a non-zero Opening/Closing Stock line is kept and flagged `stock_valuation_line`. No group is guessed from sums. The as-of date comes from `--as-of` (the file has none). |
+| **Stock Summary XML** | Flat item list: `DSPCLQTY` = "<qty> <unit>" (may be negative or blank), `DSPCLRATE` and `DSPCLAMTA` may be blank. `DSPCLAMTA` is negative for stock held. | Value = −`DSPCLAMTA`. Negative quantities, blank rates and value-only lines are kept and counted. No stock groups in this layout. |
+| **Balance Sheet XML** | One running list of `BSNAME` + `BSAMT`: `BSMAINAMT` on a group line, `BSSUBAMT` on the lines below it (ledgers or sub-groups). Liabilities are positive, assets negative; no Total lines. "Working Capital" appears as a pseudo-group. | The side is told by Tally's own group name, else by the sign; every group line is a group even with nothing below it; each side's total is the sum of its group lines, so a gap between the sides shows as `sides_differ`. |
+| **Day Book XML** (voucher level) | `VOUCHER` blocks. In an item invoice (sales, purchase, notes) the sales/purchase ledger sits inside `ALLINVENTORYENTRIES.LIST/ACCOUNTINGALLOCATIONS.LIST`, not among `ALLLEDGERENTRIES.LIST`. Orders and delivery notes carry entries that never reach the books. Most of the file's size is inventory, GST and audit detail. | Both places are read, so every voucher balances. Order / delivery / receipt notes, memoranda and stock journals keep their entries as `memo_lines` and have an empty `lines`. `scripts/import-tally-daybook-xml.mjs` streams the file (`--dry-run` counts, Dr/Cr totals, per-voucher balance, size; `--from/--to` loads only a date window). |
+| **Analysis workbook** (derived from Tally, not Tally's own Excel) | Sheet "Trial Balance": Ledger \| Primary group \| Group \| Debit \| Credit, a Total row (label in the Group column), a "Difference" row, a Source note. Sheet "Stock Summary": Item \| Quantity \| Unit \| Rate \| Value, a Total row (label in the Rate column), extra summary rows, a Source note. The date is only in the Source note ("balances at …", "closing as on …"). | Read by `workbookLayouts.ts`; the CLI picks the sheet by name (`--sheet` overrides). The ledger's group chain comes from the Group / Primary group columns. |
+
+Other things the first real load showed:
+
+- The "difference in opening balances" Tally shows is also the gap in the Trial Balance and the Balance Sheet; in one company it equals the net of the masters' opening balances exactly; in the other the masters nets differ because ledgers under unmapped custom groups are not loaded yet.
+- Tally's own predefined groups are mapped 1:1 to ERP account groups named like them (`--map-predefined`, through `api.upsert_account_group` and `api.set_tally_group_map`). Custom groups are never mapped by a script: their ledgers wait as "Map this head" for the owner or CA.
+- The ERP holds opening balances only (Day Book lines are reference history, never posted), so a Trial Balance comparison shows the whole year's movement as differences until opening balances are applied.
+- `--reparse <tag>` on `scripts/import-tally-report.mjs` stores the same file again after a parser fix (staged reports are history and the file checksum is unique); `scripts/compare-tally-reports.mjs` prints the comparison by ledger group, never by name.
+- Heavy loads: about 4 KB of database per Day Book voucher (staged row, voucher, audit history); a one-leg Day Book line costs about 2.3 KB.
+
 ## No duplicate masters (order of matching)
 
 1. **Tally identity:** company + GUID in `ops.source_keys` (with MASTERID and ALTERID). The same GUID is always the same record. A higher ALTERID with changed content opens a "Changed in Tally after loading" item, and the record is not written over. A rename keeps the Tally name as an alias.
@@ -154,7 +175,7 @@ Every rollback decision is the owner's, recorded in the Bug fixer and in `docs/I
 
 ## Tests (synthetic Tally data only)
 
-`supabase/tests/06_import.sql` (15 assertions) and `src/features/import/tally/parseTallyXml.test.ts` (9 tests).
+`supabase/tests/06_import.sql` (15 assertions) and `src/features/import/tally/parseTallyXml.test.ts` (13 tests, including item-invoice vouchers, memorandum vouchers, PIN codes and entity-encoded names).
 
 Phase 10, Tally reports: `supabase/tests/26_tally_reports.sql` (67 assertions: idempotent staging, Admin-only apply, Dr ≠ Cr refused, opening balances only when balanced and mapped, unmapped group → "Map this head", group-wise refused, vouchers after the date refused, stock applied once, voucher rows Admin/CA only, other company invisible, compare shows differences, timing of a 500-line step), `src/features/import/tally/reports/reports.test.ts` (25 tests on synthetic in-memory workbooks), and `e2e/phase10-tally-reports.spec.ts` (synthetic .xlsx generated at run time, fresh synthetic company, DB assertions, axe).
 

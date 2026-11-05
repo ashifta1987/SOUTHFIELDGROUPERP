@@ -159,7 +159,7 @@ export async function sha256Hex(bytes: ArrayBuffer | Uint8Array): Promise<string
 export function companyNameOf(table: Table, upto: number): string | null {
   for (let i = 0; i < Math.min(upto, table.length); i++) {
     const t = text((table[i] ?? []).find((c) => !isBlank(c)))
-    if (t) return t
+    if (t) return /^(as at|as on|as of)\b/i.test(t) ? null : t
   }
   return null
 }

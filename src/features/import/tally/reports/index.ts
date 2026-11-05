@@ -29,6 +29,9 @@ export interface ParsedReport {
 export function parseReport(kind: ReportKind, table: Table): ParsedReport {
   if (kind === 'trial_balance') {
     const d = parseTrialBalance(table)
+    // Tally's pseudo-ledgers for the stock valuation sit in the Trial Balance when they have a figure: say so (they are not real ledgers)
+    const stockLines = d.lines.filter((l) => /^(opening|closing) stock$/i.test(l.name) && (l.dr !== 0 || l.cr !== 0))
+    const warnings = stockLines.length > 0 ? [...d.warnings, { code: 'stock_valuation_line', detail: `${stockLines.length} line(s), Dr ${stockLines.reduce((s, l) => s + l.dr, 0)} / Cr ${stockLines.reduce((s, l) => s + l.cr, 0)}` }] : d.warnings
     return {
       kind,
       lines: d.lines,
@@ -37,7 +40,7 @@ export function parseReport(kind: ReportKind, table: Table): ParsedReport {
       asOf: d.asOf,
       periodFrom: d.periodFrom,
       companyName: d.companyName,
-      warnings: d.warnings,
+      warnings,
       detail: d,
     }
   }

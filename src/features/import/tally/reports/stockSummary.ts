@@ -2,6 +2,8 @@ import {
   buildHierarchy, columnLabels, companyNameOf, findRow, label, leadingSpaces, parseAmount, parseQty, parseRate, periodOf, round2, round3, text, ReportReadError,
   type HierMode, type Table,
 } from './common'
+import { isFlatTable } from './xmlReports'
+import { adaptItemUnitStockSheet } from './workbookLayouts'
 
 export interface StockLine {
   name: string
@@ -57,7 +59,8 @@ function pick(table: Table, h: number): Cols {
  * Stock Summary (Display → Stock Summary → Export → Excel): Particulars | Closing Quantity (e.g. "125.500 Kg") | Rate | Value.
  * Item rows carry a rate or a unit; stock-group rows are told by indentation or by their value being the sum of the items below.
  */
-export function parseStockSummary(table: Table): StockSummaryParsed {
+export function parseStockSummary(sheet: Table): StockSummaryParsed {
+  const table = adaptItemUnitStockSheet(sheet) ?? sheet
   const h = findRow(table, (r) => r.some((c) => label(c) === 'particulars'))
   if (h < 0) throw new ReportReadError('errStockHeader')
   const cols = pick(table, h)
@@ -85,8 +88,8 @@ export function parseStockSummary(table: Table): StockSummaryParsed {
   const items = raw.map((r) => ({ name: r.name, amount: r.value, indent: r.indent, leaf: r.item }))
   const leaf = (isGroup: boolean[]) => round2(raw.reduce((s, r, i) => s + (isGroup[i] ? 0 : r.value), 0))
   const ok = (v: number) => tallyValue === null || Math.abs(v - tallyValue) < 0.01
-  let hier = buildHierarchy(items, 'greedy')
-  if (!ok(leaf(hier.isGroup))) {
+  let hier = buildHierarchy(items, isFlatTable(table) ? 'flat' : 'greedy')
+  if (!isFlatTable(table) && !ok(leaf(hier.isGroup))) {
     for (const mode of ['min2', 'flat'] as HierMode[]) {
       const alt = buildHierarchy(items, mode)
       if (ok(leaf(alt.isGroup))) {
