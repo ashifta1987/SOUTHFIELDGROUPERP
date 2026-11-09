@@ -406,5 +406,87 @@
         }
       }
     }
+  },
+  "tallyMaps": {
+    "title": "Mapping: Tally names to ERP",
+    "hint": "Every name a voucher uses must be confirmed before anything posts. The system suggests; you confirm. Bulk confirm covers exact matches only. Voucher types for bills without GST are on the CA review list and are confirmed one by one.",
+    "suggest": "Suggest mappings",
+    "suggested": "Suggestions written: {{vt}} voucher types, {{gd}} godowns, {{un}} units, {{it}} items. {{ca}} voucher types are on the CA review list.",
+    "tabsLabel": "Mapping kinds",
+    "tabs": {
+      "heads": "Heads",
+      "voucher_types": "Voucher types",
+      "godowns": "Godowns",
+      "units": "Units & currencies",
+      "items": "Item aliases"
+    },
+    "heads": {
+      "suggestions": "Suggested heads"
+    },
+    "units": {
+      "units": "Units",
+      "currencies": "Currencies"
+    },
+    "compound": "compound unit",
+    "col": {
+      "tally": "Tally name",
+      "erp": "ERP target",
+      "note": "Notes",
+      "status": "Status"
+    },
+    "choose": "Choose…",
+    "chooseFor": "ERP target for {{name}}",
+    "confirm": "Confirm",
+    "confirmAria": "Confirm the mapping of {{name}}",
+    "ack": "I have read this: CA review",
+    "bulk": "Confirm exact matches ({{count}})",
+    "bulkDone": "{{confirmed}} confirmed; {{left}} left for review.",
+    "empty": "Nothing to map yet",
+    "emptyBody": "Load the masters or the day book from Tally, then press “Suggest mappings”.",
+    "exact": "Exact match",
+    "caReview": "CA review",
+    "withoutGst": "Without GST",
+    "status": {
+      "confirmed": "Confirmed",
+      "suggested": "Suggested",
+      "unmapped": "Not mapped"
+    },
+    "gaps": {
+      "title": "Names used by staged vouchers that are not confirmed",
+      "kind": "Kind",
+      "name": "Name",
+      "used": "Used",
+      "status": "Status",
+      "count_one": "{{count}} name waiting",
+      "count_other": "{{count}} names waiting",
+      "none": "None waiting",
+      "noneBody": "Every voucher type, godown, unit, ledger and item used by the staged vouchers is mapped.",
+      "kinds": {
+        "voucher_type": "Voucher type",
+        "godown": "Godown",
+        "unit": "Unit",
+        "ledger": "Ledger",
+        "item": "Item"
+      }
+    },
+    "doc": {
+      "sales_invoice": "Sales invoice",
+      "purchase_bill": "Purchase bill",
+      "receipt": "Receipt",
+      "payment": "Payment",
+      "journal": "Journal",
+      "contra": "Contra",
+      "credit_note": "Credit note",
+      "debit_note": "Debit note",
+      "stock_journal": "Stock journal",
+      "manufacturing_journal": "Manufacturing journal",
+      "delivery_note": "Delivery note",
+      "receipt_note": "Receipt note",
+      "sales_order": "Sales order",
+      "purchase_order": "Purchase order",
+      "rejection_note": "Rejection note",
+      "memo": "Memo (not posted)",
+      "other": "Other"
+    }
   }
 }

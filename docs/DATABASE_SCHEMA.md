@@ -743,3 +743,35 @@ Line shapes in `lines`: Trial Balance `{name, parents[], is_group, dr, cr}`; Sto
 - Stock Summary apply: `inventory.approve`, store of the same company, once, unmatched items refuse, zero/negative lines → Bug fixer `negative_stock`.
 - Balance Sheet: stored for reconciliation only.
 
+
+
+## Phase 10b: Tally import, Stage 1 (mapping tables, voucher child lists)
+
+Migrations `20261103012000` … `012500` (additive). RLS on every table; reads for Admin, the CA (read-only view) and holders of `data.import`; writes only through Admin RPCs; row history (`audit_row`) on the mapping and master tables.
+
+### Mapping tables (`ops`)
+| Table | Key | Holds |
+|---|---|---|
+| `tally_voucher_type_map` | (company_id, tally_type) | base_type, erp_doc_type, tax_class (`taxable`/`without_gst`/`none`), numbering, active, prevent_duplicates, affects_stock, optional, **ca_review**, status (`suggested`/`confirmed`), exact, reason |
+| `tally_godown_map` | (company_id, tally_godown) | place_id → core.places, has_no_space, is_external, is_internal, status, exact |
+| `tally_unit_map` | (company_id, tally_unit) | uom_code → master.uoms, is_simple, base/additional unit, conversion (> 0), decimals, gst_uqc |
+| `tally_currency_map` | (company_id, tally_symbol) | iso_code, mailing_name, expanded_symbol, decimals |
+| `tally_item_map` | (company_id, tally_item) | product_id (confirming also writes `master.product_aliases`) |
+| `tally_group_suggest` | (company_id, tally_group) | account_group_id suggestion; confirmed heads are written to `tally_group_map` |
+
+A confirmed row needs its target (check constraints). The engine never changes a confirmed row.
+
+### Master tables
+`acct.cost_categories`, `acct.cost_centres` (category, parent, per company), `master.item_categories`; added columns: `master.product_groups.default_uom`, `qty_addable`; `master.products.category_id`, `batch_tracked`, `expiry_tracked`, `gst_applicable`, `alt_uom`, `alt_uom_conversion`. (`master.product_groups` is the item-group table; not duplicated.)
+
+### Voucher child lists (`ops`, written once per batch, Admin / CA read only)
+`tally_voucher_lines`, `tally_voucher_inventory`, `tally_voucher_batches`, `tally_voucher_bills`, `tally_voucher_costcentres`, `tally_voucher_banks`: primary key (voucher_id, batch_id, line_no), company_id, parsed columns only; lines and inventory rows carry `flags text[]` (`sign_mismatch`, `amount_mismatch`, `qty_unparsed`, `unit_mismatch`, `missing_name`). A trigger refuses update and delete while the voucher exists. `ops.tally_vouchers` gained: narration, reference, reference_date, effective_date, persisted_view, is_invoice, is_post_dated, place_of_supply, party_gstin, buyer_name, voucher_key, irn, ack_no, ack_date, eway_bill_no, row_hash, children_batch_id, children_alter_id, children_staged_at. `ops.import_batches.file_sha256` added.
+
+### Views (security invoker)
+`api.tally_voucher_type_map`, `tally_godown_map`, `tally_unit_map`, `tally_currency_map`, `tally_item_map`, `tally_group_suggest`, `cost_categories`, `cost_centres`, and **`api.tally_map_gaps`** (company_id, kind, name, used_count, status) listing names used by staged vouchers that are not confirmed.
+
+### Other changes
+Bug fixer kinds added: `map_voucher_type`, `map_godown`, `map_unit`, `map_currency`, `map_item`, `missing_master`. `ops.import_rows.object_type` added: `voucher_type`, `cost_category`, `currency`, `stock_category`, `payhead`, `employee_group`, `attendance_type` (the last three are staged reference rows only).
+
+### Tests
+`supabase/tests/30_tally_maps.sql` (34), `31_tally_children.sql` (29).

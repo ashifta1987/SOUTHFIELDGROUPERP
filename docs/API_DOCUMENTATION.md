@@ -754,6 +754,21 @@ Paging: list screens request pages with PostgREST `range()` (`src/data/paged.tsx
 
 New rule codes: `report.kind`, `report.as_of`, `report.sha`, `report.no_lines`, `report.missing`, `report.locked`, `report.item_missing`, `report.product_missing`, `report.group_wise`, `report.vouchers_after`, `report.already_applied`, `report.opening_unbalanced`.
 
+## Phase 10b: Tally import, Stage 1
+
+All Admin only (rights `data.import` plus Admin view), idempotent on `p_client_request_id`.
+
+| RPC | What it does |
+|---|---|
+| `api.suggest_tally_maps(p_client_request_id, p_company_id)` | Writes `suggested` rows for every voucher type, godown, unit, currency, item and head the staged data uses; opens “Map this voucher type / godown / unit” Bug fixer items; returns counts. Never changes a confirmed row. Types named like “… WO” / “… Non GST” → `without_gst` and `ca_review`. |
+| `api.confirm_tally_map(p_client_request_id, p_company_id, p_kind, p_key, p_target jsonb, p_ack_ca_review boolean)` | Confirms one mapping (`voucher_type`, `godown`, `unit`, `currency`, `item`, `group`); `p_target` may carry `erp_doc_type`/`tax_class`, `place_id`, `uom_code`, `iso_code`, `product_id`, `account_group_id`. A CA-review voucher type needs `p_ack_ca_review = true` (`map.ca_review`). Closes the matching Bug fixer item. |
+| `api.confirm_tally_maps_bulk(p_client_request_id, p_company_id, p_kind)` | Confirms only exact matches that have a target and are not on the CA review list; returns `confirmed` and `left_for_review`. |
+| `api.import_stage_voucher_children(p_client_request_id, p_batch_id, p_vouchers jsonb)` | Stages the child lists of loaded vouchers (found by company + GUID) in chunks; fills empty header fields; repeats skip; vouchers not loaded are counted as `unlinked`. Returns counts per list and flagged lines. |
+
+Existing RPCs extended: `import_process`, `import_process_step`, `import_retry_errors` dispatch the new master kinds; `import_undo` also removes cost categories / centres created by the batch; items are created only with an HSN and a known unit.
+
+CLI: `scripts/import-tally-daybook-xml.mjs` parses every child list, prints their counts and flags with `--dry-run`, and stages them after the vouchers are processed.
+
 ## Rule codes
 
 `auth.required`, `rights.missing`, `rights.read_only`, `rights.reason_required`, `rights.admin_only`, `rights.role_fixed`, `rights.self_demote`, `rights.ca_needs_end`, `grant.never_grantable`, `grant.not_on_list`, `grant.self`, `grant.too_long`, `grant.bad_window`, `grant.reason_required`, `grant.already_stopped`, `grant.already_decided`, `sod.self_approval`, `org.gstin_pan_mismatch`, `org.gstin_other_company`, `org.company_missing`, `org.branch_missing`, `numbering.no_series`, `numbering.too_long`, `numbering.in_use`, `users.self_disable`, `request.id_missing`, `masters.possible_duplicate`, `party.*` (gstin_invalid, gstin_pan_mismatch, pan_invalid, gstin_exists, msme_terms, verified_locked, gstin_required, company_required, role_required), `bank.change_needs_approval`, `bank.callback_required`, `bank.callback_note`, `price.above_mrp`, `hsn.missing`, `import.missing`, `import.locked`, `bug.missing`, `bug.closed`, `bug.bad_action`, `merge.same`, `backup.outside_india`.

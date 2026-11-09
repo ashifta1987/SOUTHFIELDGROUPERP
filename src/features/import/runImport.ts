@@ -1,6 +1,7 @@
 import { supabase } from '@/shared/supabase'
 import { callApi } from '@/data/rpc'
 import { chunk, decodeTallyBytes, parseTallyXml, type ParsedTally, type StageRow } from './tally/parseTallyXml'
+import { stripChildren, toChildPayload } from './tally/childStaging'
 
 /**
  * Import pipeline used by the Import data screen:
@@ -54,7 +55,7 @@ export async function runImport({ companyId, file, source, kind = 'mixed', asOf,
     onProgress?.('done')
     return batch
   }
-  const parts = chunk(rows, 400)
+  const parts = chunk(rows.map(stripChildren), 400)
   let sent = 0
   for (const part of parts) {
     await callApi('import_stage_rows', { p_batch_id: batch.id, p_rows: part }, { idempotent: false })
@@ -63,6 +64,9 @@ export async function runImport({ companyId, file, source, kind = 'mixed', asOf,
   }
   onProgress?.('process')
   const result = await callApi<BatchResult>('import_process', { p_batch_id: batch.id })
+  // the voucher child lists (ledger entries, inventory, batches, bills, cost centres, bank allocations) follow once the vouchers exist
+  const children = rows.map(toChildPayload).filter((c) => c !== null)
+  for (const part of chunk(children, 100)) await callApi('import_stage_voucher_children', { p_batch_id: batch.id, p_vouchers: part })
   onProgress?.('done')
   return { ...batch, ...result }
 }

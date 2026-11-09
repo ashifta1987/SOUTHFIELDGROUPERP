@@ -232,3 +232,16 @@ Every rollback decision is the owner's, recorded in the Bug fixer and in `docs/I
 
 Phase 10, Tally reports: `supabase/tests/26_tally_reports.sql` (67 assertions: idempotent staging, Admin-only apply, Dr ≠ Cr refused, opening balances only when balanced and mapped, unmapped group → "Map this head", group-wise refused, vouchers after the date refused, stock applied once, voucher rows Admin/CA only, other company invisible, compare shows differences, timing of a 500-line step), `src/features/import/tally/reports/reports.test.ts` (25 tests on synthetic in-memory workbooks), and `e2e/phase10-tally-reports.spec.ts` (synthetic .xlsx generated at run time, fresh synthetic company, DB assertions, axe).
 
+
+
+## Tally import, Stage 1 (mapping and complete parsing)
+
+What is built: mapping tables for voucher types, godowns, units, currencies, item aliases and heads (with a suggestion engine and Admin confirm; bulk confirm for exact matches only; voucher types for bills without GST are on the CA review list and confirmed one by one); loaders for the masters the first files lacked; the parser reads all 175 fields of the owner's table and every voucher child list; the child lists are staged in their own write-once tables. Nothing is posted by Stage 1.
+
+How to use it (Admin, per company):
+1. Load Masters XML (re-exported with stock items, stock groups / categories, units, godowns, voucher types, cost categories / centres, currencies) with `scripts/import-tally-masters.mjs` or Import data.
+2. Load the Day Book XML with `scripts/import-tally-daybook-xml.mjs` (child lists are staged after the vouchers).
+3. Admin → Import data → Mapping → “Suggest mappings”, then confirm each tab; check “Names used by staged vouchers that are not confirmed” is empty.
+4. Items without an HSN or with an unknown unit are not created: fix them in Tally (or on the product master) and load again.
+
+The sign rule (negative = debit) is the reliable signal; `IsDeemedPositive` disagreements are flagged, not blocked. Stage 2 (historical posting) and Stage 3 (opening, reconciliation, approval) are planned in `docs/TALLY_IMPORT_CROSSCHECK.md` §9.

@@ -1,0 +1,222 @@
+{
+ "source": "Tally_Gold_Backend_Tables - Southfield ERP mapping.xlsx, sheet Fields (tag names only)",
+ "collections": {
+  "Company": [
+   "NAME",
+   "BASICCOMPANYFORMALNAME",
+   "ADDRESS",
+   "STATENAME",
+   "COUNTRYNAME",
+   "PINCODE",
+   "PHONENUMBER",
+   "EMAIL",
+   "STARTINGFROM",
+   "BOOKSFROM",
+   "INCOMETAXNUMBER",
+   "CURRENCYSYMBOL",
+   "GUID"
+  ],
+  "Group": [
+   "NAME",
+   "PARENT",
+   "ISREVENUE",
+   "ISDEEMEDPOSITIVE",
+   "AFFECTSGROSSPROFIT",
+   "ISSUBLEDGER",
+   "ISADDABLE",
+   "GUID",
+   "MASTERID",
+   "ALTERID"
+  ],
+  "Ledger": [
+   "NAME",
+   "PARENT",
+   "MAILINGNAME",
+   "ADDRESS",
+   "LEDSTATENAME",
+   "COUNTRYNAME",
+   "PINCODE",
+   "LEDGERPHONE",
+   "LEDGERMOBILE",
+   "EMAIL",
+   "LEDGERCONTACT",
+   "INCOMETAXNUMBER",
+   "PARTYGSTIN",
+   "GSTREGISTRATIONTYPE",
+   "CURRENCYNAME",
+   "OPENINGBALANCE",
+   "CLOSINGBALANCE",
+   "ISBILLWISEON",
+   "BILLCREDITPERIOD",
+   "CREDITLIMIT",
+   "ISCOSTCENTRESON",
+   "AFFECTSSTOCK",
+   "GUID",
+   "MASTERID",
+   "ALTERID"
+  ],
+  "VoucherType": [
+   "NAME",
+   "PARENT",
+   "NUMBERINGMETHOD",
+   "ISACTIVE",
+   "PREVENTDUPLICATES",
+   "AFFECTSSTOCK",
+   "ISOPTIONAL",
+   "GUID",
+   "MASTERID"
+  ],
+  "CostCategory": [
+   "NAME",
+   "ALLOCATEREVENUE",
+   "ALLOCATENONREVENUE",
+   "GUID"
+  ],
+  "CostCentre": [
+   "NAME",
+   "PARENT",
+   "CATEGORY",
+   "GUID"
+  ],
+  "Currency": [
+   "NAME",
+   "MAILINGNAME",
+   "ORIGINALSYMBOL",
+   "EXPANDEDSYMBOL",
+   "DECIMALPLACES"
+  ],
+  "StockGroup": [
+   "NAME",
+   "PARENT",
+   "BASEUNITS",
+   "ISADDABLE",
+   "GUID"
+  ],
+  "StockCategory": [
+   "NAME",
+   "PARENT",
+   "GUID"
+  ],
+  "StockItem": [
+   "NAME",
+   "PARENT",
+   "CATEGORY",
+   "DESCRIPTION",
+   "BASEUNITS",
+   "ADDITIONALUNITS",
+   "GSTAPPLICABLE",
+   "HSNCODE",
+   "ISBATCHWISEON",
+   "ISPERISHABLEON",
+   "COSTINGMETHOD",
+   "VALUATIONMETHOD",
+   "OPENINGBALANCE",
+   "OPENINGRATE",
+   "OPENINGVALUE",
+   "CLOSINGBALANCE",
+   "CLOSINGRATE",
+   "CLOSINGVALUE",
+   "GUID",
+   "MASTERID",
+   "ALTERID"
+  ],
+  "Unit": [
+   "NAME",
+   "ORIGINALNAME",
+   "ISSIMPLEUNIT",
+   "BASEUNITS",
+   "ADDITIONALUNITS",
+   "CONVERSION",
+   "DECIMALPLACES",
+   "GSTREPUOM"
+  ],
+  "Godown": [
+   "NAME",
+   "PARENT",
+   "ADDRESS",
+   "HASNOSPACE",
+   "ISEXTERNAL",
+   "ISINTERNAL",
+   "GUID"
+  ],
+  "Voucher": [
+   "DATE",
+   "VOUCHERTYPENAME",
+   "VOUCHERNUMBER",
+   "PARTYLEDGERNAME",
+   "REFERENCE",
+   "REFERENCEDATE",
+   "EFFECTIVEDATE",
+   "NARRATION",
+   "PERSISTEDVIEW",
+   "ISINVOICE",
+   "ISCANCELLED",
+   "ISOPTIONAL",
+   "ISPOSTDATED",
+   "PLACEOFSUPPLY",
+   "PARTYGSTIN",
+   "BASICBUYERNAME",
+   "AMOUNT",
+   "GUID",
+   "MASTERID",
+   "ALTERID",
+   "VOUCHERKEY"
+  ],
+  "AllLedgerEntries": [
+   "LEDGERNAME",
+   "AMOUNT",
+   "ISDEEMEDPOSITIVE",
+   "ISPARTYLEDGER",
+   "GSTCLASS"
+  ],
+  "AllInventoryEntries": [
+   "STOCKITEMNAME",
+   "ACTUALQTY",
+   "BILLEDQTY",
+   "RATE",
+   "DISCOUNT",
+   "AMOUNT",
+   "ISDEEMEDPOSITIVE",
+   "GSTHSNNAME"
+  ],
+  "BatchAllocations": [
+   "GODOWNNAME",
+   "BATCHNAME",
+   "ACTUALQTY",
+   "BILLEDQTY",
+   "AMOUNT",
+   "MFDON",
+   "EXPIRYPERIOD",
+   "ORDERNO",
+   "TRACKINGNUMBER"
+  ],
+  "AccountingAllocations": [
+   "LEDGERNAME",
+   "AMOUNT",
+   "ISDEEMEDPOSITIVE"
+  ],
+  "BillAllocations": [
+   "NAME",
+   "BILLTYPE",
+   "AMOUNT",
+   "BILLCREDITPERIOD"
+  ],
+  "CategoryAllocations": [
+   "CATEGORY",
+   "ISDEEMEDPOSITIVE"
+  ],
+  "CostCentreAllocations": [
+   "NAME",
+   "AMOUNT"
+  ],
+  "BankAllocations": [
+   "DATE",
+   "INSTRUMENTDATE",
+   "INSTRUMENTNUMBER",
+   "TRANSACTIONTYPE",
+   "PAYMENTFAVOURING",
+   "BANKERSDATE",
+   "AMOUNT"
+  ]
+ }
+}

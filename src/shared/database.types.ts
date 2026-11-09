@@ -337,6 +337,34 @@ export type Database = {
                         Relationships: [
                     
                   ]
+                },"cost_categories": {
+                  Row: {
+                    "company_id": string,"id": string,"name": string,"non_revenue": boolean,"revenue": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"id"?: string | null,"name"?: string | null,"non_revenue"?: boolean | null,"revenue"?: boolean | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"id"?: string | null,"name"?: string | null,"non_revenue"?: boolean | null,"revenue"?: boolean | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"cost_centres": {
+                  Row: {
+                    "category_id": string | null,"company_id": string,"id": string,"name": string,"parent_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "category_id"?: string | null,"company_id"?: string | null,"id"?: string | null,"name"?: string | null,"parent_id"?: string | null
+                         }
+                        Update: {
+                           "category_id"?: string | null,"company_id"?: string | null,"id"?: string | null,"name"?: string | null,"parent_id"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
                 },"cost_rates": {
                   Row: {
                     "company_id": string,"effective_from": string,"id": string,"kind": string,"note": string | null,"rate": number,"set_at": string,"set_by": string | null
@@ -1821,9 +1849,55 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"tally_currency_map": {
+                  Row: {
+                    "company_id": string,"decimals": number | null,"exact": boolean,"expanded_symbol": string | null,"iso_code": string | null,"mailing_name": string | null,"mapped_at": string | null,"reason": string | null,"status": string,"tally_symbol": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "company_id"?: string | null,"decimals"?: number | null,"exact"?: boolean | null,"expanded_symbol"?: string | null,"iso_code"?: string | null,"mailing_name"?: string | null,"mapped_at"?: string | null,"reason"?: string | null,"status"?: string | null,"tally_symbol"?: string | null
+                         }
+                        Update: {
+                           "company_id"?: string | null,"decimals"?: number | null,"exact"?: boolean | null,"expanded_symbol"?: string | null,"iso_code"?: string | null,"mailing_name"?: string | null,"mapped_at"?: string | null,"reason"?: string | null,"status"?: string | null,"tally_symbol"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"tally_godown_map": {
+                  Row: {
+                    "company_id": string,"exact": boolean,"has_no_space": boolean,"is_external": boolean,"is_internal": boolean,"mapped_at": string | null,"place_id": string | null,"place_name": string | null,"reason": string | null,"status": string,"tally_godown": string,"tally_parent": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"tally_group_map": {
                   Row: {
                     "account_group_id": string,"account_group_name": string,"company_id": string,"mapped_at": string,"tally_group": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_group_suggest": {
+                  Row: {
+                    "account_group_id": string | null,"account_group_name": string | null,"company_id": string,"exact": boolean,"is_deemed_positive": boolean | null,"is_revenue": boolean | null,"mapped_at": string | null,"reason": string | null,"status": string,"tally_group": string,"tally_parent": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_item_map": {
+                  Row: {
+                    "company_id": string,"exact": boolean,"mapped_at": string | null,"product_code": string | null,"product_id": string | null,"product_name": string | null,"reason": string | null,"status": string,"tally_item": string
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"tally_map_gaps": {
+                  Row: {
+                    "company_id": string | null,"kind": string | null,"name": string | null,"status": string | null,"used_count": number | null
                   }
                   ComputedFields: never
                   Relationships: [
@@ -1867,6 +1941,34 @@ export type Database = {
                   }
                   ComputedFields: never
                   Relationships: [
+                    
+                  ]
+                },"tally_unit_map": {
+                  Row: {
+                    "additional_unit": string | null,"base_unit": string | null,"company_id": string,"conversion": number | null,"decimals": number | null,"exact": boolean,"gst_uqc": string | null,"is_simple": boolean,"mapped_at": string | null,"reason": string | null,"status": string,"tally_unit": string,"uom_code": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "additional_unit"?: string | null,"base_unit"?: string | null,"company_id"?: string | null,"conversion"?: number | null,"decimals"?: number | null,"exact"?: boolean | null,"gst_uqc"?: string | null,"is_simple"?: boolean | null,"mapped_at"?: string | null,"reason"?: string | null,"status"?: string | null,"tally_unit"?: string | null,"uom_code"?: string | null
+                         }
+                        Update: {
+                           "additional_unit"?: string | null,"base_unit"?: string | null,"company_id"?: string | null,"conversion"?: number | null,"decimals"?: number | null,"exact"?: boolean | null,"gst_uqc"?: string | null,"is_simple"?: boolean | null,"mapped_at"?: string | null,"reason"?: string | null,"status"?: string | null,"tally_unit"?: string | null,"uom_code"?: string | null
+                         }
+                        Relationships: [
+                    
+                  ]
+                },"tally_voucher_type_map": {
+                  Row: {
+                    "active": boolean,"affects_stock": boolean,"base_type": string | null,"ca_review": boolean,"company_id": string,"erp_doc_type": string | null,"exact": boolean,"mapped_at": string | null,"numbering": string | null,"optional": boolean,"prevent_duplicates": boolean | null,"reason": string | null,"status": string,"tally_type": string,"tax_class": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "active"?: boolean | null,"affects_stock"?: boolean | null,"base_type"?: string | null,"ca_review"?: boolean | null,"company_id"?: string | null,"erp_doc_type"?: string | null,"exact"?: boolean | null,"mapped_at"?: string | null,"numbering"?: string | null,"optional"?: boolean | null,"prevent_duplicates"?: boolean | null,"reason"?: string | null,"status"?: string | null,"tally_type"?: string | null,"tax_class"?: string | null
+                         }
+                        Update: {
+                           "active"?: boolean | null,"affects_stock"?: boolean | null,"base_type"?: string | null,"ca_review"?: boolean | null,"company_id"?: string | null,"erp_doc_type"?: string | null,"exact"?: boolean | null,"mapped_at"?: string | null,"numbering"?: string | null,"optional"?: boolean | null,"prevent_duplicates"?: boolean | null,"reason"?: string | null,"status"?: string | null,"tally_type"?: string | null,"tax_class"?: string | null
+                         }
+                        Relationships: [
                     
                   ]
                 },"tally_vouchers": {
@@ -2527,6 +2629,12 @@ export type Database = {
 "confirm_schedule3_map":
 { Args: { "p_client_request_id": string,"p_company_id": string,"p_note": string }; Returns: Json
                            },
+"confirm_tally_map":
+{ Args: { "p_ack_ca_review"?: boolean,"p_client_request_id": string,"p_company_id": string,"p_key": string,"p_kind": string,"p_target"?: Json }; Returns: Json
+                           },
+"confirm_tally_maps_bulk":
+{ Args: { "p_client_request_id": string,"p_company_id": string,"p_kind": string }; Returns: Json
+                           },
 "create_bill_capture":
 { Args: { "p": Json,"p_client_request_id": string }; Returns: Json
                            },
@@ -2660,6 +2768,9 @@ export type Database = {
                            },
 "import_stage_rows":
 { Args: { "p_batch_id": string,"p_rows": Json }; Returns: Json
+                           },
+"import_stage_voucher_children":
+{ Args: { "p_batch_id": string,"p_client_request_id": string,"p_vouchers": Json }; Returns: Json
                            },
 "import_undo":
 { Args: { "p_batch_id": string,"p_client_request_id": string,"p_reason": string }; Returns: Json
@@ -3246,6 +3357,9 @@ export type Database = {
                            },
 "submit_stock_count":
 { Args: { "p_client_request_id": string,"p_count_id": string }; Returns: Json
+                           },
+"suggest_tally_maps":
+{ Args: { "p_client_request_id": string,"p_company_id": string }; Returns: Json
                            },
 "trial_balance":
 { Args: { "p_company_id": string,"p_from": string,"p_to": string }; Returns: {

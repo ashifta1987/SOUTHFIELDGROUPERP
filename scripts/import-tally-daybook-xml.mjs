@@ -9,8 +9,14 @@
 // --from / --to keep only vouchers dated inside the window (inclusive; e.g. the financial years wanted as reference).
 // A voucher that matches one-leg Excel vouchers on type | number | date replaces them in the database (the first leg is upgraded with the full
 // lines, the other legs are marked reversed and linked): one voucher is never counted twice. Decided in app.imp_voucher; see dayBookWindow.ts.
+// The child lists of every voucher (ledger entries, inventory with batches, bills, cost centres, bank allocations) are parsed too; they are kept in a
+// temporary file while streaming and sent after the vouchers are processed (api.import_stage_voucher_children, in chunks, safe to repeat).
+// --dry-run prints counts of every child list and of the sign / quantity / amount flags.
 // Prints counts, totals, dates and balance checks only: never a party, ledger or narration text.
-import { readFileSync, existsSync, statSync } from 'node:fs'
+import { readFileSync, existsSync, statSync, createWriteStream, createReadStream, unlinkSync } from 'node:fs'
+import { createInterface } from 'node:readline'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { randomUUID } from 'node:crypto'
 import { createClient } from '@supabase/supabase-js'
 import { streamTallyRows } from './lib/tallyStream.mjs'
@@ -93,6 +99,15 @@ const byYear = new Map()
 let dateFrom = null
 let dateTo = null
 const seenGuids = new Set()
+const ch = {
+  vouchersWithChildren: 0, lines: { ALLLEDGERENTRIES: 0, LEDGERENTRIES: 0, ACCOUNTINGALLOCATIONS: 0 }, inventory: { entries: 0, in: 0, out: 0 }, batches: 0, bills: {}, costcentres: 0, banks: 0,
+  flags: { sign_mismatch: 0, amount_mismatch: 0, qty_unparsed: 0, unit_mismatch: 0, missing_name: 0 }, batchNamed: 0, batchMfd: 0, batchExpiryDate: 0, batchExpiryText: 0, batchGodown: 0,
+  partyLines: 0, vouchersWithManyParty: 0, qtyNoUnit: 0, billedNeActual: 0, inventoryVouchers: 0,
+}
+const HEADER_KEYS = ['narration', 'reference', 'reference_date', 'effective_date', 'persisted_view', 'is_invoice', 'is_post_dated', 'place_of_supply', 'party_gstin', 'buyer_name', 'voucher_key', 'irn', 'ack_no', 'ack_date', 'eway_bill_no', 'row_hash']
+const childFile = join(tmpdir(), `sf-children-${process.pid}.ndjson`)
+const childOut = dry ? null : createWriteStream(childFile)
+let childWritten = 0
 let staged = 0
 let pending = []
 let companyInFile = null
@@ -139,6 +154,40 @@ const { messages, companyName } = await streamTallyRows(
         seenGuids.add(r.guid)
       }
       stats.kept++
+      if (r.children) {
+        const c = r.children
+        const any = c.lines.length + c.inventory.length + c.batches.length + c.bills.length + c.costcentres.length + c.banks.length
+        if (any > 0) ch.vouchersWithChildren++
+        for (const l of c.lines) {
+          ch.lines[l.list]++
+          if (l.party) ch.partyLines++
+          for (const f of l.flags) ch.flags[f]++
+        }
+        if (c.lines.filter((l) => l.party).length > 1) ch.vouchersWithManyParty++
+        if (c.inventory.length > 0) ch.inventoryVouchers++
+        for (const i of c.inventory) {
+          ch.inventory[i.list_kind]++
+          for (const f of i.flags) ch.flags[f]++
+          if (i.actual_qty !== null && !i.actual_unit) ch.qtyNoUnit++
+          if (i.billed_qty !== null && i.actual_qty !== null && i.billed_qty !== i.actual_qty) ch.billedNeActual++
+        }
+        ch.batches += c.batches.length
+        for (const b of c.batches) {
+          if (b.batch) ch.batchNamed++
+          if (b.godown) ch.batchGodown++
+          if (b.mfd_on) ch.batchMfd++
+          if (b.expiry_on) ch.batchExpiryDate++
+          if (b.expiry_text) ch.batchExpiryText++
+        }
+        for (const b of c.bills) ch.bills[b.bill_type ?? '(none)'] = (ch.bills[b.bill_type ?? '(none)'] ?? 0) + 1
+        ch.costcentres += c.costcentres.length
+        ch.banks += c.banks.length
+        if (childOut && any > 0 && r.guid) {
+          const header = Object.fromEntries(HEADER_KEYS.filter((k) => p[k] !== undefined && p[k] !== null).map((k) => [k, p[k]]))
+          childOut.write(`${JSON.stringify({ guid: r.guid, alter_id: r.alter_id, header, ...c })}\n`)
+          childWritten++
+        }
+      }
       dateFrom = dateFrom && dateFrom < d ? dateFrom : d
       dateTo = dateTo && dateTo > d ? dateTo : d
       const lines = p.lines ?? []
@@ -176,7 +225,10 @@ const { messages, companyName } = await streamTallyRows(
       y.lines += lines.length
       byYear.set(fy, y)
       stats.payloadBytes += JSON.stringify(r).length
-      if (!dry) pending.push(r)
+      if (!dry) {
+        const { children: _children, ...rowOnly } = r
+        pending.push(rowOnly)
+      }
     }
     await flushPending(false)
     const line = `  ${stats.vouchers} vouchers read${dry ? '' : `, ${staged} staged`}`
@@ -194,6 +246,9 @@ console.log(`  vouchers ${stats.kept} · ledger lines ${stats.lines} (max ${stat
 console.log(`  total debit ${money(stats.dr)} · total credit ${money(stats.cr)} · difference ${money(stats.dr - stats.cr)}`)
 console.log(`  vouchers whose lines do not balance: ${stats.unbalanced} (sum of differences ${money(stats.unbalancedAbs)}) · with no ledger lines: ${stats.noLines} · without a date: ${stats.noDate} · duplicate GUIDs: ${stats.dupGuid} · cancelled ${stats.cancelled} · optional ${stats.optional}`)
 console.log(`  staged payload size ${(stats.payloadBytes / 1048576).toFixed(1)} MB (average ${Math.round(stats.payloadBytes / Math.max(stats.kept, 1))} bytes per voucher)`)
+console.log(`  child lists: vouchers with any child ${ch.vouchersWithChildren} · ledger lines ${JSON.stringify(ch.lines)} · inventory ${JSON.stringify(ch.inventory)} (${ch.inventoryVouchers} vouchers) · batches ${ch.batches} · bills ${JSON.stringify(ch.bills)} · cost-centre rows ${ch.costcentres} · bank rows ${ch.banks}`)
+console.log(`  flags: ${JSON.stringify(ch.flags)} · quantity without unit ${ch.qtyNoUnit} · billed qty differs from actual ${ch.billedNeActual} · party lines ${ch.partyLines} (vouchers with more than one: ${ch.vouchersWithManyParty})`)
+console.log(`  batches: named ${ch.batchNamed} · with godown ${ch.batchGodown} · with mfg date ${ch.batchMfd} · with expiry date ${ch.batchExpiryDate} · with expiry text ${ch.batchExpiryText}`)
 console.log('  by voucher type:')
 for (const [k, v] of [...byType].sort((a, b) => b[1].count - a[1].count)) console.log(`    ${k.padEnd(24)} ${String(v.count).padStart(7)}  lines ${String(v.lines).padStart(7)}  Dr ${money(v.dr).padStart(18)}  Cr ${money(v.cr).padStart(18)}  unbalanced ${v.unbalanced} · no lines ${v.noLines}`)
 console.log('  by financial year (April-March):')
@@ -213,5 +268,24 @@ while (remaining > 0) {
 }
 process.stdout.write('\n')
 const done = await rpc('import_process', { p_batch_id: batch.id })
+await new Promise((res) => childOut.end(res))
+const sent = { vouchers: 0, skipped: 0, unlinked: 0, flagged_lines: 0, lines: 0, inventory: 0, batches: 0, bills: 0, costcentres: 0, banks: 0 }
+let part = []
+const sendChildren = async () => {
+  if (part.length === 0) return
+  const r = await rpc('import_stage_voucher_children', { p_batch_id: batch.id, p_vouchers: part })
+  for (const k of Object.keys(sent)) sent[k] += r[k] ?? 0
+  part = []
+  process.stdout.write(`  children staged for ${sent.vouchers + sent.skipped} of ${childWritten} vouchers\r`)
+}
+for await (const line of createInterface({ input: createReadStream(childFile), crlfDelay: Infinity })) {
+  if (!line) continue
+  part.push(JSON.parse(line))
+  if (part.length >= 100) await sendChildren()
+}
+await sendChildren()
+unlinkSync(childFile)
+process.stdout.write('\n')
+console.log(`Voucher child lists staged: ${JSON.stringify(sent)}`)
 console.log(`Batch ${batch.code} processed: ${JSON.stringify(done.counts ?? {})} · open Bug fixer items: ${done.open_bugs ?? 0}`)
 await sb.auth.signOut()

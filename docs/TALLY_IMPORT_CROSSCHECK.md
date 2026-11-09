@@ -83,3 +83,42 @@ The spec posts **every historical voucher** (Step 11) with opening balances at t
 - For B: Day Book **XML with full entries** for FY 2026-27 (Biochem) — the Excel day book has one leg per voucher.
 - Product list with HSN and UOM (opening stock), a note of any TDL customisation/user-defined fields, TallyPrime version, and whether payroll history is wanted.
 - CA: mapping of the without-GST voucher types, Tally's own opening difference (₹436 / ₹1,69,198.75) and Biochem's computed-lines gap (₹35,18,807.89).
+
+
+## 8. Stage 1 of the full build — what it closes (10-11-2026)
+
+Option C (all the years) was chosen. Stage 1 builds the mapping tables, the complete parser and the staging of the voucher child lists. **Nothing is posted and no real data was changed by this stage.** Counts only below.
+
+| Spec | Was | Now (Stage 1) |
+|---|---|---|
+| §3 staging per child list | Differs (one generic table) | **Closed for child lists:** `ops.tally_voucher_lines / _inventory / _batches / _bills / _costcentres / _banks`, keyed by voucher and line number, company-scoped, written once per batch (update/delete refused), readable only by Admin and the CA, parsed columns only (no raw JSON per row; the voucher keeps `row_hash`, the batch keeps the file hash and storage path). Master collections still go through `ops.import_rows` (Admin sees them in Batches). |
+| §4 `tally_voucher_type_map` | Not built | **Built** (`ops.tally_voucher_type_map`, suggestion by Parent / name; user-defined types inherit their base type; types named like “… WO” or “… Non GST” → `without_gst` + `ca_review`, never auto-confirmed and never bulk-confirmed) |
+| §4 `tally_godown_map`, unit and currency maps | Not built | **Built** (`ops.tally_godown_map`, `tally_unit_map`, `tally_currency_map`) plus `tally_item_map` (item aliases) and `tally_group_suggest` (head suggestions from name, parent, IsRevenue, IsDeemedPositive; confirmed heads still land in `ops.tally_group_map`) |
+| §4 “Nothing posts until every name is mapped” | Not enforced | **Visible:** `api.tally_map_gaps` lists unmapped voucher types, godowns, units, ledgers and items used by staged vouchers, with counts; the gate itself is enforced by `api.import_post_voucher` in Stage 2 |
+| §5 steps 2, 5–9 (units, cost centres, voucher types, item groups/categories, godowns, items) | Not loaded | **Loaders built:** units, currencies, cost categories / centres, voucher types, godowns, stock categories, stock groups (default unit), stock items (batch / expiry / GST flags, alternate unit, category, opening allocations kept as staged data). Items are created **only** with an HSN and a known unit; otherwise Bug fixer `missing_hsn` / `map_unit`. **Data still missing:** the owner's Master files hold groups, ledgers and currencies only (parse-only check) — they must be re-exported with the stock and voucher-type masters. |
+| §9 field coverage | 7/13 … (see §4 above) | **175 of 175** spec tags are read (`src/features/import/tally/specTags.json` + a Vitest that fails if a tag is not handled; 12 tags are staged as reference only: closing balances / rates / values, costing and valuation method, group IsAddable, voucher Amount) |
+| §8 sign, quantity, rate, amount checks | Not done | **Done in the parser:** negative = debit, IsDeemedPositive cross-check (`sign_mismatch`), quantity + unit and rate + unit parsing (`qty_unparsed`, `unit_mismatch`), Rate × Qty − Discount against Amount within ₹1 (`amount_mismatch`), dates YYYYMMDD, Yes/No, UTF-16 and entities; the original text is kept in `*_text` columns |
+
+Still **open** after Stage 1: historical posting (Stage 2), bill-wise and stock opening, the eight reconciliation checks, the import report, the approval gate and the lock (Stage 3), the bridge (§2), company-GUID confirmation (§5 step 1).
+
+### Findings from the parse-only check of the Plastics Day Book (7,669 vouchers; nothing loaded)
+
+- Every voucher carries at least one child list; vouchers still balance to the paisa when read through the amounts (debit = credit).
+- Ledger lines 24,684 (13,675 `ALLLEDGERENTRIES`, 6,899 `LEDGERENTRIES`, 4,951 accounting allocations inside item lines); inventory lines 4,954 (2,185 vouchers), all in the plain list (no stock or manufacturing journal in this company); batch allocations 4,951, all with godown and batch name; **no manufacturing or expiry date on any batch** in this company; bill allocations 1,384 (New Ref 1,346, Agst Ref 38); bank allocations 1,893; no cost-centre allocations.
+- TallyPrime writes an empty `BILLALLOCATIONS.LIST` and `BANKALLOCATIONS.LIST` on almost every ledger line; the parser skips empty ones (otherwise 24,144 and 25,522 empty rows would be staged).
+- **Sign flag:** 737 ledger lines have `IsDeemedPositive` disagreeing with the amount sign, all in the `LEDGERENTRIES` copy of invoice vouchers (Sales Gst 551, Purchase 108, Sales Order 27, Sales 27, Credit Note 12, Delivery Note 11, Sales Non GST 1). The amount sign is the reliable one (every voucher balances), so these stay as flags for the Stage 2 review, not blocks.
+- Quantity or unit unparsed: 0. Rate × Qty − Discount differs from Amount by more than ₹1: 141 inventory lines (Purchase 111, Sales Gst 16, Sales 8, Sales Order 3, Delivery Note 2, Debit Note 1) — flagged. Lines or inventory rows without a name: 6.
+
+## 9. Stage 2 and Stage 3 plan
+
+**Stage 2 — historical posting (`api.import_post_voucher`)**
+1. Gate: a voucher posts only when its voucher type, every godown, unit, ledger and item it uses are confirmed (`api.tally_map_gaps` empty for it); otherwise it waits and a Bug fixer `missing_master` item is opened.
+2. One transaction per voucher, idempotent on `(company, GUID)`, locks, `source = tally`, batch ID in the audit trail; lines must balance to zero or the voucher becomes `unbalanced_voucher`.
+3. Live refusals become flags, not blocks: ₹2 lakh cash receipt, ₹10,000 cash payment, negative stock, credit limit, MRP, approvals / segregation of duties. GST posts as in Tally and is compared with the HSN rate table (“GST differs from HSN rate”). Cancelled vouchers post nothing; optional vouchers never post; bills in a non-GST class keep the class with the reason “None · CA review”.
+4. Month preview (counts by type, trial balance movement, stock movement) before each month is posted; periods marked “Imported from Tally”.
+5. Undo by reversals (a reversal plus a new document, both linked); never an update or delete of a posted record.
+
+**Stage 3 — opening and proof**
+1. Bill-wise opening (ledger opening bills) and stock opening by godown and batch as one opening document per company, signed by the CA.
+2. The eight reconciliation checks of the owner's table (trial balance per ledger and month, stock summary, voucher count per type and month, bill-wise outstanding, GST totals, cash and bank, party balances, closing values) in `api.import_reconcile`.
+3. Import report, approval gate in `api.import_approve` (all checks pass), then the period lock.

@@ -18,6 +18,7 @@ import { IMPORT_KEYS, ImportError, ImportHistory, ResultChip } from './ImportHis
 import { TWO_COLS } from './layout'
 import { StepBar, type Step } from './steps'
 import { isReportSource, ReportImport, ReportsList } from './TallyReports'
+import { MappingSection } from './MappingSection'
 
 const RESULTS = ['created', 'linked', 'aliased', 'skipped', 'bug', 'changed', 'error', 'pending'] as const
 const PREVIEW = 8
@@ -210,6 +211,8 @@ export function DataImportPage() {
           )}
 
           {canImport && companyId && company ? <ReportsList companyId={companyId} companyLabel={company.name} /> : null}
+
+          {companyId && (isAdmin || canImport || readOnly) ? <MappingSection companyId={companyId} isAdmin={isAdmin} canImport={canImport} /> : null}
 
           <ImportHistory companyId={companyId} canImport={canImport} isAdmin={isAdmin} onResult={showResult} />
         </>
